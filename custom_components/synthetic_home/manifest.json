@@ -6,5 +6,6 @@
   "dependencies": [],
   "config_flow": true,
   "codeowners": ["@allenporter"],
-  "requirements": []
+  "requirements": [],
+  "version": "1.0.0"
 }

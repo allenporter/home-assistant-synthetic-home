@@ -7,7 +7,7 @@ from .entity import SyntheticHomeEntity
 
 
 async def async_setup_entry(hass, entry, async_add_devices):
-    """Setup sensor platform."""
+    """Set up sensor platform."""
     coordinator = hass.data[DOMAIN][entry.entry_id]
     async_add_devices([SyntheticHomeSensor(coordinator, entry)])
 
