@@ -1,0 +1,10 @@
+{
+  "domain": "synthetic_home",
+  "name": "Synthetic Home",
+  "documentation": "https://github.com/allenporter/synthetic-home",
+  "issue_tracker": "https://github.com/allenporter/synthetic-home/issues",
+  "dependencies": [],
+  "config_flow": true,
+  "codeowners": ["@allenporter"],
+  "requirements": []
+}
