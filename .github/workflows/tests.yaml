@@ -3,15 +3,14 @@ name: Linting
 on:
   push:
     branches:
-      - main
-      - master
-      - dev
+    - main
   pull_request:
-  schedule:
-    - cron: "0 0 * * *"
+    branches:
+    - main
+
 
 env:
-  DEFAULT_PYTHON: 3.9
+  DEFAULT_PYTHON: 3.12
 
 jobs:
   pre-commit:
@@ -19,21 +18,16 @@ jobs:
     name: Pre-commit
     steps:
       - name: Check out the repository
-        uses: actions/checkout@v2.3.4
+        uses: actions/checkout@v3
 
       - name: Set up Python ${{ env.DEFAULT_PYTHON }}
-        uses: actions/setup-python@v2.2.1
+        uses: actions/setup-python@v3
         with:
           python-version: ${{ env.DEFAULT_PYTHON }}
 
       - name: Upgrade pip
         run: |
-          pip install --constraint=.github/workflows/constraints.txt pip
-          pip --version
-
-      - name: Install Python modules
-        run: |
-          pip install --constraint=.github/workflows/constraints.txt pre-commit black flake8 reorder-python-imports
+          python -m pip install --upgrade pip
 
       - name: Run pre-commit on all files
         run: |
@@ -66,20 +60,14 @@ jobs:
     name: Run tests
     steps:
       - name: Check out code from GitHub
-        uses: "actions/checkout@v2.3.4"
+        uses: actions/checkout@v3
       - name: Setup Python ${{ env.DEFAULT_PYTHON }}
-        uses: "actions/setup-python@v2.2.1"
+        uses: actions/setup-python@v3
         with:
           python-version: ${{ env.DEFAULT_PYTHON }}
       - name: Install requirements
         run: |
-          pip install --constraint=.github/workflows/constraints.txt pip
-          pip install -r requirements_test.txt
+          pip install -r requirements.txt
       - name: Tests suite
         run: |
-          pytest \
-            --timeout=9 \
-            --durations=10 \
-            -n auto \
-            -p no:sugar \
-            tests
+          pytest

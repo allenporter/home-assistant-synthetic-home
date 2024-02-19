@@ -1,0 +1,5 @@
+homeassistant==2024.2.1
+pytest-homeassistant-custom-component==0.13.100
+mypy==1.4.1
+pre-commit==3.3.3
+ruff==0.0.292
