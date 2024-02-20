@@ -1,4 +1,4 @@
-name: "Lint"
+name: Lint
 
 on:
   push:
@@ -7,7 +7,6 @@ on:
   pull_request:
     branches:
     - main
-
 
 env:
   DEFAULT_PYTHON: 3.12
@@ -18,7 +17,7 @@ jobs:
     runs-on: "ubuntu-latest"
     steps:
     - name: Checkout the repository
-      uses: "actions/checkout@v4
+      uses: actions/checkout@v4
 
     - name: Setup Python ${{ env.DEFAULT_PYTHON }}
       uses: actions/setup-python@v3
