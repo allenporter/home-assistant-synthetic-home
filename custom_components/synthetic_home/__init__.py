@@ -14,9 +14,10 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryError
+from homeassistant.helpers import area_registry as ar, device_registry as dr
 
 from .const import DOMAIN, CONF_FILENAME
-from .model import SyntheticHome
+from .model import SyntheticHome, generate_device_id
 
 SCAN_INTERVAL = timedelta(seconds=30)
 
@@ -44,11 +45,25 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up this integration using UI."""
     hass.data.setdefault(DOMAIN, {})
 
-    config_file = hass.config.path(entry.data[CONF_FILENAME])
+    config_file = pathlib.Path(hass.config.path(entry.data[CONF_FILENAME]))
     content = read_config_content(config_file)
 
     synthetic_home = yaml_decode(content, SyntheticHome)
     hass.data[DOMAIN][entry.entry_id] = synthetic_home
+
+    # Create all areas in the home and assign devices to them
+    area_registry = ar.async_get(hass)
+    device_registry = dr.async_get(hass)
+    for area_name, devices in synthetic_home.device_entities.items():
+        area_entry = area_registry.async_get_or_create(area_name)
+        for device in devices:
+            device_id = generate_device_id(device.name, area_name)
+            device_entry = device_registry.async_get_or_create(
+                config_entry_id=entry.entry_id,
+                name=device.name,
+                identifiers={(DOMAIN, device_id)},
+            )
+            device_registry.async_update_device(device_entry.id, area_id=area_entry.id)
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     entry.async_on_unload(entry.add_update_listener(async_reload_entry))

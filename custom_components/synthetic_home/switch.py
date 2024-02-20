@@ -6,8 +6,8 @@ from homeassistant.components.switch import SwitchEntity, DOMAIN as SWITCH_DOMAI
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.device_registry import DeviceInfo
 
-from .const import DEFAULT_NAME, DOMAIN
-
+from .const import DOMAIN
+from .model import generate_entity_unique_id, friendly_device_name, generate_device_id
 
 ICON = "mdi:switch"
 SWITCH = "switch"
@@ -21,21 +21,30 @@ async def async_setup_entry(
 
     async_add_devices(
         SyntheticHomeBinarySwitch(entity_id, device_name, area_name)
-        for entity_id, device_name, area_name in synthetic_home.entities_by_domain(SWITCH_DOMAIN)
+        for entity_id, device_name, area_name in synthetic_home.entities_by_domain(
+            SWITCH_DOMAIN
+        )
     )
 
 
 class SyntheticHomeBinarySwitch(SwitchEntity):
     """synthetic_home switch class."""
 
-    def __init__(self, entity_id: str, device_name: str, suggested_area: str) -> None:
-        """Initialize SyntheticHomeBinarySwitch."""
-        self.entity_id = entity_id
-        self._attr_device_info = DeviceInfo(
-            name=device_name,
-            suggested_area=suggested_area,
-        )
+    _attr_has_entity_name = True
+    _attr_name = None
 
+    def __init__(self, entity_id: str, device_name: str, area_name: str) -> None:
+        """Initialize SyntheticHomeBinarySwitch."""
+        self._attr_unique_id = generate_entity_unique_id(
+            entity_id, device_name, area_name
+        )
+        self.entity_id = entity_id
+        device_id = generate_device_id(device_name, area_name)
+        self._attr_device_info = DeviceInfo(
+            name=friendly_device_name(device_name),
+            suggested_area=area_name,
+            identifiers={(DOMAIN, device_id)},
+        )
 
     async def async_turn_on(self, **kwargs):  # pylint: disable=unused-argument
         """Turn on the switch."""
@@ -46,16 +55,6 @@ class SyntheticHomeBinarySwitch(SwitchEntity):
         """Turn off the switch."""
         self._attr_state = "off"
         self.async_write_ha_state()
-
-    @property
-    def name(self):
-        """Return the name of the switch."""
-        return DEFAULT_NAME
-
-    @property
-    def icon(self):
-        """Return the icon of this switch."""
-        return ICON
 
     @property
     def is_on(self):

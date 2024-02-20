@@ -52,6 +52,9 @@ async def test_switch_services(hass: HomeAssistant, setup_integration: None) -> 
     state = hass.states.get(TEST_ENTITY)
     assert state
     assert state.state == "off"
+    assert state.attributes == {
+        "friendly_name": "Smart Feeder"
+    }
 
     await hass.services.async_call(
         SWITCH_DOMAIN,
