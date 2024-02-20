@@ -13,21 +13,21 @@ jobs:
     runs-on: "ubuntu-latest"
     name: HACS
     steps:
-      - name: Check out the repository
-        uses: actions/checkout@v3
+    - name: Check out the repository
+      uses: actions/checkout@v3
 
-      - name: HACS validation
-        uses: hacs/action@22.5.0
-        with:
-          category: integration
-          ignore: brands
+    - name: HACS validation
+      uses: hacs/action@22.5.0
+      with:
+        category: integration
+        ignore: brands
 
   hassfest:
-    runs-on:ubuntu-latest"
+    runs-on: ubuntu-latest
     name: Hassfest
     steps:
-      - name: Check out the repository
-        uses: actions/checkout@v4
+    - name: Check out the repository
+      uses: actions/checkout@v4
 
-      - name: Hassfest validation
-        uses: home-assistant/actions/hassfest@master
+    - name: Hassfest validation
+      uses: home-assistant/actions/hassfest@master
