@@ -1,28 +1,53 @@
 """Test Synthetic Home switch."""
 
-from custom_components.synthetic_home import (
-    async_setup_entry,
-)
-from custom_components.synthetic_home.const import DOMAIN
+import pytest
+from unittest.mock import patch, mock_open
+
+from homeassistant.const import Platform
 from homeassistant.components.switch import (
     SERVICE_TURN_OFF,
     SERVICE_TURN_ON,
     DOMAIN as SWITCH_DOMAIN,
 )
 from homeassistant.const import ATTR_ENTITY_ID
-from pytest_homeassistant_custom_component.common import MockConfigEntry
+from homeassistant.core import HomeAssistant
+
+TEST_YAML = """
+---
+name: Family Farmhouse
+country_code: US
+location: Rural area in Iowa
+type: Farmhouse
+device_entities:
+  Chicken Coop:
+  - name: smart_feeder
+    entities:
+    - switch.chicken_coop_feeder
+"""
 
 
-TEST_ENTITY = "switch.synthetic_home"
+TEST_ENTITY = "switch.chicken_coop_feeder"
 
 
 
-async def test_switch_services(hass):
+@pytest.fixture(name="platforms")
+def mock_platforms() -> list[Platform]:
+    """Setup switch platform."""
+    return [Platform.SWITCH]
+
+
+@pytest.fixture(autouse=True)
+def mock_config_content() -> None:
+    """Mock out the yaml config file contents."""
+    with patch(
+        "custom_components.synthetic_home.read_config_content",
+        mock_open(read_data=TEST_YAML),
+    ):
+        yield
+
+
+async def test_switch_services(hass: HomeAssistant, setup_integration: None) -> None:
     """Test switch services."""
-    # Create a mock entry so we don't have to go through config flow
-    config_entry = MockConfigEntry(domain=DOMAIN, data={}, entry_id="test")
-    assert await async_setup_entry(hass, config_entry)
-    await hass.async_block_till_done()
 
     state = hass.states.get(TEST_ENTITY)
     assert state
