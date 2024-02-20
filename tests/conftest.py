@@ -2,6 +2,7 @@
 
 from collections.abc import Generator
 from unittest.mock import patch
+from unittest.mock import patch, mock_open
 
 import pytest
 
@@ -48,3 +49,17 @@ async def mock_setup_integration(
     with patch("custom_components.synthetic_home.PLATFORMS", platforms):
         assert await async_setup_component(hass, DOMAIN, {})
         await hass.async_block_till_done()
+
+@pytest.fixture(name="config_yaml")
+def mock_config_yaml() -> str:
+    """Mock out the yaml config file contents."""
+
+
+@pytest.fixture(autouse=True)
+def mock_config_content(config_yaml: str) -> None:
+    """Mock out the yaml config file contents."""
+    with patch(
+        "custom_components.synthetic_home.read_config_content",
+        mock_open(read_data=config_yaml),
+    ):
+        yield

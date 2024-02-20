@@ -35,14 +35,10 @@ def mock_platforms() -> list[Platform]:
     return [Platform.SENSOR]
 
 
-@pytest.fixture(autouse=True)
-def mock_config_content() -> None:
+@pytest.fixture
+def config_yaml() -> None:
     """Mock out the yaml config file contents."""
-    with patch(
-        "custom_components.synthetic_home.read_config_content",
-        mock_open(read_data=TEST_YAML),
-    ):
-        yield
+    return TEST_YAML
 
 
 async def test_sensor(hass: HomeAssistant, setup_integration: None) -> None:
