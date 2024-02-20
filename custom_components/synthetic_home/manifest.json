@@ -3,9 +3,12 @@
   "name": "Synthetic Home",
   "documentation": "https://github.com/allenporter/synthetic-home",
   "issue_tracker": "https://github.com/allenporter/synthetic-home/issues",
+  "iot_class": "cloud_polling",
   "dependencies": [],
   "config_flow": true,
-  "codeowners": ["@allenporter"],
+  "codeowners": [
+    "@allenporter"
+  ],
   "requirements": [],
   "version": "1.0.0"
 }
