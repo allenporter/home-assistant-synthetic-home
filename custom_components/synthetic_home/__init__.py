@@ -25,8 +25,9 @@ _LOGGER: logging.Logger = logging.getLogger(__package__)
 
 
 PLATFORMS: list[Platform] = [
-    Platform.SENSOR,
     Platform.BINARY_SENSOR,
+    Platform.LIGHT,
+    Platform.SENSOR,
     Platform.SWITCH,
 ]
 
