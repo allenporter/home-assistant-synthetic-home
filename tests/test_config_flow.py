@@ -8,7 +8,6 @@ from custom_components.synthetic_home.const import (
 )
 from homeassistant import config_entries
 from homeassistant import data_entry_flow
-from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 
 # This fixture bypasses the actual setup of the integration

@@ -1,10 +1,9 @@
 """Test Synthetic Home switch."""
-from unittest.mock import call, patch
 
 from custom_components.synthetic_home import (
     async_setup_entry,
 )
-from custom_components.synthetic_home.const import DEFAULT_NAME, DOMAIN
+from custom_components.synthetic_home.const import DOMAIN
 from homeassistant.components.switch import (
     SERVICE_TURN_OFF,
     SERVICE_TURN_ON,

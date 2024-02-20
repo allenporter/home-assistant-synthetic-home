@@ -1,7 +1,7 @@
 """Switch platform for Synthetic Home."""
 from homeassistant.components.switch import SwitchEntity
 
-from .const import DEFAULT_NAME, DOMAIN
+from .const import DEFAULT_NAME
 
 
 ICON = "mdi:switch"
