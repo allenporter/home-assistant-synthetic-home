@@ -1,13 +1,10 @@
 """Adds config flow for Synthetic Home."""
 
 import pathlib
-from typing import Any
-from unittest.mock import patch, mock_open
 
 import voluptuous as vol
 
 from homeassistant import config_entries
-from homeassistant.data_entry_flow import FlowResult
 
 from .const import DOMAIN, CONF_FILENAME
 
@@ -18,7 +15,7 @@ STEP_USER_DATA_SCHEMA = vol.Schema(
 )
 
 def read_config(config_file: pathlib.Path) -> str:
-    """Read config filename from disk"""
+    """Read config filename from disk."""
     with config_file.open("r") as f:
         return f.read()
 
