@@ -5,7 +5,7 @@
         "title": "Synthetic Home",
         "description": "Please enter a filename for a `.yaml` file in your `config/` directory that will be parsed as Synthetic Home data. If you need help with the configuration have a look here: https://github.com/allenporter/synthetic-home",
         "data": {
-          "config_filename": "Config Filename",
+          "config_filename": "Config Filename"
         }
       }
     },

@@ -1,11 +1,13 @@
 {
   "domain": "synthetic_home",
   "name": "Synthetic Home",
-  "codeowners": ["@allenporter"],
+  "codeowners": [
+    "@allenporter"
+  ],
   "config_flow": true,
   "dependencies": [],
-  "documentation": "https://github.com/allenporter/synthetic-home",
-  "issue_tracker": "https://github.com/allenporter/synthetic-home/issues",
+  "documentation": "https://github.com/allenporter/home-assistant-synthetic-home",
+  "issue_tracker": "https://github.com/allenporter/home-assistant-synthetic-home/issues",
   "iot_class": "cloud_polling",
   "requirements": [],
   "version": "1.0.0"
