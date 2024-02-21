@@ -1,13 +1,8 @@
 """Test Synthetic Home sensor."""
 
 import pytest
-from unittest.mock import patch, mock_open
 
 from homeassistant.const import Platform
-from homeassistant.components.sensor import (
-    DOMAIN as SENSOR_DOMAIN,
-)
-from homeassistant.const import ATTR_ENTITY_ID
 from homeassistant.core import HomeAssistant
 
 TEST_YAML = """
@@ -31,7 +26,7 @@ TEST_ENTITY = "sensor.thermostat_family_room_temperature"
 
 @pytest.fixture(name="platforms")
 def mock_platforms() -> list[Platform]:
-    """Setup switch platform."""
+    """Set up switch platform."""
     return [Platform.SENSOR]
 
 

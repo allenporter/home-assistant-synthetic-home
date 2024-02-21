@@ -1,10 +1,9 @@
 """Sensor platform for Synthetic Home."""
 
 from homeassistant.components.sensor import DOMAIN as SENSOR_DOMAIN, SensorEntity
-from homeassistant.helpers.device_registry import DeviceInfo
 
-from .const import DEFAULT_NAME, DOMAIN
-from .model import generate_entity_unique_id, friendly_device_name, generate_device_id, friendly_entity_name
+from .const import DOMAIN
+from .model import friendly_entity_name
 from .entity import SyntheticEntity
 
 async def async_setup_entry(hass, entry, async_add_devices):

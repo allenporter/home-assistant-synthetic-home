@@ -1,7 +1,6 @@
 """Test Synthetic Home switch."""
 
 import pytest
-from unittest.mock import patch, mock_open
 
 from homeassistant.const import Platform
 from homeassistant.components.light import (
@@ -32,7 +31,7 @@ TEST_ENTITY = "light.family_room"
 
 @pytest.fixture(name="platforms")
 def mock_platforms() -> list[Platform]:
-    """Setup switch platform."""
+    """Set up switch platform."""
     return [Platform.LIGHT]
 
 

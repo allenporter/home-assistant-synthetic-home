@@ -4,10 +4,8 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.components.light import LightEntity, DOMAIN as LIGHT_DOMAIN
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from homeassistant.helpers.device_registry import DeviceInfo
 
 from .const import DOMAIN
-from .model import generate_entity_unique_id, friendly_device_name, generate_device_id
 from .entity import SyntheticEntity
 
 
@@ -27,7 +25,6 @@ async def async_setup_entry(
 
 class SyntheticHomeLight(SyntheticEntity, LightEntity):
     """synthetic_home light class."""
-
 
     async def async_turn_on(self, **kwargs):  # pylint: disable=unused-argument
         """Turn on the light."""

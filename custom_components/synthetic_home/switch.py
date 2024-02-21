@@ -4,10 +4,8 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.components.switch import SwitchEntity, DOMAIN as SWITCH_DOMAIN
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from homeassistant.helpers.device_registry import DeviceInfo
 
 from .const import DOMAIN
-from .model import generate_entity_unique_id, friendly_device_name, generate_device_id
 from .entity import SyntheticEntity
 
 
