@@ -52,6 +52,7 @@ async def mock_setup_integration(
 @pytest.fixture(name="config_yaml")
 def mock_config_yaml() -> str:
     """Mock out the yaml config file contents."""
+    return ""
 
 
 @pytest.fixture(autouse=True)

@@ -55,12 +55,10 @@ def friendly_device_name(device_name: str) -> str:
     return device_name.replace("_", " ").title()
 
 
-
 def friendly_entity_name(entity_name: str) -> str:
     """Generate a friendly device name from the device id name."""
     parts = entity_name.split(".")  # Drop the domain
     return parts[1].replace("_", " ").capitalize()
-
 
 
 def generate_device_id(device_name: str, area_name: str) -> str:
