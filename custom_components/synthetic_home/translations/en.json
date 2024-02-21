@@ -3,29 +3,15 @@
     "step": {
       "user": {
         "title": "Synthetic Home",
-        "description": "If you need help with the configuration have a look here: https://github.com/allenporter/synthetic-home",
+        "description": "Please enter a filename for a `.yaml` file in your `config/` directory that will be parsed as Synthetic Home data. If you need help with the configuration have a look here: https://github.com/allenporter/synthetic-home",
         "data": {
-          "username": "Username",
-          "password": "Password"
+          "config_filename": "Config Filename",
         }
       }
     },
     "error": {
-      "auth": "Username/Password is wrong."
+      "does_not_exist": "The configuration file does not exist in your `config/` directory."
     },
-    "abort": {
-      "single_instance_allowed": "Only a single instance is allowed."
-    }
-  },
-  "options": {
-    "step": {
-      "user": {
-        "data": {
-          "binary_sensor": "Binary sensor enabled",
-          "sensor": "Sensor enabled",
-          "switch": "Switch enabled"
-        }
-      }
-    }
+    "abort": {}
   }
 }
