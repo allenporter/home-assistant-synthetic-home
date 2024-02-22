@@ -1,5 +1,6 @@
 """Data model for home assistant synthetic home."""
 
+from enum import StrEnum
 from collections.abc import Generator
 import hashlib
 
@@ -7,11 +8,43 @@ from dataclasses import dataclass
 
 
 @dataclass
+class DeviceInfo:
+    """Device model information."""
+
+    model: str
+    manufacturer: str
+    firmware: str
+
+
+class DeviceType(StrEnum):
+    """Available device types."""
+
+    CLIMATE_HVAC = "climate_hvac"
+    CLIMATE_HEAT_PUMP = "climate_heat_pump"
+    # Example of future device types:
+    # LIGHT = "light"
+    # SMART_TV = "smart_tv"
+    # CAMERA = "camera"
+    # LAPTOP = "laptop"
+    # PHONE = "phone"
+    # TABLET = "tablet"
+
+
+@dataclass
 class Device:
     """A synthetic device."""
 
     name: str
-    entities: list[str]
+    unique_id: str | None = None
+    device_type: DeviceType | None = None
+    device_info: DeviceInfo | None = None
+
+    # In the future we can expand with these:
+    # features: list[str] | None
+    # attributes: dict[str, Any] | None
+
+    # These should be replaced with features
+    entities: list[str] | None = None
 
     @property
     def friendly_name(self) -> str:
@@ -39,6 +72,15 @@ class SyntheticHome:
             for devices in self.device_entities.values()
             for device in devices
         ]
+
+    def devices_and_areas(
+        self, device_types: set[DeviceType]
+    ) -> Generator[tuple[Device, str]]:
+        """Provide all devices and area names for the specified device types."""
+        for area_name, device_list in self.device_entities.items():
+            for device in device_list:
+                if device.device_type in device_types:
+                    yield device, area_name
 
     def entities_by_domain(self, domain: str) -> Generator[tuple[str, str, str]]:
         """Provide all entities with their device and area names."""
