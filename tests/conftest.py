@@ -1,9 +1,12 @@
 """Global fixtures for Synthetic Home integration."""
 
+import pathlib
 from collections.abc import Generator
 from unittest.mock import patch, mock_open
+import os
 
 import pytest
+
 
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
@@ -14,7 +17,7 @@ from custom_components.synthetic_home.const import DOMAIN, CONF_FILENAME
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 TEST_FILENAME = "example.yaml"
-
+FIXTURES = "tests/fixtures"
 
 @pytest.fixture(autouse=True)
 def auto_enable_custom_integrations(
@@ -49,9 +52,19 @@ async def mock_setup_integration(
         assert await async_setup_component(hass, DOMAIN, {})
         await hass.async_block_till_done()
 
-@pytest.fixture(name="config_yaml")
-def mock_config_yaml() -> str:
+
+@pytest.fixture(name="config_yaml_fixture")
+def mock_config_yaml_fixture() -> str | None:
     """Mock out the yaml config file contents."""
+    return None
+
+
+@pytest.fixture(name="config_yaml")
+def mock_config_yaml(config_yaml_fixture: str | None) -> str:
+    """Mock out the yaml config file contents."""
+    if config_yaml_fixture:
+        with pathlib.Path(config_yaml_fixture).open('r') as f:
+            return f.read()
     return ""
 
 

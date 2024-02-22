@@ -12,27 +12,9 @@ from homeassistant.components.climate import (
 from homeassistant.const import ATTR_ENTITY_ID, ATTR_TEMPERATURE
 from homeassistant.core import HomeAssistant
 
-TEST_YAML = """
----
-name: Family Farmhouse
-country_code: US
-location: Rural area in Iowa
-type: Farmhouse
-device_entities:
-  Family room:
-  - name: Family room
-    unique_id: d4df546410f90f1c1d9be6a8443b8ec6
-    device_type: climate_hvac
-    device_info:
-        model: Thermostat
-        manufacturer: Nest
-        firmware: 1.0.0
-    attributes:
-        unit_of_measurement: F
-        temperature: 60
-"""
+from .conftest import FIXTURES
 
-
+TEST_FIXTURE_FILE = f"{FIXTURES}/climate-hvac.yaml"
 TEST_ENTITY = "climate.family_room"
 
 
@@ -43,9 +25,9 @@ def mock_platforms() -> list[Platform]:
 
 
 @pytest.fixture
-def config_yaml() -> None:
+def config_yaml_fixture() -> None:
     """Mock out the yaml config file contents."""
-    return TEST_YAML
+    return TEST_FIXTURE_FILE
 
 
 async def test_climate_hvac_entity(

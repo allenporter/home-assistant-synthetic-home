@@ -1,0 +1,10 @@
+---
+name: Family Farmhouse
+country_code: US
+location: Rural area in Iowa
+type: Farmhouse
+device_entities:
+  Chicken Coop:
+  - name: smart_feeder
+    entities:
+    - switch.chicken_coop_feeder

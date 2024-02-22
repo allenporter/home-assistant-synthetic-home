@@ -11,22 +11,10 @@ from homeassistant.components.light import (
 from homeassistant.const import ATTR_ENTITY_ID
 from homeassistant.core import HomeAssistant
 
-TEST_YAML = """
----
-name: Family Farmhouse
-country_code: US
-location: Rural area in Iowa
-type: Farmhouse
-device_entities:
-  Family Room:
-  - name: light
-    entities:
-    - light.family_room
-"""
+from .conftest import FIXTURES
 
-
+TEST_FIXTURE_FILE = f"{FIXTURES}/light-example.yaml"
 TEST_ENTITY = "light.family_room"
-
 
 
 @pytest.fixture(name="platforms")
@@ -36,9 +24,9 @@ def mock_platforms() -> list[Platform]:
 
 
 @pytest.fixture
-def config_yaml() -> None:
+def config_yaml_fixture() -> None:
     """Mock out the yaml config file contents."""
-    return TEST_YAML
+    return TEST_FIXTURE_FILE
 
 
 async def test_light_services(hass: HomeAssistant, setup_integration: None) -> None:

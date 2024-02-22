@@ -5,21 +5,10 @@ import pytest
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 
-TEST_YAML = """
----
-name: Family Farmhouse
-country_code: US
-location: Rural area in Iowa
-type: Farmhouse
-device_entities:
-  Family Room:
-  - name: thermostat
-    entities:
-    - climate.family_room
-    - sensor.family_room_temperature
-    - sensor.family_room_humidity
-"""
 
+from .conftest import FIXTURES
+
+TEST_FIXTURE_FILE = f"{FIXTURES}/sensor-example.yaml"
 
 TEST_ENTITY = "sensor.thermostat_family_room_temperature"
 
@@ -31,9 +20,9 @@ def mock_platforms() -> list[Platform]:
 
 
 @pytest.fixture
-def config_yaml() -> None:
+def config_yaml_fixture() -> None:
     """Mock out the yaml config file contents."""
-    return TEST_YAML
+    return TEST_FIXTURE_FILE
 
 
 async def test_sensor(hass: HomeAssistant, setup_integration: None) -> None:
