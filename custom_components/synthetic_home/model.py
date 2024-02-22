@@ -35,16 +35,17 @@ class Device:
     """A synthetic device."""
 
     name: str
-    unique_id: str | None = None
+    unique_id: str | None = None  # Future: We can populate the device unique id after processing the home
     device_type: DeviceType | None = None
     device_info: DeviceInfo | None = None
 
-    # In the future we can expand with these:
+    # These should be replaced with features
+    entities: list[str] | None = None
+
+    # Future we can expand with these instead of entities:
     # features: list[str] | None
     # attributes: dict[str, Any] | None
 
-    # These should be replaced with features
-    entities: list[str] | None = None
 
     @property
     def friendly_name(self) -> str:
