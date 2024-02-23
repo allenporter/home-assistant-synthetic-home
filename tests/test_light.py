@@ -7,6 +7,7 @@ from homeassistant.components.light import (
     SERVICE_TURN_OFF,
     SERVICE_TURN_ON,
     DOMAIN as LIGHT_DOMAIN,
+    ATTR_BRIGHTNESS,
 )
 from homeassistant.const import ATTR_ENTITY_ID
 from homeassistant.core import HomeAssistant
@@ -36,9 +37,10 @@ async def test_light_services(hass: HomeAssistant, setup_integration: None) -> N
     assert state
     assert state.state == "off"
     assert state.attributes == {
+        "brightness": None,
         "friendly_name": "Family Room",
         "color_mode": None,
-        "supported_color_modes": ["onoff"],
+        "supported_color_modes": ["brightness"],
         "supported_features": 0,
     }
 
@@ -63,3 +65,10 @@ async def test_light_services(hass: HomeAssistant, setup_integration: None) -> N
     state = hass.states.get(TEST_ENTITY)
     assert state
     assert state.state == "on"
+    assert state.attributes == {
+        "brightness": 30,
+        "friendly_name": "Family Room",
+        "color_mode": "brightness",
+        "supported_color_modes":  ["brightness"],
+        "supported_features": 0,
+    }

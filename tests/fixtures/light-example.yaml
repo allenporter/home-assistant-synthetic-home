@@ -7,3 +7,5 @@ device_entities:
   Family Room:
   - name: Family Room
     device_type: light
+    attributes:
+      brightness: 30
