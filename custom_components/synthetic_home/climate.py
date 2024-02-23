@@ -38,11 +38,10 @@ async def async_setup_entry(hass, entry, async_add_devices):
                     device,
                     area_name,
                     target_temperature=68,
-                    unit_of_measurement=UnitOfTemperature.FAHRENHEIT,
-                    current_temperature=77,
                     hvac_mode=HVACMode.HEAT,
                     hvac_action=HVACAction.HEATING,
                     hvac_modes=[HVACMode.HEAT, HVACMode.OFF],
+                    **device.attributes,
                 )
             )
         elif device.device_type == DeviceType.CLIMATE_HVAC:
@@ -51,8 +50,6 @@ async def async_setup_entry(hass, entry, async_add_devices):
                     device,
                     area_name,
                     target_temperature=21,
-                    unit_of_measurement=UnitOfTemperature.CELSIUS,
-                    current_temperature=22,
                     hvac_mode=HVACMode.COOL,
                     hvac_action=HVACAction.COOLING,
                     hvac_modes=[
@@ -61,6 +58,7 @@ async def async_setup_entry(hass, entry, async_add_devices):
                         HVACMode.HEAT,
                         HVACMode.AUTO,
                     ],
+                    **device.attributes,
                 )
             )
 
@@ -81,12 +79,13 @@ class SyntheticHomeClimate(SyntheticDeviceEntity, ClimateEntity):
         self,
         device: Device,
         area: str,
-        target_temperature: float | None,
-        unit_of_measurement: str,
-        current_temperature: float,
-        hvac_mode: HVACMode,
-        hvac_action: HVACAction | None,
-        hvac_modes: list[HVACMode],
+        *,
+        target_temperature: float | None = None,
+        unit_of_measurement: str | None = None,
+        current_temperature: float | None = None,
+        hvac_mode: HVACMode | None = None,
+        hvac_action: HVACAction | None | None = None,
+        hvac_modes: list[HVACMode] | None = None,
     ) -> None:
         """Initialize the climate device."""
         super().__init__(device, area, "climate")

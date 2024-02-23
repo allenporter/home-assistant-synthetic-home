@@ -3,8 +3,9 @@
 from enum import StrEnum
 from collections.abc import Generator
 import hashlib
+from typing import Any
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 
 @dataclass
@@ -44,7 +45,8 @@ class Device:
 
     # Future we can expand with these instead of entities:
     # features: list[str] | None
-    # attributes: dict[str, Any] | None
+    attributes: dict[str, Any] = field(default_factory=dict)
+
 
 
     @property

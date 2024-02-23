@@ -13,5 +13,5 @@ device_entities:
         manufacturer: Nest
         firmware: 1.0.0
     attributes:
-        unit_of_measurement: F
-        temperature: 60
+        unit_of_measurement: °F
+        current_temperature: 60
