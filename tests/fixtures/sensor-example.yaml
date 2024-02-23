@@ -4,8 +4,8 @@ country_code: US
 location: Rural area in Iowa
 type: Farmhouse
 device_entities:
-  Family Room:
-  - name: thermostat
-    entities:
-    - sensor.family_room_temperature
-    - sensor.family_room_humidity
+  Front Yard:
+    - name: thermostat
+      entities:
+        - sensor.family_room_temperature
+        - sensor.family_room_humidity

@@ -44,11 +44,12 @@ class DeviceType(StrEnum):
     SWITCH = "switch"
     """A generic switch entity."""
 
-    # SMART_TV = "smart_tv"
-    # CAMERA = "camera"
-    # LAPTOP = "laptop"
-    # PHONE = "phone"
-    # TABLET = "tablet"
+    BINARY_SENSOR = "binary_sensor"
+    """A generic binary sensor.
+
+    Supports a 'device_class' attribute with the values of BinarySensorDeviceClass
+    such as 'motion', 'door', 'lock', 'tamper', etc.
+    """
 
 
 @dataclass
@@ -56,7 +57,9 @@ class Device:
     """A synthetic device."""
 
     name: str
-    unique_id: str | None = None  # Future: We can populate the device unique id after processing the home
+    unique_id: str | None = (
+        None  # Future: We can populate the device unique id after processing the home
+    )
     device_type: DeviceType | None = None
     device_info: DeviceInfo | None = None
 
@@ -77,7 +80,6 @@ class Device:
         if self.unique_id:
             return self.unique_id
         return generate_device_id(self.name, area_name)
-
 
 
 @dataclass

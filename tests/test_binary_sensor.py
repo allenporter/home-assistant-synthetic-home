@@ -5,26 +5,11 @@ import pytest
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 
-TEST_YAML = """
----
-name: Family Farmhouse
-country_code: US
-location: Rural area in Iowa
-type: Farmhouse
-device_entities:
-  Family Room:
-  - name: light
-    entities:
-    - light.family_room
-  - name: smart_tv
-    entities:
-    - media_player.family_room_tv
-    - remote.family_room_tv
-    - binary_sensor.family_room_tv_headphones_connected
-"""
+from .conftest import FIXTURES
 
+TEST_FIXTURE_FILE = f"{FIXTURES}/binary-sensor-motion.yaml"
 
-TEST_ENTITY = "binary_sensor.smart_tv_family_room_tv_headphones_connected"
+TEST_ENTITY = "binary_sensor.motion_sensor"
 
 
 @pytest.fixture(name="platforms")
@@ -34,17 +19,18 @@ def mock_platforms() -> list[Platform]:
 
 
 @pytest.fixture
-def config_yaml() -> None:
+def config_yaml_fixture() -> None:
     """Mock out the yaml config file contents."""
-    return TEST_YAML
+    return TEST_FIXTURE_FILE
 
 
-async def test_sensor(hass: HomeAssistant, setup_integration: None) -> None:
-    """Test sensor."""
+async def test_motion_sensor(hass: HomeAssistant, setup_integration: None) -> None:
+    """Test a binary sesnor that detects motion."""
 
     state = hass.states.get(TEST_ENTITY)
     assert state
     assert state.state == "off"
     assert state.attributes == {
-        "friendly_name": "Smart Tv Family room tv headphones connected"
+        "friendly_name": "Motion Sensor",
+        "device_class": "motion",
     }
