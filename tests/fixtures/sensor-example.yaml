@@ -7,6 +7,5 @@ device_entities:
   Family Room:
   - name: thermostat
     entities:
-    - climate.family_room
     - sensor.family_room_temperature
     - sensor.family_room_humidity
