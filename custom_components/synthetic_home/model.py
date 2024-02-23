@@ -30,7 +30,16 @@ class DeviceType(StrEnum):
     """A generic light that can be turned on/off."""
 
     LIGHT_DIMMABLE = "light-dimmable"
-    """A light that has adjustable brightness."""
+    """A light that has adjustable brightness.
+
+    Supports a 'brightness' attribute.
+    """
+
+    LIGHT_RGBW = "light-rgbw"
+    """A light with rgbw color support.
+
+    Supports a 'rgbw-color' attribute.
+    """
 
     # SMART_TV = "smart_tv"
     # CAMERA = "camera"
