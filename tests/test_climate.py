@@ -4,12 +4,11 @@ import pytest
 
 from homeassistant.const import Platform
 from homeassistant.components.climate import (
-    SERVICE_SET_TEMPERATURE,
     SERVICE_SET_HVAC_MODE,
     DOMAIN as CLIMATE_DOMAIN,
     ATTR_HVAC_MODE
 )
-from homeassistant.const import ATTR_ENTITY_ID, ATTR_TEMPERATURE
+from homeassistant.const import ATTR_ENTITY_ID
 from homeassistant.core import HomeAssistant
 
 from .conftest import FIXTURES

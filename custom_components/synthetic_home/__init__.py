@@ -17,7 +17,7 @@ from homeassistant.exceptions import ConfigEntryError
 from homeassistant.helpers import area_registry as ar, device_registry as dr
 
 from .const import DOMAIN, CONF_FILENAME
-from .model import SyntheticHome, generate_device_id
+from .model import SyntheticHome
 
 SCAN_INTERVAL = timedelta(seconds=30)
 

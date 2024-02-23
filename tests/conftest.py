@@ -3,7 +3,6 @@
 import pathlib
 from collections.abc import Generator
 from unittest.mock import patch, mock_open
-import os
 
 import pytest
 

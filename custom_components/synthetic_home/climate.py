@@ -11,7 +11,7 @@ from homeassistant.components.climate import (
     HVACAction,
     HVACMode,
 )
-from homeassistant.const import ATTR_TEMPERATURE, UnitOfTemperature
+from homeassistant.const import ATTR_TEMPERATURE
 
 from .const import DOMAIN
 from .model import DeviceType, Device

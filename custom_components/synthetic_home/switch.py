@@ -2,7 +2,7 @@
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
-from homeassistant.components.switch import SwitchEntity, DOMAIN as SWITCH_DOMAIN
+from homeassistant.components.switch import SwitchEntity
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import DOMAIN

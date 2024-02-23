@@ -2,7 +2,7 @@
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
-from homeassistant.components.light import LightEntity, DOMAIN as LIGHT_DOMAIN, ColorMode, ATTR_BRIGHTNESS, ATTR_RGBW_COLOR
+from homeassistant.components.light import LightEntity, ColorMode, ATTR_BRIGHTNESS, ATTR_RGBW_COLOR
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import DOMAIN
