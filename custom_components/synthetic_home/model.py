@@ -21,9 +21,14 @@ class DeviceType(StrEnum):
     """Available device types."""
 
     CLIMATE_HVAC = "climate_hvac"
+    """A climate device that supports HVAC Cool and Heat modes."""
+
     CLIMATE_HEAT_PUMP = "climate_heat_pump"
-    # Example of future device types:
-    # LIGHT = "light"
+    """A climate devie that only supports heating."""
+
+    LIGHT = "light"
+    """A generic light."""
+
     # SMART_TV = "smart_tv"
     # CAMERA = "camera"
     # LAPTOP = "laptop"

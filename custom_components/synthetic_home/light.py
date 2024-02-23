@@ -6,7 +6,12 @@ from homeassistant.components.light import LightEntity, DOMAIN as LIGHT_DOMAIN
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import DOMAIN
-from .entity import SyntheticEntity
+from .entity import SyntheticDeviceEntity
+from .model import DeviceType, Device
+
+SUPPORTED_DEVICE_TYPES = [
+    DeviceType.LIGHT,
+]
 
 
 async def async_setup_entry(
@@ -15,15 +20,17 @@ async def async_setup_entry(
     """Set up light platform."""
     synthetic_home = hass.data[DOMAIN][entry.entry_id]
 
-    async_add_devices(
-        SyntheticHomeLight(entity_id, device_name, area_name)
-        for entity_id, device_name, area_name in synthetic_home.entities_by_domain(
-            LIGHT_DOMAIN
-        )
-    )
+    entities = []
+    for device, area_name in synthetic_home.devices_and_areas(SUPPORTED_DEVICE_TYPES):
+        if device.device_type == DeviceType.LIGHT:
+            entities.append(
+                SyntheticHomeLight(device, area_name, "light")
+            )
+
+    async_add_devices(entities)
 
 
-class SyntheticHomeLight(SyntheticEntity, LightEntity):
+class SyntheticHomeLight(SyntheticDeviceEntity, LightEntity):
     """synthetic_home light class."""
 
     async def async_turn_on(self, **kwargs):  # pylint: disable=unused-argument

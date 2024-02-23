@@ -36,7 +36,7 @@ async def test_light_services(hass: HomeAssistant, setup_integration: None) -> N
     assert state
     assert state.state == "off"
     assert state.attributes == {
-        "friendly_name": "Light",
+        "friendly_name": "Family Room",
         "color_mode": None,
         "supported_color_modes": ["onoff"],
         "supported_features": 0,
