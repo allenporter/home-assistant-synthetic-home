@@ -14,7 +14,7 @@ from homeassistant.core import HomeAssistant
 from .conftest import FIXTURES
 
 TEST_FIXTURE_FILE = f"{FIXTURES}/switch-example.yaml"
-TEST_ENTITY = "switch.chicken_coop_feeder"
+TEST_ENTITY = "switch.smart_feeder"
 
 
 @pytest.fixture(name="platforms")

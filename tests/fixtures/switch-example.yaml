@@ -5,6 +5,5 @@ location: Rural area in Iowa
 type: Farmhouse
 device_entities:
   Chicken Coop:
-  - name: smart_feeder
-    entities:
-    - switch.chicken_coop_feeder
+  - name: Smart Feeder
+    device_type: switch

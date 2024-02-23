@@ -58,7 +58,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     for area_name, devices in synthetic_home.device_entities.items():
         area_entry = area_registry.async_get_or_create(area_name)
         for device in devices:
-            device_id = generate_device_id(device.name, area_name)
+            device_id = device.compute_unique_id(area_name)
             device_entry = device_registry.async_get_or_create(
                 config_entry_id=entry.entry_id,
                 name=device.name,

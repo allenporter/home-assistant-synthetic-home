@@ -6,24 +6,23 @@ from homeassistant.components.switch import SwitchEntity, DOMAIN as SWITCH_DOMAI
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import DOMAIN
-from .entity import SyntheticEntity
+from .entity import SyntheticDeviceEntity
+from .model import DeviceType
 
+SUPPORTED_DEVICE_TYPES = [DeviceType.SWITCH]
 
 async def async_setup_entry(
     hass: HomeAssistant, entry: ConfigEntry, async_add_devices: AddEntitiesCallback
 ):
     """Set up switch platform."""
     synthetic_home = hass.data[DOMAIN][entry.entry_id]
-
     async_add_devices(
-        SyntheticHomeBinarySwitch(entity_id, device_name, area_name)
-        for entity_id, device_name, area_name in synthetic_home.entities_by_domain(
-            SWITCH_DOMAIN
-        )
+        SyntheticHomeBinarySwitch(device, area_name, "switch")
+        for device, area_name in synthetic_home.devices_and_areas(SUPPORTED_DEVICE_TYPES)
     )
 
 
-class SyntheticHomeBinarySwitch(SyntheticEntity, SwitchEntity):
+class SyntheticHomeBinarySwitch(SyntheticDeviceEntity, SwitchEntity):
     """synthetic_home switch class."""
 
     async def async_turn_on(self, **kwargs):  # pylint: disable=unused-argument

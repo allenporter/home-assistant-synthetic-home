@@ -41,6 +41,9 @@ class DeviceType(StrEnum):
     Supports a 'rgbw-color' attribute.
     """
 
+    SWITCH = "switch"
+    """A generic switch entity."""
+
     # SMART_TV = "smart_tv"
     # CAMERA = "camera"
     # LAPTOP = "laptop"
@@ -64,12 +67,17 @@ class Device:
     # features: list[str] | None
     attributes: dict[str, Any] = field(default_factory=dict)
 
-
-
     @property
     def friendly_name(self) -> str:
         """A friendlier display name for a device."""
         return friendly_device_name(self.name)
+
+    def compute_unique_id(self, area_name: str) -> str:
+        """Use defined unique id or generate a unique id based on name and area."""
+        if self.unique_id:
+            return self.unique_id
+        return generate_device_id(self.name, area_name)
+
 
 
 @dataclass
