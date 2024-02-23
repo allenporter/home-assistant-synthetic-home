@@ -24,14 +24,58 @@ def mock_platforms() -> list[Platform]:
     return [Platform.LIGHT]
 
 
-@pytest.fixture
-def config_yaml_fixture() -> None:
-    """Mock out the yaml config file contents."""
-    return TEST_FIXTURE_FILE
+@pytest.mark.parametrize(
+        "config_yaml_fixture",
+        [(f"{FIXTURES}/light-example.yaml")],
+)
+async def test_light(hass: HomeAssistant, setup_integration: None) -> None:
+    """Test light entity."""
+
+    state = hass.states.get(TEST_ENTITY)
+    assert state
+    assert state.state == "off"
+    assert state.attributes == {
+        "friendly_name": "Family Room",
+        "color_mode": None,
+        "supported_color_modes": ["onoff"],
+        "supported_features": 0,
+    }
+
+    await hass.services.async_call(
+        LIGHT_DOMAIN,
+        SERVICE_TURN_OFF,
+        service_data={ATTR_ENTITY_ID: TEST_ENTITY},
+        blocking=True,
+    )
+    await hass.async_block_till_done()
+    state = hass.states.get(TEST_ENTITY)
+    assert state
+    assert state.state == "off"
+
+    await hass.services.async_call(
+        LIGHT_DOMAIN,
+        SERVICE_TURN_ON,
+        service_data={ATTR_ENTITY_ID: TEST_ENTITY},
+        blocking=True,
+    )
+    await hass.async_block_till_done()
+    state = hass.states.get(TEST_ENTITY)
+    assert state
+    assert state.state == "on"
+    assert state.attributes == {
+        "friendly_name": "Family Room",
+        "color_mode": "onoff",
+        "supported_color_modes":  ["onoff"],
+        "supported_features": 0,
+    }
 
 
-async def test_light_services(hass: HomeAssistant, setup_integration: None) -> None:
-    """Test switch services."""
+@pytest.mark.parametrize(
+        "config_yaml_fixture",
+        [(f"{FIXTURES}/light-dimmable.yaml")],
+)
+async def test_dimmable_light(hass: HomeAssistant, setup_integration: None) -> None:
+    """Test a dimmable light entity."""
 
     state = hass.states.get(TEST_ENTITY)
     assert state
@@ -67,6 +111,25 @@ async def test_light_services(hass: HomeAssistant, setup_integration: None) -> N
     assert state.state == "on"
     assert state.attributes == {
         "brightness": 30,
+        "friendly_name": "Family Room",
+        "color_mode": "brightness",
+        "supported_color_modes":  ["brightness"],
+        "supported_features": 0,
+    }
+
+    # Lower brightness
+    await hass.services.async_call(
+        LIGHT_DOMAIN,
+        SERVICE_TURN_ON,
+        service_data={ATTR_ENTITY_ID: TEST_ENTITY, ATTR_BRIGHTNESS: 15},
+        blocking=True,
+    )
+    await hass.async_block_till_done()
+    state = hass.states.get(TEST_ENTITY)
+    assert state
+    assert state.state == "on"
+    assert state.attributes == {
+        "brightness": 15,
         "friendly_name": "Family Room",
         "color_mode": "brightness",
         "supported_color_modes":  ["brightness"],

@@ -27,7 +27,10 @@ class DeviceType(StrEnum):
     """A climate devie that only supports heating."""
 
     LIGHT = "light"
-    """A generic light."""
+    """A generic light that can be turned on/off."""
+
+    LIGHT_DIMMABLE = "light-dimmable"
+    """A light that has adjustable brightness."""
 
     # SMART_TV = "smart_tv"
     # CAMERA = "camera"
