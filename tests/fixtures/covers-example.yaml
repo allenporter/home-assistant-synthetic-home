@@ -1,6 +1,5 @@
 ---
 name: Family Farmhouse
-type: Farmhouse
 device_entities:
   Front Yard:
   - name: Garage door

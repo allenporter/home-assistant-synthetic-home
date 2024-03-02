@@ -1,8 +1,5 @@
 ---
 name: Family Farmhouse
-country_code: US
-location: Rural area in Iowa
-type: Farmhouse
 device_entities:
   Front Yard:
     - name: thermostat
