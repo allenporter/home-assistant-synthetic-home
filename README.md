@@ -60,7 +60,7 @@ $ python3 -m script.storage --config farmhouse.yaml --output_dir=config/
 This creates the `config/` directory and you can then start up home assistant:
 
 ```bash
-$ hass -c connfig/
+$ hass -c config/
 ```
 
 And it will create all the synthetic devices for you:
