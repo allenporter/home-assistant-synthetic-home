@@ -4,7 +4,7 @@ import pytest
 
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
-from homeassistant.util.unit_system import METRIC_SYSTEM, US_CUSTOMARY_SYSTEM
+from homeassistant.util.unit_system import US_CUSTOMARY_SYSTEM
 
 
 from .conftest import FIXTURES
