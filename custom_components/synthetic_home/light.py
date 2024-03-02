@@ -1,4 +1,4 @@
-"""Switch platform for Synthetic Home."""
+"""Light platform for Synthetic Home."""
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
@@ -70,7 +70,7 @@ class SyntheticHomeLight(SyntheticDeviceEntity, LightEntity):
         brightness: int | None = None,
         rgbw_color: tuple[int, int, int, int] | None = None,
     ) -> None:
-        """Initialize the climate device."""
+        """Initialize the device."""
         super().__init__(device, area, "light")
         self._attr_supported_color_modes = supported_color_modes
         self._attr_color_mode = color_mode

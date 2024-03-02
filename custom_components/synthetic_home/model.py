@@ -20,11 +20,24 @@ class DeviceInfo:
 class DeviceType(StrEnum):
     """Available device types."""
 
-    CLIMATE_HVAC = "climate_hvac"
+    CLIMATE_HVAC = "climate-hvac"
     """A climate device that supports HVAC Cool and Heat modes."""
 
-    CLIMATE_HEAT_PUMP = "climate_heat_pump"
+    CLIMATE_HEAT_PUMP = "climate-heat-pump"
     """A climate devie that only supports heating."""
+
+    COVER = "cover"
+    """A basic cover device that supports open and close such as a door.
+
+    Supports a 'device_class' attribute with values such as 'gate', 'garage', etc.
+    """
+
+    COVER_POSITIONABLE = "cover-positionable"
+    """A cover that can be set to a specific position like a shade or a curtain.
+
+    Supports a 'device_class' attribute with values such as 'awning',
+    'shutter', 'shade', 'window'.
+    """
 
     LIGHT = "light"
     """A generic light that can be turned on/off."""

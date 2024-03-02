@@ -1,0 +1,14 @@
+---
+name: Family Farmhouse
+type: Farmhouse
+device_entities:
+  Front Yard:
+  - name: Garage door
+    device_type: cover
+    attribtues:
+      device_class: garage
+  Family Room:
+  - name: Left Shade
+    device_type: cover-positionable
+    attribtues:
+      device_class: shade
