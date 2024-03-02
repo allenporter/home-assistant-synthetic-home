@@ -1,8 +1,0 @@
----
-name: Family Farmhouse
-device_entities:
-  Front Yard:
-    - name: thermostat
-      entities:
-        - sensor.family_room_temperature
-        - sensor.family_room_humidity

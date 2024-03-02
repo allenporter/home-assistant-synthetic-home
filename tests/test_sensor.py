@@ -8,8 +8,7 @@ from homeassistant.core import HomeAssistant
 
 from .conftest import FIXTURES
 
-TEST_FIXTURE_FILE = f"{FIXTURES}/sensor-example.yaml"
-
+TEST_SENSOR_FIXTURE_FILE = f"{FIXTURES}/sensor-example.yaml"
 TEST_ENTITY = "sensor.thermostat_family_room_temperature"
 
 
@@ -19,18 +18,29 @@ def mock_platforms() -> list[Platform]:
     return [Platform.SENSOR]
 
 
-@pytest.fixture
-def config_yaml_fixture() -> None:
-    """Mock out the yaml config file contents."""
-    return TEST_FIXTURE_FILE
+@pytest.mark.parametrize(
+    ("config_yaml_fixture"),
+    [(f"{FIXTURES}/climate-hvac.yaml")]
+)
+async def test_hvac_sensors(hass: HomeAssistant, setup_integration: None) -> None:
+    """Test the sensors created for an HVAC device."""
 
-
-async def test_sensor(hass: HomeAssistant, setup_integration: None) -> None:
-    """Test sensor."""
-
-    state = hass.states.get(TEST_ENTITY)
+    state = hass.states.get("sensor.family_room_temperature")
     assert state
     assert state.state == "0"
     assert state.attributes == {
-        "friendly_name": "Thermostat Family room temperature"
+        "friendly_name": "Family Room Temperature",
+        "device_class": "temperature",
+        "state_class": "measurement",
+        "unit_of_measurement": "°C",
+    }
+
+    state = hass.states.get("sensor.family_room_humidity")
+    assert state
+    assert state.state == "0"
+    assert state.attributes == {
+        "friendly_name": "Family Room Humidity",
+        "device_class": "humidity",
+        "state_class": "measurement",
+        "unit_of_measurement": "%",
     }
