@@ -2,11 +2,15 @@
 
 import datetime
 from typing import Any
-from collections.abc import Callable
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, callback, CALLBACK_TYPE
-from homeassistant.components.cover import CoverEntity, CoverDeviceClass, CoverEntityFeature, ATTR_POSITION
+from homeassistant.components.cover import (
+    CoverEntity,
+    CoverDeviceClass,
+    CoverEntityFeature,
+    ATTR_POSITION,
+)
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.event import async_track_time_interval
 
@@ -30,7 +34,7 @@ async def async_setup_entry(
 
     entities = []
     for device, area_name in synthetic_home.devices_and_areas(SUPPORTED_DEVICE_TYPES):
-        supported_features = (CoverEntityFeature.OPEN | CoverEntityFeature.CLOSE)
+        supported_features = CoverEntityFeature.OPEN | CoverEntityFeature.CLOSE
         if device.device_type == DeviceType.COVER_POSITIONABLE:
             supported_features |= CoverEntityFeature.SET_POSITION
         entities.append(
@@ -38,7 +42,7 @@ async def async_setup_entry(
                 device,
                 area_name,
                 supported_features=supported_features,
-                **device.attributes
+                **device.attributes,
             )
         )
     async_add_devices(entities, True)
@@ -102,8 +106,12 @@ class SyntheticCover(SyntheticDeviceEntity, CoverEntity):
             # Nothing to do
             return
         self._target_cover_position = position
-        self._attr_is_closing = (self._target_cover_position < self._attr_current_cover_position)
-        self._attr_is_opening = (self._target_cover_position > self._attr_current_cover_position)
+        self._attr_is_closing = (
+            self._target_cover_position < self._attr_current_cover_position
+        )
+        self._attr_is_opening = (
+            self._target_cover_position > self._attr_current_cover_position
+        )
         self._start_moving()
         self.async_write_ha_state()
 
@@ -121,21 +129,27 @@ class SyntheticCover(SyntheticDeviceEntity, CoverEntity):
         """Start moving the cover."""
         if self._timer_unsub is None:
             self._timer_unsub = async_track_time_interval(
-                self.hass, action=self._move_cover, interval=COVER_STEP_TIME,
+                self.hass,
+                action=self._move_cover,
+                interval=COVER_STEP_TIME,
             )
 
     async def _move_cover(self, now: datetime.datetime) -> None:
         """Track time changes."""
         if self._attr_current_cover_position > self._target_cover_position:
             self._attr_current_cover_position -= COVER_STEP
-            self._attr_current_cover_position = max(self._attr_current_cover_position, self._target_cover_position)
+            self._attr_current_cover_position = max(
+                self._attr_current_cover_position, self._target_cover_position
+            )
         elif self._attr_current_cover_position < self._target_cover_position:
             self._attr_current_cover_position += COVER_STEP
-            self._attr_current_cover_position = min(self._attr_current_cover_position, self._target_cover_position)
+            self._attr_current_cover_position = min(
+                self._attr_current_cover_position, self._target_cover_position
+            )
         else:
             # Reached target
             self._attr_is_closing = False
             self._attr_is_opening = False
-            self._attr_is_closed = (self._attr_current_cover_position == 0)
+            self._attr_is_closed = self._attr_current_cover_position == 0
             await self.async_stop_cover()
         self.async_write_ha_state()
