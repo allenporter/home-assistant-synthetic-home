@@ -1,0 +1,6 @@
+---
+name: Family Farmhouse
+device_entities:
+  Front Yard:
+  - name: Driveway Gate
+    device_type: gate

@@ -1,0 +1,6 @@
+---
+name: Family Farmhouse
+device_entities:
+  Front Yard:
+  - name: Garage Door
+    device_type: garage-door

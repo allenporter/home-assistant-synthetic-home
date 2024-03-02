@@ -1,8 +1,10 @@
 """Light platform for Synthetic Home."""
 
+from dataclasses import dataclass
+
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
-from homeassistant.components.light import LightEntity, ColorMode, ATTR_BRIGHTNESS, ATTR_RGBW_COLOR
+from homeassistant.components.light import LightEntity, ColorMode, ATTR_BRIGHTNESS, ATTR_RGBW_COLOR, LightEntityDescription
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import DOMAIN
@@ -13,8 +15,44 @@ SUPPORTED_DEVICE_TYPES = [
     DeviceType.LIGHT,
     DeviceType.LIGHT_DIMMABLE,
     DeviceType.LIGHT_RGBW,
+    DeviceType.GARAGE_DOOR,
 ]
 
+@dataclass
+class SyntheticLightEntityDescription(LightEntityDescription):
+    """Entity description for a light."""
+    supported_color_modes: set[ColorMode] | None = None,
+    color_mode: ColorMode | None = None,
+    brightness: int | None = None,
+    rgbw_color: tuple[int, int, int, int] | None = None,
+
+
+LIGHTS: tuple[LightEntityDescription, ...] = (
+    SyntheticLightEntityDescription(
+        key="light-dimmable",
+        supported_color_modes={ColorMode.BRIGHTNESS},
+        color_mode=ColorMode.BRIGHTNESS,
+    ),
+    SyntheticLightEntityDescription(
+        key="light",
+        supported_color_modes={ColorMode.ONOFF},
+        color_mode=ColorMode.ONOFF,
+    ),
+    SyntheticLightEntityDescription(
+        key="light-rgbw",
+        supported_color_modes={ColorMode.RGBW},
+        color_mode=ColorMode.RGBW,
+    ),
+)
+LIGHT_MAP = {desc.key: desc for desc in LIGHTS}
+
+FEATURES: dict[DeviceType, str] = {
+    DeviceType.LIGHT_DIMMABLE: "light-dimmable",
+    DeviceType.LIGHT: "light",
+    DeviceType.LIGHT_RGBW: "light-rgbw",
+    DeviceType.GARAGE_DOOR: "light",
+}
+SUPPORTED_DEVICE_TYPES = FEATURES.keys()
 
 async def async_setup_entry(
     hass: HomeAssistant, entry: ConfigEntry, async_add_devices: AddEntitiesCallback
@@ -22,38 +60,19 @@ async def async_setup_entry(
     """Set up light platform."""
     synthetic_home = hass.data[DOMAIN][entry.entry_id]
 
+
     entities = []
     for device, area_name in synthetic_home.devices_and_areas(SUPPORTED_DEVICE_TYPES):
-        if device.device_type == DeviceType.LIGHT_DIMMABLE:
-            entities.append(
-                SyntheticHomeLight(
-                    device,
-                    area_name,
-                    supported_color_modes={ColorMode.BRIGHTNESS},
-                    color_mode=ColorMode.BRIGHTNESS,
-                    **device.attributes
-                )
+        key = FEATURES[device.device_type]
+        entity_desc = LIGHT_MAP[key]
+        entities.append(
+            SyntheticHomeLight(
+                device,
+                area_name,
+                entity_desc,
+                **device.attributes
             )
-        if device.device_type == DeviceType.LIGHT:
-            entities.append(
-                SyntheticHomeLight(
-                    device,
-                    area_name,
-                    supported_color_modes={ColorMode.ONOFF},
-                    color_mode=ColorMode.ONOFF,
-                    **device.attributes
-                )
-            )
-        if device.device_type == DeviceType.LIGHT_RGBW:
-            entities.append(
-                SyntheticHomeLight(
-                    device,
-                    area_name,
-                    supported_color_modes={ColorMode.RGBW},
-                    color_mode=ColorMode.RGBW,
-                    **device.attributes
-                )
-            )
+        )
     async_add_devices(entities, True)
 
 
@@ -64,16 +83,16 @@ class SyntheticHomeLight(SyntheticDeviceEntity, LightEntity):
         self,
         device: Device,
         area: str,
+        entity_desc: SyntheticLightEntityDescription,
         *,
-        supported_color_modes: set[ColorMode] | None = None,
-        color_mode: ColorMode | None = None,
         brightness: int | None = None,
         rgbw_color: tuple[int, int, int, int] | None = None,
     ) -> None:
         """Initialize the device."""
         super().__init__(device, area, "light")
-        self._attr_supported_color_modes = supported_color_modes
-        self._attr_color_mode = color_mode
+        self.entity_description = entity_desc
+        self._attr_supported_color_modes = entity_desc.supported_color_modes
+        self._attr_color_mode = entity_desc.color_mode
         self._attr_brightness = brightness
         self._attr_rgbw_color = rgbw_color
 

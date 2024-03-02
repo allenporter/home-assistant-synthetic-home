@@ -216,3 +216,21 @@ async def test_rgbw_light(hass: HomeAssistant, setup_integration: None) -> None:
         "supported_features": 0,
         "xy_color": (0.213, 0.159),
     }
+
+
+@pytest.mark.parametrize(
+        "config_yaml_fixture",
+        [(f"{FIXTURES}/garage-door-example.yaml")],
+)
+async def test_garage_door(hass: HomeAssistant, setup_integration: None) -> None:
+    """Test light entity."""
+
+    state = hass.states.get("light.garage_door")
+    assert state
+    assert state.state == "off"
+    assert state.attributes == {
+        "friendly_name": "Garage Door",
+        "color_mode": None,
+        "supported_color_modes": ["onoff"],
+        "supported_features": 0,
+    }

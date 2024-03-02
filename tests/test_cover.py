@@ -20,93 +20,26 @@ from pytest_homeassistant_custom_component.common import async_fire_time_changed
 
 from .conftest import FIXTURES
 
-TEST_FIXTURE_FILE = f"{FIXTURES}/covers-example.yaml"
-TEST_COVER_ENTITY = "cover.garage_door"
-TEST_COVER_POSITIONABLE_ENTITY = "cover.left_shade"
 
 @pytest.fixture(name="platforms")
 def mock_platforms() -> list[Platform]:
     """Set up platform."""
     return [Platform.COVER]
 
-@pytest.fixture
-def config_yaml_fixture() -> None:
-    """Mock out the yaml config file contents."""
-    return TEST_FIXTURE_FILE
 
+@pytest.mark.parametrize(
+        ("config_yaml_fixture", "test_entity"),
+        [(f"{FIXTURES}/smart-blinds-example.yaml", "cover.left_shade")],
+)
+async def test_smart_blinds(hass: HomeAssistant, setup_integration: None, test_entity: str) -> None:
+    """Test smart blinds which are a positionable cover."""
 
-async def test_cover(hass: HomeAssistant, setup_integration: None) -> None:
-    """Test cover services."""
-
-    state = hass.states.get(TEST_COVER_ENTITY)
-    assert state
-    assert state.state == "closed"
-    assert state.attributes == {
-        "friendly_name": "Garage Door",
-        "current_position": 0,
-        "supported_features": 3,
-    }
-
-    await hass.services.async_call(
-        COVER_DOMAIN,
-        SERVICE_OPEN_COVER,
-        service_data={ATTR_ENTITY_ID: TEST_COVER_ENTITY},
-        blocking=True,
-    )
-    await hass.async_block_till_done()
-    state = hass.states.get(TEST_COVER_ENTITY)
-    assert state
-    assert state.state == "opening"
-
-    for _ in range(11):
-        future = dt_util.utcnow() + datetime.timedelta(seconds=1)
-        async_fire_time_changed(hass, future)
-        await hass.async_block_till_done()
-
-    state = hass.states.get(TEST_COVER_ENTITY)
-    assert state
-    assert state.state == "open"
-    assert state.attributes == {
-        "friendly_name": "Garage Door",
-        "current_position": 100,
-        "supported_features": 3,
-    }
-
-    await hass.services.async_call(
-        COVER_DOMAIN,
-        SERVICE_CLOSE_COVER,
-        service_data={ATTR_ENTITY_ID: TEST_COVER_ENTITY},
-        blocking=True,
-    )
-    await hass.async_block_till_done()
-    state = hass.states.get(TEST_COVER_ENTITY)
-    assert state
-    assert state.state == "closing"
-
-    for _ in range(11):
-        future = dt_util.utcnow() + datetime.timedelta(seconds=1)
-        async_fire_time_changed(hass, future)
-        await hass.async_block_till_done()
-
-    state = hass.states.get(TEST_COVER_ENTITY)
-    assert state
-    assert state.state == "closed"
-    assert state.attributes == {
-        "friendly_name": "Garage Door",
-        "current_position": 0,
-        "supported_features": 3,
-    }
-
-
-
-async def test_cover_positionable(hass: HomeAssistant, setup_integration: None) -> None:
-    """Test cover services for a positionable cover."""
-
-    state = hass.states.get(TEST_COVER_POSITIONABLE_ENTITY)
+    state = hass.states.get(test_entity)
     assert state
     assert state.state == "closed"
     assert state.attributes == {
         "friendly_name": "Left Shade",
+        "device_class": "blind",
         "current_position": 0,
         "supported_features": 7,
     }
@@ -114,11 +47,11 @@ async def test_cover_positionable(hass: HomeAssistant, setup_integration: None) 
     await hass.services.async_call(
         COVER_DOMAIN,
         SERVICE_SET_COVER_POSITION,
-        service_data={ATTR_ENTITY_ID: TEST_COVER_POSITIONABLE_ENTITY, ATTR_POSITION: 54},
+        service_data={ATTR_ENTITY_ID: test_entity, ATTR_POSITION: 54},
         blocking=True,
     )
     await hass.async_block_till_done()
-    state = hass.states.get(TEST_COVER_POSITIONABLE_ENTITY)
+    state = hass.states.get(test_entity)
     assert state
     assert state.state == "opening"
 
@@ -127,11 +60,12 @@ async def test_cover_positionable(hass: HomeAssistant, setup_integration: None) 
         async_fire_time_changed(hass, future)
         await hass.async_block_till_done()
 
-    state = hass.states.get(TEST_COVER_POSITIONABLE_ENTITY)
+    state = hass.states.get(test_entity)
     assert state
     assert state.state == "open"
     assert state.attributes == {
         "friendly_name": "Left Shade",
+        "device_class": "blind",
         "current_position": 54,
         "supported_features": 7,
     }
@@ -139,11 +73,11 @@ async def test_cover_positionable(hass: HomeAssistant, setup_integration: None) 
     await hass.services.async_call(
         COVER_DOMAIN,
         SERVICE_SET_COVER_POSITION,
-        service_data={ATTR_ENTITY_ID: TEST_COVER_POSITIONABLE_ENTITY, ATTR_POSITION: 22},
+        service_data={ATTR_ENTITY_ID: test_entity, ATTR_POSITION: 22},
         blocking=True,
     )
     await hass.async_block_till_done()
-    state = hass.states.get(TEST_COVER_POSITIONABLE_ENTITY)
+    state = hass.states.get(test_entity)
     assert state
     assert state.state == "closing"
 
@@ -152,11 +86,103 @@ async def test_cover_positionable(hass: HomeAssistant, setup_integration: None) 
         async_fire_time_changed(hass, future)
         await hass.async_block_till_done()
 
-    state = hass.states.get(TEST_COVER_POSITIONABLE_ENTITY)
+    state = hass.states.get(test_entity)
     assert state
     assert state.state == "open"
     assert state.attributes == {
         "friendly_name": "Left Shade",
+        "device_class": "blind",
         "current_position": 22,
         "supported_features": 7,
+    }
+
+
+
+@pytest.mark.parametrize(
+        ("config_yaml_fixture", "test_entity"),
+        [(f"{FIXTURES}/garage-door-example.yaml", "cover.garage_door")],
+)
+async def test_garage_door(hass: HomeAssistant, setup_integration: None, test_entity: str) -> None:
+    """Test a garage door device."""
+
+    state = hass.states.get(test_entity)
+    assert state
+    assert state.state == "closed"
+    assert state.attributes == {
+        "friendly_name": "Garage Door",
+        "device_class": "garage",
+        "current_position": 0,
+        "supported_features": 3,
+    }
+
+    await hass.services.async_call(
+        COVER_DOMAIN,
+        SERVICE_OPEN_COVER,
+        service_data={ATTR_ENTITY_ID: test_entity},
+        blocking=True,
+    )
+    await hass.async_block_till_done()
+    state = hass.states.get(test_entity)
+    assert state
+    assert state.state == "opening"
+
+    for _ in range(11):
+        future = dt_util.utcnow() + datetime.timedelta(seconds=1)
+        async_fire_time_changed(hass, future)
+        await hass.async_block_till_done()
+
+    state = hass.states.get(test_entity)
+    assert state
+    assert state.state == "open"
+    assert state.attributes == {
+        "friendly_name": "Garage Door",
+        "device_class": "garage",
+        "current_position": 100,
+        "supported_features": 3,
+    }
+
+    await hass.services.async_call(
+        COVER_DOMAIN,
+        SERVICE_CLOSE_COVER,
+        service_data={ATTR_ENTITY_ID: test_entity},
+        blocking=True,
+    )
+    await hass.async_block_till_done()
+    state = hass.states.get(test_entity)
+    assert state
+    assert state.state == "closing"
+
+    for _ in range(11):
+        future = dt_util.utcnow() + datetime.timedelta(seconds=1)
+        async_fire_time_changed(hass, future)
+        await hass.async_block_till_done()
+
+    state = hass.states.get(test_entity)
+    assert state
+    assert state.state == "closed"
+    assert state.attributes == {
+        "friendly_name": "Garage Door",
+        "device_class": "garage",
+        "current_position": 0,
+        "supported_features": 3,
+    }
+
+
+
+
+@pytest.mark.parametrize(
+        ("config_yaml_fixture", "test_entity"),
+        [(f"{FIXTURES}/gate-example.yaml", "cover.driveway_gate")],
+)
+async def test_gate(hass: HomeAssistant, setup_integration: None, test_entity: str) -> None:
+    """Test a gate device as a cover entity."""
+
+    state = hass.states.get(test_entity)
+    assert state
+    assert state.state == "closed"
+    assert state.attributes == {
+        "friendly_name": "Driveway Gate",
+        "device_class": "gate",
+        "current_position": 0,
+        "supported_features": 3,
     }

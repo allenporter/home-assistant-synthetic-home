@@ -48,6 +48,7 @@ FEATURES: dict[DeviceType, set[str]] = {
     DeviceType.DOOR_SENSOR: {"battery"},
     DeviceType.WINDOW_SENSOR: {"battery"},
     DeviceType.MOTION_SENSOR: {"battery"},
+    DeviceType.SMART_BLINDS: {"battery"},
 }
 SUPPORTED_DEVICE_TYPES = FEATURES.keys()
 

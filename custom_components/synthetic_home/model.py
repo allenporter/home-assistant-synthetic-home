@@ -40,18 +40,14 @@ class DeviceType(StrEnum):
     CLIMATE_HEAT_PUMP = "climate-heat-pump"
     """A climate devie that only supports heating."""
 
-    COVER = "cover"
-    """A basic cover device that supports open and close such as a door.
+    GARAGE_DOOR = "garage-door"
+    """A a garage door that can be controlled remotely."""
 
-    Supports a 'device_class' attribute with values such as 'gate', 'garage', etc.
-    """
+    SMART_BLINDS = "smart-blinds"
+    """A remotely controllable set of window blinds."""
 
-    COVER_POSITIONABLE = "cover-positionable"
-    """A cover that can be set to a specific position like a shade or a curtain.
-
-    Supports a 'device_class' attribute with values such as 'awning',
-    'shutter', 'shade', 'window'.
-    """
+    GATE = "gate"
+    """An movable barrier that can be monitored and opened and closed remotely."""
 
     LIGHT = "light"
     """A generic light that can be turned on/off."""

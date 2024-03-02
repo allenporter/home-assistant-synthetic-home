@@ -1,6 +1,7 @@
 """Cover platform for Synthetic Home."""
 
 import datetime
+from dataclasses import dataclass
 from typing import Any
 
 from homeassistant.config_entries import ConfigEntry
@@ -10,6 +11,7 @@ from homeassistant.components.cover import (
     CoverDeviceClass,
     CoverEntityFeature,
     ATTR_POSITION,
+    CoverEntityDescription,
 )
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.event import async_track_time_interval
@@ -18,12 +20,41 @@ from .const import DOMAIN
 from .entity import SyntheticDeviceEntity
 from .model import DeviceType, Device
 
-SUPPORTED_DEVICE_TYPES = [
-    DeviceType.COVER,
-    DeviceType.COVER_POSITIONABLE,
-]
 COVER_STEP = 10
 COVER_STEP_TIME = datetime.timedelta(seconds=1)
+
+
+@dataclass
+class SyntheticCoverEntityDescription(CoverEntityDescription):
+    """Entity description for a cover entity."""
+    supported_features: CoverEntityFeature | None = None
+
+
+COVERS: tuple[SyntheticCoverEntityDescription, ...] = (
+    SyntheticCoverEntityDescription(
+        key="blinds-cover",
+        supported_features=CoverEntityFeature.OPEN | CoverEntityFeature.CLOSE | CoverEntityFeature.SET_POSITION,
+        device_class=CoverDeviceClass.BLIND,
+    ),
+    SyntheticCoverEntityDescription(
+        key="garage-door-cover",
+        device_class=CoverDeviceClass.GARAGE,
+        supported_features=CoverEntityFeature.OPEN | CoverEntityFeature.CLOSE,
+    ),
+    SyntheticCoverEntityDescription(
+        key="gate-cover",
+        device_class=CoverDeviceClass.GATE,
+        supported_features=CoverEntityFeature.OPEN | CoverEntityFeature.CLOSE,
+    ),
+)
+COVER_MAP = {desc.key: desc for desc in COVERS}
+
+FEATURES: dict[DeviceType, str] = {
+    DeviceType.SMART_BLINDS: "blinds-cover",
+    DeviceType.GATE: "gate-cover",
+    DeviceType.GARAGE_DOOR: "garage-door-cover",
+}
+SUPPORTED_DEVICE_TYPES = FEATURES.keys()
 
 
 async def async_setup_entry(
@@ -34,15 +65,14 @@ async def async_setup_entry(
 
     entities = []
     for device, area_name in synthetic_home.devices_and_areas(SUPPORTED_DEVICE_TYPES):
-        supported_features = CoverEntityFeature.OPEN | CoverEntityFeature.CLOSE
-        if device.device_type == DeviceType.COVER_POSITIONABLE:
-            supported_features |= CoverEntityFeature.SET_POSITION
+        key = FEATURES[device.device_type]
+        entity_desc = COVER_MAP[key]
         entities.append(
             SyntheticCover(
                 device,
                 area_name,
-                supported_features=supported_features,
-                **device.attributes,
+                entity_desc,
+                **device.attributes
             )
         )
     async_add_devices(entities, True)
@@ -65,14 +95,12 @@ class SyntheticCover(SyntheticDeviceEntity, CoverEntity):
         self,
         device: Device,
         area: str,
-        *,
-        supported_features: CoverEntityFeature = None,
-        device_class: CoverDeviceClass | None = None,
+        entity_desc: SyntheticCoverEntityDescription,
     ) -> None:
         """Initialize the SyntheticCover."""
         super().__init__(device, area, "light")
-        self._attr_device_class = device_class
-        self._attr_supported_features = supported_features
+        self.entity_description = entity_desc
+        self._attr_supported_features = entity_desc.supported_features
 
     async def async_close_cover(self, **kwargs: Any) -> None:
         """Close the cover."""
