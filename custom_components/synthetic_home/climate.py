@@ -3,6 +3,7 @@
 from dataclasses import dataclass
 from typing import Any
 
+
 from homeassistant.components.climate import (
     ATTR_HVAC_MODE,
     ATTR_TARGET_TEMP_HIGH,
@@ -20,12 +21,20 @@ from .model import DeviceType, Device
 from .entity import SyntheticDeviceEntity
 
 
-DEFAULT_SUPPORTED_FEATURES = ClimateEntityFeature(0) | ClimateEntityFeature.FAN_MODE | ClimateEntityFeature.TURN_ON | ClimateEntityFeature.TURN_OFF
+DEFAULT_SUPPORTED_FEATURES = (
+    ClimateEntityFeature(0)
+    | ClimateEntityFeature.FAN_MODE
+    | ClimateEntityFeature.TURN_ON
+    | ClimateEntityFeature.TURN_OFF
+)
 
 
 @dataclass
-class SyntheticClimateEntityDescription(ClimateEntityDescription, frozen_or_thawed=True):
+class SyntheticClimateEntityDescription(
+    ClimateEntityDescription, frozen_or_thawed=True
+):
     """A class that describes climate entities."""
+
     supported_features: ClimateEntityFeature | None = None
     target_temperature: float | None = None
     current_temperature: float | None = None
@@ -45,7 +54,9 @@ CLIMATES: tuple[SyntheticClimateEntityDescription, ...] = (
     ),
     SyntheticClimateEntityDescription(
         key="hvac",
-        supported_features=(DEFAULT_SUPPORTED_FEATURES | ClimateEntityFeature.TARGET_TEMPERATURE_RANGE),
+        supported_features=(
+            DEFAULT_SUPPORTED_FEATURES | ClimateEntityFeature.TARGET_TEMPERATURE_RANGE
+        ),
         target_temperature=21,
         hvac_mode=HVACMode.COOL,
         hvac_action=HVACAction.COOLING,
@@ -78,12 +89,7 @@ async def async_setup_entry(hass, entry, async_add_devices):
         key = FEATURES[device.device_type]
         entity_desc = CLIMATE_MAP[key]
         entities.append(
-            SyntheticHomeClimate(
-                device,
-                area_name,
-                entity_desc,
-                **device.attributes
-            )
+            SyntheticHomeClimate(device, area_name, entity_desc, **device.attributes)
         )
     async_add_devices(entities, True)
 
@@ -114,12 +120,13 @@ class SyntheticHomeClimate(SyntheticDeviceEntity, ClimateEntity):
         self._attr_target_temperature = entity_desc.target_temperature
         self._attr_target_temperature_high = None
         self._attr_target_temperature_low = None
-        self._attr_current_temperature = current_temperature or entity_desc.current_temperature
+        self._attr_current_temperature = (
+            current_temperature or entity_desc.current_temperature
+        )
         self._attr_hvac_action = entity_desc.hvac_action
         self._attr_hvac_mode = entity_desc.hvac_mode
         self._attr_hvac_modes = entity_desc.hvac_modes
         self._attr_temperature_unit = unit_of_measurement
-
 
     async def async_set_temperature(self, **kwargs: Any) -> None:
         """Set new target temperatures."""

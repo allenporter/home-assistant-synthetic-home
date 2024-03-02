@@ -27,13 +27,16 @@ COVER_STEP_TIME = datetime.timedelta(seconds=1)
 @dataclass
 class SyntheticCoverEntityDescription(CoverEntityDescription):
     """Entity description for a cover entity."""
+
     supported_features: CoverEntityFeature | None = None
 
 
 COVERS: tuple[SyntheticCoverEntityDescription, ...] = (
     SyntheticCoverEntityDescription(
         key="blinds-cover",
-        supported_features=CoverEntityFeature.OPEN | CoverEntityFeature.CLOSE | CoverEntityFeature.SET_POSITION,
+        supported_features=CoverEntityFeature.OPEN
+        | CoverEntityFeature.CLOSE
+        | CoverEntityFeature.SET_POSITION,
         device_class=CoverDeviceClass.BLIND,
     ),
     SyntheticCoverEntityDescription(
@@ -68,12 +71,7 @@ async def async_setup_entry(
         key = FEATURES[device.device_type]
         entity_desc = COVER_MAP[key]
         entities.append(
-            SyntheticCover(
-                device,
-                area_name,
-                entity_desc,
-                **device.attributes
-            )
+            SyntheticCover(device, area_name, entity_desc, **device.attributes)
         )
     async_add_devices(entities, True)
 

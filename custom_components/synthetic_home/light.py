@@ -4,7 +4,13 @@ from dataclasses import dataclass
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
-from homeassistant.components.light import LightEntity, ColorMode, ATTR_BRIGHTNESS, ATTR_RGBW_COLOR, LightEntityDescription
+from homeassistant.components.light import (
+    LightEntity,
+    ColorMode,
+    ATTR_BRIGHTNESS,
+    ATTR_RGBW_COLOR,
+    LightEntityDescription,
+)
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import DOMAIN
@@ -18,13 +24,15 @@ SUPPORTED_DEVICE_TYPES = [
     DeviceType.GARAGE_DOOR,
 ]
 
+
 @dataclass
 class SyntheticLightEntityDescription(LightEntityDescription):
     """Entity description for a light."""
-    supported_color_modes: set[ColorMode] | None = None,
-    color_mode: ColorMode | None = None,
-    brightness: int | None = None,
-    rgbw_color: tuple[int, int, int, int] | None = None,
+
+    supported_color_modes: set[ColorMode] | None = (None,)
+    color_mode: ColorMode | None = (None,)
+    brightness: int | None = (None,)
+    rgbw_color: tuple[int, int, int, int] | None = (None,)
 
 
 LIGHTS: tuple[LightEntityDescription, ...] = (
@@ -54,24 +62,19 @@ FEATURES: dict[DeviceType, str] = {
 }
 SUPPORTED_DEVICE_TYPES = FEATURES.keys()
 
+
 async def async_setup_entry(
     hass: HomeAssistant, entry: ConfigEntry, async_add_devices: AddEntitiesCallback
 ):
     """Set up light platform."""
     synthetic_home = hass.data[DOMAIN][entry.entry_id]
 
-
     entities = []
     for device, area_name in synthetic_home.devices_and_areas(SUPPORTED_DEVICE_TYPES):
         key = FEATURES[device.device_type]
         entity_desc = LIGHT_MAP[key]
         entities.append(
-            SyntheticHomeLight(
-                device,
-                area_name,
-                entity_desc,
-                **device.attributes
-            )
+            SyntheticHomeLight(device, area_name, entity_desc, **device.attributes)
         )
     async_add_devices(entities, True)
 
@@ -95,7 +98,6 @@ class SyntheticHomeLight(SyntheticDeviceEntity, LightEntity):
         self._attr_color_mode = entity_desc.color_mode
         self._attr_brightness = brightness
         self._attr_rgbw_color = rgbw_color
-
 
     async def async_turn_on(self, **kwargs):  # pylint: disable=unused-argument
         """Turn on the light."""
