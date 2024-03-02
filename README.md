@@ -66,3 +66,15 @@ $ hass -c connfig/
 And it will create all the synthetic devices for you:
 
 ![Screenshot](synthetic_home.png)
+
+## Manual Creation
+
+You can also add Synthetic Home like a normal integration. During the configuration
+flow you specify a yaml file like `farmhouse.yaml` and it expects to find it in your
+`config/` folder next to `configuration.yaml`. (This is similar above, and the same
+step the storage generation tool is doing internally).
+
+## Testing
+
+See `tests/` for examples of how to create a synthetic devices in your tests
+using `pytest-homeassistant-custom-component`.
