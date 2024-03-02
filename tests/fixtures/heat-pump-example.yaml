@@ -3,7 +3,7 @@ name: Family Farmhouse
 device_entities:
   Family room:
   - name: Family room
-    device_type: climate-hvac
+    device_type: heat-pump
     unique_id: d4df546410f90f1c1d9be6a8443b8ec6
     device_info:
       model: Thermostat

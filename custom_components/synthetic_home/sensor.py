@@ -42,7 +42,7 @@ SENSORS: tuple[SensorEntityDescription, ...] = (
 SENSOR_MAP = {desc.key: desc for desc in SENSORS}
 
 FEATURES: dict[DeviceType, set[str]] = {
-    DeviceType.CLIMATE_HVAC: {"temperature", "humidity"},
+    DeviceType.HVAC: {"temperature", "humidity"},
     DeviceType.SMART_PLUG: {"energy"},
     DeviceType.SMART_LOCK: {"battery"},
     DeviceType.DOOR_SENSOR: {"battery"},

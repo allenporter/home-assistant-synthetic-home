@@ -18,7 +18,7 @@ def mock_platforms() -> list[Platform]:
     return [Platform.SENSOR]
 
 
-@pytest.mark.parametrize(("config_yaml_fixture"), [(f"{FIXTURES}/climate-hvac.yaml")])
+@pytest.mark.parametrize(("config_yaml_fixture"), [(f"{FIXTURES}/hvac-example.yaml")])
 async def test_hvac_sensors(hass: HomeAssistant, setup_integration: None) -> None:
     """Test the sensors created for an HVAC device."""
 

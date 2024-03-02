@@ -34,10 +34,10 @@ class DeviceType(StrEnum):
     may be added as new use cases are needed.
     """
 
-    CLIMATE_HVAC = "climate-hvac"
+    HVAC = "hvac"
     """A climate device that supports HVAC Cool and Heat modes."""
 
-    CLIMATE_HEAT_PUMP = "climate-heat-pump"
+    HEAT_PUMP = "heat-pump"
     """A climate devie that only supports heating."""
 
     GARAGE_DOOR = "garage-door"
