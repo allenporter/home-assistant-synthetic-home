@@ -5,9 +5,7 @@ from homeassistant.helpers.device_registry import DeviceInfo
 
 from .const import DOMAIN
 from .model import (
-    generate_entity_unique_id,
     friendly_device_name,
-    generate_device_id,
     Device,
 )
 
