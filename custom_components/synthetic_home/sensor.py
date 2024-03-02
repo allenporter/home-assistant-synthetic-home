@@ -32,12 +32,22 @@ SENSORS: tuple[SensorEntityDescription, ...] = (
         device_class=SensorDeviceClass.ENERGY,
         state_class=SensorStateClass.TOTAL_INCREASING,
     ),
+    SensorEntityDescription(
+        key="battery",
+        native_unit_of_measurement=PERCENTAGE,
+        device_class=SensorDeviceClass.BATTERY,
+        state_class=SensorStateClass.MEASUREMENT,
+    ),
 )
 SENSOR_MAP = {desc.key: desc for desc in SENSORS}
 
 FEATURES: dict[DeviceType, set[str]] = {
     DeviceType.CLIMATE_HVAC: {"temperature", "humidity"},
     DeviceType.SMART_PLUG: {"energy"},
+    DeviceType.SMART_LOCK: {"battery"},
+    DeviceType.DOOR_SENSOR: {"battery"},
+    DeviceType.WINDOW_SENSOR: {"battery"},
+    DeviceType.MOTION_SENSOR: {"battery"},
 }
 SUPPORTED_DEVICE_TYPES = FEATURES.keys()
 

@@ -74,12 +74,17 @@ class DeviceType(StrEnum):
     SMART_PLUG = "smart-plug"
     """A smart plug allows remote on/off of electrical devices."""
 
-    BINARY_SENSOR = "binary_sensor"
-    """A generic binary sensor.
+    SMART_LOCK = "smart-lock"
+    """A smart lock device that can be remotely monitored."""
 
-    Supports a 'device_class' attribute with the values of BinarySensorDeviceClass
-    such as 'motion', 'door', 'lock', 'tamper', etc.
-    """
+    DOOR_SENSOR = "door-sensor"
+    """A device attached to a door that can detect if it is opened or closed."""
+
+    WINDOW_SENSOR = "window-sensor"
+    """A device attached to a window that can detect if it is opened or closed."""
+
+    MOTION_SENSOR = "motion-sensor"
+    """A device that detects motion of a person or object."""
 
 
 @dataclass

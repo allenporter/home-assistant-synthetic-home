@@ -1,0 +1,9 @@
+---
+name: Family Farmhouse
+device_entities:
+  Front door:
+    - name: Front Door Sensor
+      device_type: door-sensor
+      unique_id: d4df546410f90f1c1d9be6a8443b8ec6
+      device_info:
+        manufacturer: Aqara

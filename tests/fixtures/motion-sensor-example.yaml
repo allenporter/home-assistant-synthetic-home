@@ -2,7 +2,7 @@
 name: Family Farmhouse
 device_entities:
   Front Yard:
-    - name: Motion sensor
-      device_type: binary_sensor
+    - name: Front Yard Motion
+      device_type: motion-sensor
       attributes:
         device_class: motion

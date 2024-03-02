@@ -58,3 +58,19 @@ async def test_smart_plug(hass: HomeAssistant, setup_integration: None) -> None:
         "state_class": "total_increasing",
         "unit_of_measurement": "kWh",
     }
+
+
+@pytest.mark.parametrize(
+    ("config_yaml_fixture"), [(f"{FIXTURES}/smart-lock-example.yaml")]
+)
+async def test_smart_lock(hass: HomeAssistant, setup_integration: None) -> None:
+    """Test the sensors created for a smart lock."""
+    state = hass.states.get("sensor.front_door_lock_battery")
+    assert state
+    assert state.state == "0"
+    assert state.attributes == {
+        "friendly_name": "Front Door Lock Battery",
+        "device_class": "battery",
+        "state_class": "measurement",
+        "unit_of_measurement": "%",
+    }
