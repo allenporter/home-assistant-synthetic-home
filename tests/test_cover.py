@@ -11,7 +11,7 @@ from homeassistant.components.cover import (
     SERVICE_OPEN_COVER,
     SERVICE_CLOSE_COVER,
     SERVICE_SET_COVER_POSITION,
-    ATTR_POSITION
+    ATTR_POSITION,
 )
 from homeassistant.const import ATTR_ENTITY_ID
 from homeassistant.core import HomeAssistant
@@ -28,10 +28,12 @@ def mock_platforms() -> list[Platform]:
 
 
 @pytest.mark.parametrize(
-        ("config_yaml_fixture", "test_entity"),
-        [(f"{FIXTURES}/smart-blinds-example.yaml", "cover.left_shade")],
+    ("config_yaml_fixture", "test_entity"),
+    [(f"{FIXTURES}/smart-blinds-example.yaml", "cover.left_shade")],
 )
-async def test_smart_blinds(hass: HomeAssistant, setup_integration: None, test_entity: str) -> None:
+async def test_smart_blinds(
+    hass: HomeAssistant, setup_integration: None, test_entity: str
+) -> None:
     """Test smart blinds which are a positionable cover."""
 
     state = hass.states.get(test_entity)
@@ -97,12 +99,13 @@ async def test_smart_blinds(hass: HomeAssistant, setup_integration: None, test_e
     }
 
 
-
 @pytest.mark.parametrize(
-        ("config_yaml_fixture", "test_entity"),
-        [(f"{FIXTURES}/garage-door-example.yaml", "cover.garage_door")],
+    ("config_yaml_fixture", "test_entity"),
+    [(f"{FIXTURES}/garage-door-example.yaml", "cover.garage_door")],
 )
-async def test_garage_door(hass: HomeAssistant, setup_integration: None, test_entity: str) -> None:
+async def test_garage_door(
+    hass: HomeAssistant, setup_integration: None, test_entity: str
+) -> None:
     """Test a garage door device."""
 
     state = hass.states.get(test_entity)
@@ -168,13 +171,13 @@ async def test_garage_door(hass: HomeAssistant, setup_integration: None, test_en
     }
 
 
-
-
 @pytest.mark.parametrize(
-        ("config_yaml_fixture", "test_entity"),
-        [(f"{FIXTURES}/gate-example.yaml", "cover.driveway_gate")],
+    ("config_yaml_fixture", "test_entity"),
+    [(f"{FIXTURES}/gate-example.yaml", "cover.driveway_gate")],
 )
-async def test_gate(hass: HomeAssistant, setup_integration: None, test_entity: str) -> None:
+async def test_gate(
+    hass: HomeAssistant, setup_integration: None, test_entity: str
+) -> None:
     """Test a gate device as a cover entity."""
 
     state = hass.states.get(test_entity)
