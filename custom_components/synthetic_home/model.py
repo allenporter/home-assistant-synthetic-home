@@ -94,9 +94,6 @@ class Device:
     device_type: DeviceType | None = None
     device_info: DeviceInfo | None = None
 
-    # These should be replaced with features
-    entities: list[str] | None = None
-
     # Future we can expand with these instead of entities:
     # features: list[str] | None
     attributes: dict[str, Any] = field(default_factory=dict)
