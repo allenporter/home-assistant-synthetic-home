@@ -93,8 +93,3 @@ class SyntheticHomeSensor(SyntheticDeviceEntity, SensorEntity):
         self._attr_name = entity_desc.key.capitalize()
         self.entity_description = entity_desc
         self._attr_native_value = native_value or entity_desc.native_value
-
-    @property
-    def state(self):
-        """Return the state of the sensor."""
-        return self._attr_native_value

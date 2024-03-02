@@ -4,6 +4,7 @@ import pytest
 
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
+from homeassistant.util.unit_system import METRIC_SYSTEM, US_CUSTOMARY_SYSTEM
 
 
 from .conftest import FIXTURES
@@ -18,6 +19,12 @@ def mock_platforms() -> list[Platform]:
     return [Platform.SENSOR]
 
 
+@pytest.fixture(name="us_units")
+def mock_set_units(hass: HomeAssistant) -> None:
+    """Fixture to set US units."""
+    hass.config.units = US_CUSTOMARY_SYSTEM
+
+
 @pytest.mark.parametrize(("config_yaml_fixture"), [(f"{FIXTURES}/hvac-example.yaml")])
 async def test_hvac_sensors(hass: HomeAssistant, setup_integration: None) -> None:
     """Test the sensors created for an HVAC device."""
@@ -30,6 +37,31 @@ async def test_hvac_sensors(hass: HomeAssistant, setup_integration: None) -> Non
         "device_class": "temperature",
         "state_class": "measurement",
         "unit_of_measurement": "°C",
+    }
+
+    state = hass.states.get("sensor.family_room_humidity")
+    assert state
+    assert state.state == "45"
+    assert state.attributes == {
+        "friendly_name": "Family Room Humidity",
+        "device_class": "humidity",
+        "state_class": "measurement",
+        "unit_of_measurement": "%",
+    }
+
+
+@pytest.mark.parametrize(("config_yaml_fixture"), [(f"{FIXTURES}/hvac-example.yaml")])
+async def test_hvac_us_units(hass: HomeAssistant, us_units: None, setup_integration: None) -> None:
+    """Test the sensors created for an HVAC device."""
+
+    state = hass.states.get("sensor.family_room_temperature")
+    assert state
+    assert state.state == "68"
+    assert state.attributes == {
+        "friendly_name": "Family Room Temperature",
+        "device_class": "temperature",
+        "state_class": "measurement",
+        "unit_of_measurement": "°F",
     }
 
     state = hass.states.get("sensor.family_room_humidity")
