@@ -1,14 +1,16 @@
 """Sensor platform for Synthetic Home."""
 
-from homeassistant.components.sensor import DOMAIN as SENSOR_DOMAIN, SensorEntity, SensorDeviceClass, SensorEntityDescription, SensorStateClass
-from homeassistant.const import PERCENTAGE, UnitOfTemperature
+from homeassistant.components.sensor import (
+    SensorEntity,
+    SensorDeviceClass,
+    SensorEntityDescription,
+    SensorStateClass,
+)
+from homeassistant.const import PERCENTAGE, UnitOfTemperature, UnitOfEnergy
 
 from .const import DOMAIN
 from .model import DeviceType, Device
 from .entity import SyntheticDeviceEntity
-
-
-SUPPORTED_DEVICE_TYPES = [DeviceType.CLIMATE_HVAC]
 
 
 SENSORS: tuple[SensorEntityDescription, ...] = (
@@ -24,12 +26,20 @@ SENSORS: tuple[SensorEntityDescription, ...] = (
         device_class=SensorDeviceClass.HUMIDITY,
         state_class=SensorStateClass.MEASUREMENT,
     ),
+    SensorEntityDescription(
+        key="energy",
+        native_unit_of_measurement=UnitOfEnergy.KILO_WATT_HOUR,
+        device_class=SensorDeviceClass.ENERGY,
+        state_class=SensorStateClass.TOTAL_INCREASING,
+    ),
 )
-SENSOR_MAP = { desc.key: desc for desc in SENSORS }
+SENSOR_MAP = {desc.key: desc for desc in SENSORS}
 
 FEATURES: dict[DeviceType, set[str]] = {
     DeviceType.CLIMATE_HVAC: {"temperature", "humidity"},
+    DeviceType.SMART_PLUG: {"energy"},
 }
+SUPPORTED_DEVICE_TYPES = FEATURES.keys()
 
 
 async def async_setup_entry(hass, entry, async_add_devices):
@@ -37,13 +47,10 @@ async def async_setup_entry(hass, entry, async_add_devices):
 
     synthetic_home = hass.data[DOMAIN][entry.entry_id]
 
-
     entities = []
     for device, area_name in synthetic_home.devices_and_areas(SUPPORTED_DEVICE_TYPES):
         for key in FEATURES.get(device.device_type, set({})):
-            entities.append(
-                SyntheticHomeSensor(device, area_name, SENSOR_MAP[key])
-            )
+            entities.append(SyntheticHomeSensor(device, area_name, SENSOR_MAP[key]))
 
     async_add_devices(entities)
 

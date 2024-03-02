@@ -12,13 +12,27 @@ from dataclasses import dataclass, field
 class DeviceInfo:
     """Device model information."""
 
-    model: str
-    manufacturer: str
-    firmware: str
+    model: str | None = None
+    """The model name of the device e.g. 'Learning Thermostat'."""
+
+    manufacturer: str | None = None
+    """The manufacturer of the device e.g. 'Nest'."""
+
+    firmware: str | None = None
+    """The firmware version string of the device e.g. '1.0.2'."""
 
 
 class DeviceType(StrEnum):
-    """Available device types."""
+    """Available device types.
+
+    A device type a physical device in Home Assistant and may additionally
+    be represented by multiple entities. For example, a climate-hvac device
+    may be represented by a climage entity and a temperature sensor.
+
+    Device types are defined to represent common configured household devices,
+    but may not support every single feature in the smart home. New device types
+    may be added as new use cases are needed.
+    """
 
     CLIMATE_HVAC = "climate-hvac"
     """A climate device that supports HVAC Cool and Heat modes."""
@@ -55,7 +69,10 @@ class DeviceType(StrEnum):
     """
 
     SWITCH = "switch"
-    """A generic switch entity."""
+    """A generic switch."""
+
+    SMART_PLUG = "smart-plug"
+    """A smart plug allows remote on/off of electrical devices."""
 
     BINARY_SENSOR = "binary_sensor"
     """A generic binary sensor.

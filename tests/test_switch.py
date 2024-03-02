@@ -13,7 +13,6 @@ from homeassistant.core import HomeAssistant
 
 from .conftest import FIXTURES
 
-TEST_FIXTURE_FILE = f"{FIXTURES}/switch-example.yaml"
 TEST_ENTITY = "switch.smart_feeder"
 
 
@@ -22,40 +21,82 @@ def mock_platforms() -> list[Platform]:
     """Set up switch platform."""
     return [Platform.SWITCH]
 
-@pytest.fixture
-def config_yaml_fixture() -> None:
-    """Mock out the yaml config file contents."""
-    return TEST_FIXTURE_FILE
 
-
-async def test_switch_services(hass: HomeAssistant, setup_integration: None) -> None:
+@pytest.mark.parametrize(
+    ("config_yaml_fixture", "test_entity"),
+    [(f"{FIXTURES}/switch-example.yaml", "switch.smart_feeder_switch")],
+)
+async def test_switch_services(
+    hass: HomeAssistant, setup_integration: None, test_entity: str
+) -> None:
     """Test switch services."""
 
-    state = hass.states.get(TEST_ENTITY)
+    state = hass.states.get(test_entity)
     assert state
     assert state.state == "off"
     assert state.attributes == {
-        "friendly_name": "Smart Feeder"
+        "friendly_name": "Smart Feeder Switch",
+        "device_class": "switch",
     }
 
     await hass.services.async_call(
         SWITCH_DOMAIN,
         SERVICE_TURN_OFF,
-        service_data={ATTR_ENTITY_ID: TEST_ENTITY},
+        service_data={ATTR_ENTITY_ID: test_entity},
         blocking=True,
     )
     await hass.async_block_till_done()
-    state = hass.states.get(TEST_ENTITY)
+    state = hass.states.get(test_entity)
     assert state
     assert state.state == "off"
 
     await hass.services.async_call(
         SWITCH_DOMAIN,
         SERVICE_TURN_ON,
-        service_data={ATTR_ENTITY_ID: TEST_ENTITY},
+        service_data={ATTR_ENTITY_ID: test_entity},
         blocking=True,
     )
     await hass.async_block_till_done()
-    state = hass.states.get(TEST_ENTITY)
+    state = hass.states.get(test_entity)
+    assert state
+    assert state.state == "on"
+
+
+@pytest.mark.parametrize(
+    ("config_yaml_fixture", "test_entity"),
+    [(f"{FIXTURES}/smart-plug-example.yaml", "switch.floor_lamp_outlet")],
+)
+async def test_smart_plug(
+    hass: HomeAssistant, setup_integration: None, test_entity: str
+) -> None:
+    """Test a switch for a smart plug device."""
+
+    state = hass.states.get(test_entity)
+    assert state
+    assert state.state == "off"
+    assert state.attributes == {
+        "friendly_name": "Floor Lamp Outlet",
+        "device_class": "outlet",
+    }
+
+    await hass.services.async_call(
+        SWITCH_DOMAIN,
+        SERVICE_TURN_OFF,
+        service_data={ATTR_ENTITY_ID: test_entity},
+        blocking=True,
+    )
+    await hass.async_block_till_done()
+    state = hass.states.get(test_entity)
+    assert state
+    assert state.state == "off"
+
+    await hass.services.async_call(
+        SWITCH_DOMAIN,
+        SERVICE_TURN_ON,
+        service_data={ATTR_ENTITY_ID: test_entity},
+        blocking=True,
+    )
+    await hass.async_block_till_done()
+    state = hass.states.get(test_entity)
     assert state
     assert state.state == "on"

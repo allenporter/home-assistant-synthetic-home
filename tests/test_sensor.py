@@ -18,10 +18,7 @@ def mock_platforms() -> list[Platform]:
     return [Platform.SENSOR]
 
 
-@pytest.mark.parametrize(
-    ("config_yaml_fixture"),
-    [(f"{FIXTURES}/climate-hvac.yaml")]
-)
+@pytest.mark.parametrize(("config_yaml_fixture"), [(f"{FIXTURES}/climate-hvac.yaml")])
 async def test_hvac_sensors(hass: HomeAssistant, setup_integration: None) -> None:
     """Test the sensors created for an HVAC device."""
 
@@ -43,4 +40,21 @@ async def test_hvac_sensors(hass: HomeAssistant, setup_integration: None) -> Non
         "device_class": "humidity",
         "state_class": "measurement",
         "unit_of_measurement": "%",
+    }
+
+
+@pytest.mark.parametrize(
+    ("config_yaml_fixture"), [(f"{FIXTURES}/smart-plug-example.yaml")]
+)
+async def test_smart_plug(hass: HomeAssistant, setup_integration: None) -> None:
+    """Test the sensors created for a smart plug."""
+
+    state = hass.states.get("sensor.floor_lamp_energy")
+    assert state
+    assert state.state == "0"
+    assert state.attributes == {
+        "friendly_name": "Floor Lamp Energy",
+        "device_class": "energy",
+        "state_class": "total_increasing",
+        "unit_of_measurement": "kWh",
     }
