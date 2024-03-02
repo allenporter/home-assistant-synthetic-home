@@ -1,7 +1,5 @@
 """Light platform for Synthetic Home."""
 
-from dataclasses import dataclass
-
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.components.light import (
@@ -25,8 +23,7 @@ SUPPORTED_DEVICE_TYPES = [
 ]
 
 
-@dataclass
-class SyntheticLightEntityDescription(LightEntityDescription):
+class SyntheticLightEntityDescription(LightEntityDescription, frozen_or_thawed=True):
     """Entity description for a light."""
 
     supported_color_modes: set[ColorMode] | None = (None,)
@@ -92,7 +89,7 @@ class SyntheticHomeLight(SyntheticDeviceEntity, LightEntity):
         rgbw_color: tuple[int, int, int, int] | None = None,
     ) -> None:
         """Initialize the device."""
-        super().__init__(device, area, "light")
+        super().__init__(device, area, entity_desc.key)
         self.entity_description = entity_desc
         self._attr_supported_color_modes = entity_desc.supported_color_modes
         self._attr_color_mode = entity_desc.color_mode

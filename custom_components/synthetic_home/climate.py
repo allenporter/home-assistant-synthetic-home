@@ -1,6 +1,5 @@
 """Climate platform for Synthetic Home."""
 
-from dataclasses import dataclass
 from typing import Any
 
 
@@ -29,7 +28,6 @@ DEFAULT_SUPPORTED_FEATURES = (
 )
 
 
-@dataclass
 class SyntheticClimateEntityDescription(
     ClimateEntityDescription, frozen_or_thawed=True
 ):
@@ -114,7 +112,7 @@ class SyntheticHomeClimate(SyntheticDeviceEntity, ClimateEntity):
         current_temperature: float | None = None,
     ) -> None:
         """Initialize the climate device."""
-        super().__init__(device, area, "climate")
+        super().__init__(device, area, entity_desc.key)
         self.entity_description = entity_desc
         self._attr_supported_features = entity_desc.supported_features
         self._attr_target_temperature = entity_desc.target_temperature

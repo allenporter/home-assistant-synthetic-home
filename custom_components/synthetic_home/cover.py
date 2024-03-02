@@ -1,7 +1,6 @@
 """Cover platform for Synthetic Home."""
 
 import datetime
-from dataclasses import dataclass
 from typing import Any
 
 from homeassistant.config_entries import ConfigEntry
@@ -24,8 +23,7 @@ COVER_STEP = 10
 COVER_STEP_TIME = datetime.timedelta(seconds=1)
 
 
-@dataclass
-class SyntheticCoverEntityDescription(CoverEntityDescription):
+class SyntheticCoverEntityDescription(CoverEntityDescription, frozen_or_thawed=True):
     """Entity description for a cover entity."""
 
     supported_features: CoverEntityFeature | None = None
@@ -96,7 +94,7 @@ class SyntheticCover(SyntheticDeviceEntity, CoverEntity):
         entity_desc: SyntheticCoverEntityDescription,
     ) -> None:
         """Initialize the SyntheticCover."""
-        super().__init__(device, area, "light")
+        super().__init__(device, area, entity_desc.key)
         self.entity_description = entity_desc
         self._attr_supported_features = entity_desc.supported_features
 

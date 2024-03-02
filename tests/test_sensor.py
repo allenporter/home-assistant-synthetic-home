@@ -24,7 +24,7 @@ async def test_hvac_sensors(hass: HomeAssistant, setup_integration: None) -> Non
 
     state = hass.states.get("sensor.family_room_temperature")
     assert state
-    assert state.state == "0"
+    assert state.state == "20"
     assert state.attributes == {
         "friendly_name": "Family Room Temperature",
         "device_class": "temperature",
@@ -34,7 +34,7 @@ async def test_hvac_sensors(hass: HomeAssistant, setup_integration: None) -> Non
 
     state = hass.states.get("sensor.family_room_humidity")
     assert state
-    assert state.state == "0"
+    assert state.state == "45"
     assert state.attributes == {
         "friendly_name": "Family Room Humidity",
         "device_class": "humidity",
@@ -51,7 +51,7 @@ async def test_smart_plug(hass: HomeAssistant, setup_integration: None) -> None:
 
     state = hass.states.get("sensor.floor_lamp_energy")
     assert state
-    assert state.state == "0"
+    assert state.state == "1"
     assert state.attributes == {
         "friendly_name": "Floor Lamp Energy",
         "device_class": "energy",
@@ -67,7 +67,7 @@ async def test_smart_lock(hass: HomeAssistant, setup_integration: None) -> None:
     """Test the sensors created for a smart lock."""
     state = hass.states.get("sensor.front_door_lock_battery")
     assert state
-    assert state.state == "0"
+    assert state.state == "90"
     assert state.attributes == {
         "friendly_name": "Front Door Lock Battery",
         "device_class": "battery",
