@@ -3,12 +3,12 @@ name: Family Farmhouse
 device_entities:
   Family room:
   - name: Family room
+    device_type: climate-hvac
     unique_id: d4df546410f90f1c1d9be6a8443b8ec6
-    device_type: climate_hvac
     device_info:
-        model: Thermostat
-        manufacturer: Nest
-        firmware: 1.0.0
+      model: Thermostat
+      manufacturer: Nest
+      firmware: 1.0.0
     attributes:
-        unit_of_measurement: °F
-        current_temperature: 60
+      unit_of_measurement: °F
+      current_temperature: 60
