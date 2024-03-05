@@ -1,7 +1,7 @@
 """Data model for home assistant synthetic home."""
 
 from collections.abc import Generator
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, asdict
 import hashlib
 import pathlib
 import logging
@@ -11,7 +11,9 @@ import yaml
 from mashumaro.codecs.yaml import yaml_decode
 from mashumaro.exceptions import MissingField
 
+from homeassistant.helpers.device_registry import DeviceInfo
 
+from .const import DOMAIN
 from .exceptions import SyntheticHomeError
 
 _LOGGER = logging.getLogger(__name__)
@@ -42,7 +44,7 @@ class DeviceTypeRegistry:
 
 
 @dataclass
-class DeviceInfo:
+class SyntheticDeviceInfo:
     """Device model information."""
 
     model: str | None = None
@@ -51,7 +53,7 @@ class DeviceInfo:
     manufacturer: str | None = None
     """The manufacturer of the device e.g. 'Nest'."""
 
-    firmware: str | None = None
+    sw_version: str | None = None
     """The firmware version string of the device e.g. '1.0.2'."""
 
 
@@ -60,26 +62,12 @@ class Device:
     """A synthetic device."""
 
     name: str
-    unique_id: str | None = (
-        None  # Future: We can populate the device unique id after processing the home
-    )
     device_type: str | None = None
-    device_info: DeviceInfo | None = None
+    device_info: SyntheticDeviceInfo | None = None
 
     # Future we can expand with these instead of entities:
     # features: list[str] | None
     attributes: dict[str, Any] = field(default_factory=dict)
-
-    @property
-    def friendly_name(self) -> str:
-        """A friendlier display name for a device."""
-        return friendly_device_name(self.name)
-
-    def compute_unique_id(self, area_name: str) -> str:
-        """Use defined unique id or generate a unique id based on name and area."""
-        if self.unique_id:
-            return self.unique_id
-        return generate_device_id(self.name, area_name)
 
 
 @dataclass
@@ -92,46 +80,47 @@ class SyntheticHome:
     # Device types supported by the home.
     device_type_registry: DeviceTypeRegistry | None = None
 
-    @property
-    def areas(self) -> list[str]:
-        """Area names for the home."""
-        return list(self.device_entities.keys())
+
+@dataclass
+class ParsedEntity:
+    """Data about an entity used in the integration."""
+
+    platform: str
+    entity_key: str
+    attributes: str
+
+
+@dataclass
+class ParsedDevice:
+    """Data about a device as used in the integration."""
+
+    unique_id: str
+    device: Device
+    area_name: str
+    entities: list[ParsedEntity]
 
     @property
-    def devices(self) -> list[str]:
-        """Device names for the home."""
-        return [
-            device.name
-            for devices in self.device_entities.values()
-            for device in devices
-        ]
+    def friendly_name(self) -> str:
+        """A friendlier display name for a device."""
+        return self.device.name.replace("_", " ").title()
 
-    def devices_and_areas(self, domain: str) -> Generator[tuple[Device, str]]:
-        """Provide all devices and area names for the specified device types."""
-        for area_name, device_list in self.device_entities.items():
-            for device in device_list:
-                if not (
-                    device_type := self.device_type_registry.device_types.get(
-                        device.device_type
-                    )
-                ):
-                    continue
-                for key in device_type.entities.get(domain, ()):
-                    yield device, area_name, key
-
-    def entities_by_domain(self, domain: str) -> Generator[tuple[str, str, str]]:
-        """Provide all entities with their device and area names."""
-        for area_name, device_list in self.device_entities.items():
-            for device in device_list:
-                for entity_id in device.entities:
-                    if not entity_id.startswith(f"{domain}."):
-                        continue
-                    yield entity_id, device.name, area_name
+    @property
+    def device_info(self) -> DeviceInfo:
+        """Home Assistant device info for this device."""
+        return DeviceInfo(
+            name=self.friendly_name,
+            suggested_area=self.area_name,
+            identifiers={(DOMAIN, self.unique_id)},
+            **(asdict(self.device.device_info) if self.device.device_info else {}),
+        )
 
 
-def friendly_device_name(device_name: str) -> str:
-    """Generate a friendly device name from the device id name."""
-    return device_name.replace("_", " ").title()
+@dataclass
+class ParsedHome:
+    """Data about the synthetic home as used in the integration."""
+
+    areas: list[str] = field(default_factory=list)
+    devices: list[ParsedDevice] = field(default_factory=list)
 
 
 def generate_device_id(device_name: str, area_name: str) -> str:
@@ -191,7 +180,7 @@ def read_config_content(config_file: pathlib.Path) -> str:
         raise SyntheticHomeError(f"Configuration file '{config_file}' does not exist")
 
 
-def load_synthetic_home(config_file: pathlib.Path) -> SyntheticHome:
+def load_synthetic_home(config_file: pathlib.Path) -> ParsedHome:
     """Load synthetic home configuration from disk."""
     content = read_config_content(config_file)
 
@@ -206,14 +195,37 @@ def load_synthetic_home(config_file: pathlib.Path) -> SyntheticHome:
     _LOGGER.debug(
         "Loaded %s device types", len(synthetic_home.device_type_registry.device_types)
     )
-    for devices_list in synthetic_home.device_entities.values():
+
+    parsed_devices: list[ParsedDevice] = []
+    for area_name, devices_list in synthetic_home.device_entities.items():
         for device in devices_list:
-            if (
-                device.device_type
-                not in synthetic_home.device_type_registry.device_types
-            ):
+            if not (device_type := registry.device_types.get(device.device_type)):
                 raise SyntheticHomeError(
                     f"Device {device} has device_type {device.device_type} not found in registry"
                 )
 
-    return synthetic_home
+            parsed_entities: list[ParsedEntity] = []
+            for platform, entity_keys in device_type.entities.items():
+                for entity_key in entity_keys:
+                    parsed_entities.append(
+                        ParsedEntity(
+                            platform=platform,
+                            entity_key=entity_key,
+                            # TODO: This is incorrect and needs to be fixed
+                            attributes=device.attributes,
+                        )
+                    )
+
+            parsed_devices.append(
+                ParsedDevice(
+                    unique_id=generate_device_id(device.name, area_name),
+                    device=device,
+                    area_name=area_name,
+                    entities=parsed_entities,
+                )
+            )
+
+    return ParsedHome(
+        areas=synthetic_home.device_entities.keys(),
+        devices=parsed_devices,
+    )

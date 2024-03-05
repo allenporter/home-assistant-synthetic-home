@@ -18,7 +18,7 @@ from homeassistant.helpers.event import async_track_time_interval
 
 from .const import DOMAIN
 from .entity import SyntheticDeviceEntity
-from .model import Device
+from .model import ParsedDevice
 
 COVER_STEP = 10
 COVER_STEP_TIME = datetime.timedelta(seconds=1)
@@ -58,13 +58,12 @@ async def async_setup_entry(
     """Set up light platform."""
     synthetic_home = hass.data[DOMAIN][entry.entry_id]
 
-    entities = []
-    for device, area_name, key in synthetic_home.devices_and_areas(COVER_DOMAIN):
-        entity_desc = COVER_MAP[key]
-        entities.append(
-            SyntheticCover(device, area_name, entity_desc, **device.attributes)
-        )
-    async_add_devices(entities, True)
+    async_add_devices(
+        SyntheticCover(device, COVER_MAP[entity.entity_key], **entity.attributes)
+        for device in synthetic_home.devices
+        for entity in device.entities
+        if entity.platform == COVER_DOMAIN
+    )
 
 
 class SyntheticCover(SyntheticDeviceEntity, CoverEntity):
@@ -82,12 +81,11 @@ class SyntheticCover(SyntheticDeviceEntity, CoverEntity):
 
     def __init__(
         self,
-        device: Device,
-        area: str,
+        device: ParsedDevice,
         entity_desc: SyntheticCoverEntityDescription,
     ) -> None:
         """Initialize the SyntheticCover."""
-        super().__init__(device, area, entity_desc.key)
+        super().__init__(device, entity_desc.key)
         self.entity_description = entity_desc
         self._attr_supported_features = entity_desc.supported_features
 

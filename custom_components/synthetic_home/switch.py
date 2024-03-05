@@ -12,7 +12,7 @@ from homeassistant.helpers.entity import EntityDescription
 
 from .const import DOMAIN
 from .entity import SyntheticDeviceEntity
-from .model import Device
+from .model import ParsedDevice
 
 
 SWITCHES: tuple[EntityDescription, ...] = (
@@ -34,10 +34,12 @@ async def async_setup_entry(
     """Set up switch platform."""
     synthetic_home = hass.data[DOMAIN][entry.entry_id]
 
-    entities = []
-    for device, area_name, key in synthetic_home.devices_and_areas(SWITCH_DOMAIN):
-        entities.append(SyntheticHomeBinarySwitch(device, area_name, SENSOR_MAP[key]))
-    async_add_devices(entities)
+    async_add_devices(
+        SyntheticHomeBinarySwitch(device, SENSOR_MAP[entity.entity_key])
+        for device in synthetic_home.devices
+        for entity in device.entities
+        if entity.platform == SWITCH_DOMAIN
+    )
 
 
 class SyntheticHomeBinarySwitch(SyntheticDeviceEntity, SwitchEntity):
@@ -45,12 +47,11 @@ class SyntheticHomeBinarySwitch(SyntheticDeviceEntity, SwitchEntity):
 
     def __init__(
         self,
-        device: Device,
-        area_name: str,
+        device: ParsedDevice,
         entity_desc: EntityDescription,
     ) -> None:
         """Initialize SyntheticHomeBinarySwitch."""
-        super().__init__(device, area_name, entity_desc.key)
+        super().__init__(device, entity_desc.key)
         self._attr_name = entity_desc.key.capitalize()
         self.entity_description = entity_desc
 

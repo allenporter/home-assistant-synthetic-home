@@ -6,14 +6,14 @@ from homeassistant.const import Platform
 from homeassistant.components.climate import (
     SERVICE_SET_HVAC_MODE,
     DOMAIN as CLIMATE_DOMAIN,
-    ATTR_HVAC_MODE
+    ATTR_HVAC_MODE,
 )
 from homeassistant.const import ATTR_ENTITY_ID
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers import device_registry as dr
 
 from .conftest import FIXTURES
 
-TEST_FIXTURE_FILE = f"{FIXTURES}/hvac-example.yaml"
 TEST_ENTITY = "climate.family_room"
 
 
@@ -23,12 +23,10 @@ def mock_platforms() -> list[Platform]:
     return [Platform.CLIMATE]
 
 
-@pytest.fixture
-def config_yaml_fixture() -> None:
-    """Mock out the yaml config file contents."""
-    return TEST_FIXTURE_FILE
-
-
+@pytest.mark.parametrize(
+    ("config_yaml_fixture"),
+    [(f"{FIXTURES}/hvac-example.yaml")],
+)
 async def test_climate_hvac_entity(
     hass: HomeAssistant, setup_integration: None
 ) -> None:
@@ -64,13 +62,23 @@ async def test_climate_hvac_entity(
     assert state.state == "heat"
     assert state.attributes == attributes
 
+    device_registry = dr.async_get(hass)
+    assert len(device_registry.devices) == 1
+    device = next(iter(device_registry.devices.values()))
+    assert device.suggested_area == "Family room"
+    assert device.name == "Family Room"
+    assert device.manufacturer == "Nest"
+    assert device.sw_version == "1.0.0"
+
 
 @pytest.mark.parametrize(
-        ("config_yaml_fixture", "test_entity"),
-        [(f"{FIXTURES}/heat-pump-example.yaml", "climate.family_room")],
+    ("config_yaml_fixture", "test_entity"),
+    [(f"{FIXTURES}/heat-pump-example.yaml", "climate.family_room")],
 )
 async def test_heat_pump(
-    hass: HomeAssistant, setup_integration: None, test_entity: str,
+    hass: HomeAssistant,
+    setup_integration: None,
+    test_entity: str,
 ) -> None:
     """Test a heat pump climate entity."""
 

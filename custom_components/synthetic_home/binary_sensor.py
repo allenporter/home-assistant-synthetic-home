@@ -8,7 +8,7 @@ from homeassistant.components.binary_sensor import (
 )
 
 from .const import DOMAIN
-from .model import Device
+from .model import ParsedDevice
 from .entity import SyntheticDeviceEntity
 
 
@@ -46,12 +46,12 @@ async def async_setup_entry(hass, entry, async_add_devices):
 
     synthetic_home = hass.data[DOMAIN][entry.entry_id]
 
-    entities = []
-    for device, area_name, key in synthetic_home.devices_and_areas(
-        BINARY_SENSOR_DOMAIN
-    ):
-        entities.append(SyntheticHomeBinarySensor(device, area_name, SENSOR_MAP[key]))
-    async_add_devices(entities)
+    async_add_devices(
+        SyntheticHomeBinarySensor(device, SENSOR_MAP[entity.entity_key])
+        for device in synthetic_home.devices
+        for entity in device.entities
+        if entity.platform == BINARY_SENSOR_DOMAIN
+    )
 
 
 class SyntheticHomeBinarySensor(SyntheticDeviceEntity, BinarySensorEntity):
@@ -59,13 +59,12 @@ class SyntheticHomeBinarySensor(SyntheticDeviceEntity, BinarySensorEntity):
 
     def __init__(
         self,
-        device: Device,
-        area_name: str,
+        device: ParsedDevice,
         entity_desc: BinarySensorEntityDescription,
     ) -> None:
         """Initialize SyntheticHomeSensor."""
-        super().__init__(device, area_name, entity_desc.key)
-        if entity_desc.key not in device.name.lower():  # Avoid "Motion Motion"
+        super().__init__(device, entity_desc.key)
+        if entity_desc.key not in device.friendly_name.lower():  # Avoid "Motion Motion"
             self._attr_name = entity_desc.key.capitalize()
         self.entity_description = entity_desc
 

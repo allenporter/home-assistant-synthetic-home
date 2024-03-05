@@ -17,7 +17,7 @@ from homeassistant.components.climate import (
 from homeassistant.const import ATTR_TEMPERATURE
 
 from .const import DOMAIN
-from .model import Device
+from .model import ParsedDevice
 from .entity import SyntheticDeviceEntity
 
 
@@ -78,13 +78,14 @@ async def async_setup_entry(hass, entry, async_add_devices):
 
     synthetic_home = hass.data[DOMAIN][entry.entry_id]
 
-    entities = []
-    for device, area_name, key in synthetic_home.devices_and_areas(CLIMATE_DOMAIN):
-        entity_desc = CLIMATE_MAP[key]
-        entities.append(
-            SyntheticHomeClimate(device, area_name, entity_desc, **device.attributes)
+    async_add_devices(
+        SyntheticHomeClimate(
+            device, CLIMATE_MAP[entity.entity_key], **entity.attributes
         )
-    async_add_devices(entities, True)
+        for device in synthetic_home.devices
+        for entity in device.entities
+        if entity.platform == CLIMATE_DOMAIN
+    )
 
 
 class SyntheticHomeClimate(SyntheticDeviceEntity, ClimateEntity):
@@ -99,15 +100,14 @@ class SyntheticHomeClimate(SyntheticDeviceEntity, ClimateEntity):
 
     def __init__(
         self,
-        device: Device,
-        area: str,
+        device: ParsedDevice,
         entity_desc: SyntheticClimateEntityDescription,
         *,
         unit_of_measurement: str | None = None,
         current_temperature: float | None = None,
     ) -> None:
         """Initialize the climate device."""
-        super().__init__(device, area, entity_desc.key)
+        super().__init__(device, entity_desc.key)
         self.entity_description = entity_desc
         self._attr_supported_features = entity_desc.supported_features
         self._attr_target_temperature = entity_desc.target_temperature

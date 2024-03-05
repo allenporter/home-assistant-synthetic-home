@@ -14,7 +14,7 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import DOMAIN
 from .entity import SyntheticDeviceEntity
-from .model import Device
+from .model import ParsedDevice
 
 
 class SyntheticLightEntityDescription(LightEntityDescription, frozen_or_thawed=True):
@@ -52,13 +52,12 @@ async def async_setup_entry(
     """Set up light platform."""
     synthetic_home = hass.data[DOMAIN][entry.entry_id]
 
-    entities = []
-    for device, area_name, key in synthetic_home.devices_and_areas(LIGHT_DOMAIN):
-        entity_desc = LIGHT_MAP[key]
-        entities.append(
-            SyntheticHomeLight(device, area_name, entity_desc, **device.attributes)
-        )
-    async_add_devices(entities, True)
+    async_add_devices(
+        SyntheticHomeLight(device, LIGHT_MAP[entity.entity_key], **entity.attributes)
+        for device in synthetic_home.devices
+        for entity in device.entities
+        if entity.platform == LIGHT_DOMAIN
+    )
 
 
 class SyntheticHomeLight(SyntheticDeviceEntity, LightEntity):
@@ -66,15 +65,14 @@ class SyntheticHomeLight(SyntheticDeviceEntity, LightEntity):
 
     def __init__(
         self,
-        device: Device,
-        area: str,
+        device: ParsedDevice,
         entity_desc: SyntheticLightEntityDescription,
         *,
         brightness: int | None = None,
         rgbw_color: tuple[int, int, int, int] | None = None,
     ) -> None:
         """Initialize the device."""
-        super().__init__(device, area, entity_desc.key)
+        super().__init__(device, entity_desc.key)
         self.entity_description = entity_desc
         self._attr_supported_color_modes = entity_desc.supported_color_modes
         self._attr_color_mode = entity_desc.color_mode
