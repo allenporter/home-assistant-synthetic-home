@@ -1,0 +1,9 @@
+---
+device_type: motion-sensor
+desc: A device that detects motion of a person or object.
+entities:
+  binary_sensor:
+    - motion
+    - battery
+  sensor:
+    - battery

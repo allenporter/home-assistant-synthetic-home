@@ -1,0 +1,8 @@
+---
+device_type: light-rgbw
+desc: A light with rgbw color support.
+attributes:
+  - rgbw-color
+entities:
+  light:
+    - light-rgbw

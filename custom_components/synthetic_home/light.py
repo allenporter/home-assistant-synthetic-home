@@ -8,19 +8,13 @@ from homeassistant.components.light import (
     ATTR_BRIGHTNESS,
     ATTR_RGBW_COLOR,
     LightEntityDescription,
+    DOMAIN as LIGHT_DOMAIN,
 )
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import DOMAIN
 from .entity import SyntheticDeviceEntity
-from .model import DeviceType, Device
-
-SUPPORTED_DEVICE_TYPES = [
-    DeviceType.LIGHT,
-    DeviceType.LIGHT_DIMMABLE,
-    DeviceType.LIGHT_RGBW,
-    DeviceType.GARAGE_DOOR,
-]
+from .model import Device
 
 
 class SyntheticLightEntityDescription(LightEntityDescription, frozen_or_thawed=True):
@@ -51,14 +45,6 @@ LIGHTS: tuple[LightEntityDescription, ...] = (
 )
 LIGHT_MAP = {desc.key: desc for desc in LIGHTS}
 
-FEATURES: dict[DeviceType, str] = {
-    DeviceType.LIGHT_DIMMABLE: "light-dimmable",
-    DeviceType.LIGHT: "light",
-    DeviceType.LIGHT_RGBW: "light-rgbw",
-    DeviceType.GARAGE_DOOR: "light",
-}
-SUPPORTED_DEVICE_TYPES = FEATURES.keys()
-
 
 async def async_setup_entry(
     hass: HomeAssistant, entry: ConfigEntry, async_add_devices: AddEntitiesCallback
@@ -67,8 +53,7 @@ async def async_setup_entry(
     synthetic_home = hass.data[DOMAIN][entry.entry_id]
 
     entities = []
-    for device, area_name in synthetic_home.devices_and_areas(SUPPORTED_DEVICE_TYPES):
-        key = FEATURES[device.device_type]
+    for device, area_name, key in synthetic_home.devices_and_areas(LIGHT_DOMAIN):
         entity_desc = LIGHT_MAP[key]
         entities.append(
             SyntheticHomeLight(device, area_name, entity_desc, **device.attributes)

@@ -6,11 +6,12 @@ from homeassistant.components.sensor import (
     SensorEntityDescription,
     SensorStateClass,
     StateType,
+    DOMAIN as SENSOR_DOMAIN,
 )
 from homeassistant.const import PERCENTAGE, UnitOfTemperature, UnitOfEnergy
 
 from .const import DOMAIN
-from .model import DeviceType, Device
+from .model import Device
 from .entity import SyntheticDeviceEntity
 
 
@@ -52,17 +53,6 @@ SENSORS: tuple[SyntheticSensorEntityDescription, ...] = (
 )
 SENSOR_MAP = {desc.key: desc for desc in SENSORS}
 
-FEATURES: dict[DeviceType, set[str]] = {
-    DeviceType.HVAC: {"temperature", "humidity"},
-    DeviceType.SMART_PLUG: {"energy"},
-    DeviceType.SMART_LOCK: {"battery"},
-    DeviceType.DOOR_SENSOR: {"battery"},
-    DeviceType.WINDOW_SENSOR: {"battery"},
-    DeviceType.MOTION_SENSOR: {"battery"},
-    DeviceType.SMART_BLINDS: {"battery"},
-}
-SUPPORTED_DEVICE_TYPES = FEATURES.keys()
-
 
 async def async_setup_entry(hass, entry, async_add_devices):
     """Set up sensor platform."""
@@ -70,9 +60,8 @@ async def async_setup_entry(hass, entry, async_add_devices):
     synthetic_home = hass.data[DOMAIN][entry.entry_id]
 
     entities = []
-    for device, area_name in synthetic_home.devices_and_areas(SUPPORTED_DEVICE_TYPES):
-        for key in FEATURES.get(device.device_type, set({})):
-            entities.append(SyntheticHomeSensor(device, area_name, SENSOR_MAP[key]))
+    for device, area_name, key in synthetic_home.devices_and_areas(SENSOR_DOMAIN):
+        entities.append(SyntheticHomeSensor(device, area_name, SENSOR_MAP[key]))
 
     async_add_devices(entities)
 

@@ -1,0 +1,9 @@
+---
+device_type: window-sensor
+desc: A device attached to a window that can detect if it is opened or closed.
+entities:
+  binary_sensor:
+    - window
+    - battery
+  sensor:
+    - battery

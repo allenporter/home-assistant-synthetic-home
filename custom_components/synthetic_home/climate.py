@@ -12,11 +12,12 @@ from homeassistant.components.climate import (
     ClimateEntityDescription,
     HVACAction,
     HVACMode,
+    DOMAIN as CLIMATE_DOMAIN,
 )
 from homeassistant.const import ATTR_TEMPERATURE
 
 from .const import DOMAIN
-from .model import DeviceType, Device
+from .model import Device
 from .entity import SyntheticDeviceEntity
 
 
@@ -68,11 +69,6 @@ CLIMATES: tuple[SyntheticClimateEntityDescription, ...] = (
 )
 CLIMATE_MAP = {desc.key: desc for desc in CLIMATES}
 
-FEATURES: dict[DeviceType, str] = {
-    DeviceType.HEAT_PUMP: "heat-pump",
-    DeviceType.HVAC: "hvac",
-}
-SUPPORTED_DEVICE_TYPES = FEATURES.keys()
 
 FAN_MODES = ["low", "high", "off"]
 
@@ -83,8 +79,7 @@ async def async_setup_entry(hass, entry, async_add_devices):
     synthetic_home = hass.data[DOMAIN][entry.entry_id]
 
     entities = []
-    for device, area_name in synthetic_home.devices_and_areas(SUPPORTED_DEVICE_TYPES):
-        key = FEATURES[device.device_type]
+    for device, area_name, key in synthetic_home.devices_and_areas(CLIMATE_DOMAIN):
         entity_desc = CLIMATE_MAP[key]
         entities.append(
             SyntheticHomeClimate(device, area_name, entity_desc, **device.attributes)

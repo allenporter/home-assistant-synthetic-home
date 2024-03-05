@@ -1,0 +1,9 @@
+---
+device_type: door-sensor
+desc: A device attached to a door that can detect if it is opened or closed.
+entities:
+  binary_sensor:
+    - door
+    - battery
+  sensor:
+    - battery

@@ -1,0 +1,6 @@
+---
+device_type: switch
+desc: A generic switch.
+entities:
+  switch:
+    - switch

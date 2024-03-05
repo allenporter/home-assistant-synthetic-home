@@ -1,0 +1,8 @@
+---
+device_type: light-dimmable
+desc: A light that has adjustable brightness.
+attributes:
+  - brightness
+entities:
+  light:
+    - light-dimmable

@@ -1,0 +1,6 @@
+---
+device_type: gate
+desc: An movable barrier that can be monitored and opened and closed remotely.
+entities:
+  cover:
+    - gate-cover

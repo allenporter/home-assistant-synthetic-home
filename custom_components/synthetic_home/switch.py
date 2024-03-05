@@ -2,13 +2,17 @@
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
-from homeassistant.components.switch import SwitchEntity, SwitchDeviceClass
+from homeassistant.components.switch import (
+    SwitchEntity,
+    SwitchDeviceClass,
+    DOMAIN as SWITCH_DOMAIN,
+)
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.entity import EntityDescription
 
 from .const import DOMAIN
 from .entity import SyntheticDeviceEntity
-from .model import DeviceType, Device
+from .model import Device
 
 
 SWITCHES: tuple[EntityDescription, ...] = (
@@ -23,12 +27,6 @@ SWITCHES: tuple[EntityDescription, ...] = (
 )
 SENSOR_MAP = {desc.key: desc for desc in SWITCHES}
 
-FEATURES: dict[DeviceType, set[str]] = {
-    DeviceType.SWITCH: {"switch"},
-    DeviceType.SMART_PLUG: {"outlet"},
-}
-SUPPORTED_DEVICE_TYPES = FEATURES.keys()
-
 
 async def async_setup_entry(
     hass: HomeAssistant, entry: ConfigEntry, async_add_devices: AddEntitiesCallback
@@ -37,11 +35,8 @@ async def async_setup_entry(
     synthetic_home = hass.data[DOMAIN][entry.entry_id]
 
     entities = []
-    for device, area_name in synthetic_home.devices_and_areas(SUPPORTED_DEVICE_TYPES):
-        for key in FEATURES.get(device.device_type, set({})):
-            entities.append(
-                SyntheticHomeBinarySwitch(device, area_name, SENSOR_MAP[key])
-            )
+    for device, area_name, key in synthetic_home.devices_and_areas(SWITCH_DOMAIN):
+        entities.append(SyntheticHomeBinarySwitch(device, area_name, SENSOR_MAP[key]))
     async_add_devices(entities)
 
 

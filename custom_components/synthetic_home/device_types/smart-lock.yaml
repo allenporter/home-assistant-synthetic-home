@@ -1,0 +1,10 @@
+---
+device_type: smart-lock
+desc: A smart lock device that can be remotely monitored.
+entities:
+  binary_sensor:
+    - lock
+    - tamper
+    - battery
+  sensor:
+    - battery

@@ -1,0 +1,9 @@
+---
+device_type: hvac
+desc: A climate device that supports HVAC Cool and Heat modes.
+entities:
+  climate:
+    - hvac
+  sensor:
+    - temperature
+    - humidity

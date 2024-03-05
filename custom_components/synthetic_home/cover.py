@@ -11,13 +11,14 @@ from homeassistant.components.cover import (
     CoverEntityFeature,
     ATTR_POSITION,
     CoverEntityDescription,
+    DOMAIN as COVER_DOMAIN,
 )
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.event import async_track_time_interval
 
 from .const import DOMAIN
 from .entity import SyntheticDeviceEntity
-from .model import DeviceType, Device
+from .model import Device
 
 COVER_STEP = 10
 COVER_STEP_TIME = datetime.timedelta(seconds=1)
@@ -50,13 +51,6 @@ COVERS: tuple[SyntheticCoverEntityDescription, ...] = (
 )
 COVER_MAP = {desc.key: desc for desc in COVERS}
 
-FEATURES: dict[DeviceType, str] = {
-    DeviceType.SMART_BLINDS: "blinds-cover",
-    DeviceType.GATE: "gate-cover",
-    DeviceType.GARAGE_DOOR: "garage-door-cover",
-}
-SUPPORTED_DEVICE_TYPES = FEATURES.keys()
-
 
 async def async_setup_entry(
     hass: HomeAssistant, entry: ConfigEntry, async_add_devices: AddEntitiesCallback
@@ -65,8 +59,7 @@ async def async_setup_entry(
     synthetic_home = hass.data[DOMAIN][entry.entry_id]
 
     entities = []
-    for device, area_name in synthetic_home.devices_and_areas(SUPPORTED_DEVICE_TYPES):
-        key = FEATURES[device.device_type]
+    for device, area_name, key in synthetic_home.devices_and_areas(COVER_DOMAIN):
         entity_desc = COVER_MAP[key]
         entities.append(
             SyntheticCover(device, area_name, entity_desc, **device.attributes)

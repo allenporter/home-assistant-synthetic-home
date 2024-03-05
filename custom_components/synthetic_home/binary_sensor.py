@@ -4,10 +4,11 @@ from homeassistant.components.binary_sensor import (
     BinarySensorEntity,
     BinarySensorDeviceClass,
     BinarySensorEntityDescription,
+    DOMAIN as BINARY_SENSOR_DOMAIN,
 )
 
 from .const import DOMAIN
-from .model import DeviceType, Device
+from .model import Device
 from .entity import SyntheticDeviceEntity
 
 
@@ -39,14 +40,6 @@ BINARY_SENSORS: tuple[BinarySensorEntityDescription, ...] = (
 )
 SENSOR_MAP = {desc.key: desc for desc in BINARY_SENSORS}
 
-FEATURES: dict[DeviceType, set[str]] = {
-    DeviceType.SMART_LOCK: {"lock", "tamper", "battery"},
-    DeviceType.DOOR_SENSOR: {"door", "battery"},
-    DeviceType.WINDOW_SENSOR: {"window", "battery"},
-    DeviceType.MOTION_SENSOR: {"motion", "battery"},
-}
-SUPPORTED_DEVICE_TYPES = FEATURES.keys()
-
 
 async def async_setup_entry(hass, entry, async_add_devices):
     """Set up binary_sensor platform."""
@@ -54,11 +47,10 @@ async def async_setup_entry(hass, entry, async_add_devices):
     synthetic_home = hass.data[DOMAIN][entry.entry_id]
 
     entities = []
-    for device, area_name in synthetic_home.devices_and_areas(SUPPORTED_DEVICE_TYPES):
-        for key in FEATURES.get(device.device_type, set({})):
-            entities.append(
-                SyntheticHomeBinarySensor(device, area_name, SENSOR_MAP[key])
-            )
+    for device, area_name, key in synthetic_home.devices_and_areas(
+        BINARY_SENSOR_DOMAIN
+    ):
+        entities.append(SyntheticHomeBinarySensor(device, area_name, SENSOR_MAP[key]))
     async_add_devices(entities)
 
 

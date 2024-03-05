@@ -1,0 +1,6 @@
+---
+device_type: light
+desc: A generic light that can be turned on/off.
+entities:
+  light:
+    - light

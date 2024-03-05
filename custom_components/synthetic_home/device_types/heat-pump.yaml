@@ -1,0 +1,6 @@
+---
+device_type: heat-pump
+desc: A climate devie that only supports heating.
+entities:
+  climate:
+    - heat-pump

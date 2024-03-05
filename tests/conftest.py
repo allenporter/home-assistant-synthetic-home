@@ -18,6 +18,7 @@ from pytest_homeassistant_custom_component.common import MockConfigEntry
 TEST_FILENAME = "example.yaml"
 FIXTURES = "tests/fixtures"
 
+
 @pytest.fixture(autouse=True)
 def auto_enable_custom_integrations(
     enable_custom_integrations: None,
@@ -62,7 +63,7 @@ def mock_config_yaml_fixture() -> str | None:
 def mock_config_yaml(config_yaml_fixture: str | None) -> str:
     """Mock out the yaml config file contents."""
     if config_yaml_fixture:
-        with pathlib.Path(config_yaml_fixture).open('r') as f:
+        with pathlib.Path(config_yaml_fixture).open("r") as f:
             return f.read()
     return ""
 
@@ -71,7 +72,7 @@ def mock_config_yaml(config_yaml_fixture: str | None) -> str:
 def mock_config_content(config_yaml: str) -> None:
     """Mock out the yaml config file contents."""
     with patch(
-        "custom_components.synthetic_home.read_config_content",
+        "custom_components.synthetic_home.model.read_config_content",
         mock_open(read_data=config_yaml),
     ):
         yield

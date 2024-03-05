@@ -1,0 +1,8 @@
+---
+device_type: smart-plug
+desc: A smart plug allows remote on/off of electrical devices.
+entities:
+  sensor:
+    - energy
+  switch:
+    - outlet
