@@ -22,7 +22,7 @@ async def test_motion_sensor(hass: HomeAssistant, setup_integration: None) -> No
 
     state = hass.states.get("binary_sensor.front_yard_motion")
     assert state
-    assert state.state == "off"
+    assert state.state == "on"
     assert state.attributes == {
         "friendly_name": "Front Yard Motion",
         "device_class": "motion",

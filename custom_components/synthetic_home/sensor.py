@@ -60,7 +60,7 @@ async def async_setup_entry(hass, entry, async_add_devices):
     synthetic_home: ParsedHome = hass.data[DOMAIN][entry.entry_id]
 
     async_add_devices(
-        SyntheticHomeSensor(device, SENSOR_MAP[entity.entity_key])
+        SyntheticHomeSensor(device, SENSOR_MAP[entity.entity_key], **entity.attributes)
         for device in synthetic_home.devices
         for entity in device.entities
         if entity.platform == SENSOR_DOMAIN
@@ -76,9 +76,13 @@ class SyntheticHomeSensor(SyntheticDeviceEntity, SensorEntity):
         entity_desc: SyntheticSensorEntityDescription,
         *,
         native_value: StateType | None = None,
+        native_unit_of_measurement: str | None = None
     ) -> None:
         """Initialize SyntheticHomeSensor."""
         super().__init__(device, entity_desc.key)
         self._attr_name = entity_desc.key.capitalize()
         self.entity_description = entity_desc
         self._attr_native_value = native_value or entity_desc.native_value
+        self._attr_native_unit_of_measurement = (
+            native_unit_of_measurement or entity_desc.native_unit_of_measurement
+        )

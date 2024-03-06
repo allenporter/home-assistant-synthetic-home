@@ -1,8 +1,10 @@
 ---
 device_type: light-dimmable
 desc: A light that has adjustable brightness.
-attributes:
+supported_attributes:
   - brightness
 entities:
   light:
-    - light-dimmable
+    - key: light-dimmable
+      supported_attributes:
+        - brightness

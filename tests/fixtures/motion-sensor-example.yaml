@@ -5,4 +5,4 @@ device_entities:
     - name: Front Yard Motion
       device_type: motion-sensor
       attributes:
-        device_class: motion
+        is_on: True

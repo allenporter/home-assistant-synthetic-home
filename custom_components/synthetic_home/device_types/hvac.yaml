@@ -1,9 +1,18 @@
 ---
 device_type: hvac
 desc: A climate device that supports HVAC Cool and Heat modes.
+supported_attributes:
+  - unit_of_measurement
+  - current_temperature
 entities:
   climate:
-    - hvac
+    - key: hvac
+      supported_attributes:
+        - unit_of_measurement
+        - current_temperature
   sensor:
-    - temperature
+    - key: temperature
+      supported_attributes:
+        - native_value=current_temperature
+        - native_unit_of_measurement=unit_of_measurement
     - humidity

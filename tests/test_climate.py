@@ -37,7 +37,7 @@ async def test_climate_hvac_entity(
     assert state.state == "cool"
     assert state.attributes == {
         "friendly_name": "Family Room",
-        "current_temperature": 15.6,
+        "current_temperature": 16.7,
         "fan_mode": None,
         "fan_modes": ["low", "high", "off"],
         "hvac_action": "cooling",

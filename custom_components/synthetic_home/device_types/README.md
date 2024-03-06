@@ -19,3 +19,14 @@ may be added as new use cases are needed.
 Entities are specified by platform, where each value is an entity description
 key defined in the code. That is, adding a new enttiy type requires adding a
 new entity description.
+
+## Supported Attributes
+
+A device type can have attributes like 'unit_of_measure' or 'native_value' that
+can vary for any specific device that is configured. However, a device
+is represented by multiple entities. Therefore we define `supported_attributes`
+at the device level and a mapping to `supported_attributes` on each entity. By
+default the device attribute will be mapped to entity attributes with the same
+name, or the attribute value can map with a key value pair like `native_value=current_temperature`
+that maps the device attribute `current_temperature` to the entities
+`native_value`.

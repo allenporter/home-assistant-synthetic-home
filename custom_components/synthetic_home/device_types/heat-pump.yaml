@@ -1,6 +1,12 @@
 ---
 device_type: heat-pump
 desc: A climate devie that only supports heating.
+supported_attributes:
+  - unit_of_measurement
+  - current_temperature
 entities:
   climate:
-    - heat-pump
+    - key: heat-pump
+      supported_attributes:
+        - unit_of_measurement
+        - current_temperature

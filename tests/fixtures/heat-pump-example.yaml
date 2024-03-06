@@ -8,7 +8,7 @@ device_entities:
     device_info:
       model: Thermostat
       manufacturer: Nest
-      firmware: 1.0.0
+      sw_version: 1.0.0
     attributes:
       unit_of_measurement: °F
       current_temperature: 60

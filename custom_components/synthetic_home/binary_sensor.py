@@ -47,7 +47,9 @@ async def async_setup_entry(hass, entry, async_add_devices):
     synthetic_home = hass.data[DOMAIN][entry.entry_id]
 
     async_add_devices(
-        SyntheticHomeBinarySensor(device, SENSOR_MAP[entity.entity_key])
+        SyntheticHomeBinarySensor(
+            device, SENSOR_MAP[entity.entity_key], **entity.attributes
+        )
         for device in synthetic_home.devices
         for entity in device.entities
         if entity.platform == BINARY_SENSOR_DOMAIN
@@ -61,14 +63,12 @@ class SyntheticHomeBinarySensor(SyntheticDeviceEntity, BinarySensorEntity):
         self,
         device: ParsedDevice,
         entity_desc: BinarySensorEntityDescription,
+        *,
+        is_on: bool = False,
     ) -> None:
         """Initialize SyntheticHomeSensor."""
         super().__init__(device, entity_desc.key)
         if entity_desc.key not in device.friendly_name.lower():  # Avoid "Motion Motion"
             self._attr_name = entity_desc.key.capitalize()
         self.entity_description = entity_desc
-
-    @property
-    def is_on(self):
-        """Return true if the binary_sensor is on."""
-        return False
+        self._attr_is_on = is_on

@@ -31,7 +31,7 @@ async def test_hvac_sensors(hass: HomeAssistant, setup_integration: None) -> Non
 
     state = hass.states.get("sensor.family_room_temperature")
     assert state
-    assert state.state == "20"
+    assert state.state == "17"
     assert state.attributes == {
         "friendly_name": "Family Room Temperature",
         "device_class": "temperature",
@@ -51,12 +51,14 @@ async def test_hvac_sensors(hass: HomeAssistant, setup_integration: None) -> Non
 
 
 @pytest.mark.parametrize(("config_yaml_fixture"), [(f"{FIXTURES}/hvac-example.yaml")])
-async def test_hvac_us_units(hass: HomeAssistant, us_units: None, setup_integration: None) -> None:
+async def test_hvac_us_units(
+    hass: HomeAssistant, us_units: None, setup_integration: None
+) -> None:
     """Test the sensors created for an HVAC device."""
 
     state = hass.states.get("sensor.family_room_temperature")
     assert state
-    assert state.state == "68"
+    assert state.state == "62"
     assert state.attributes == {
         "friendly_name": "Family Room Temperature",
         "device_class": "temperature",

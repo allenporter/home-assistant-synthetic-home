@@ -11,4 +11,4 @@ device_entities:
         sw_version: 1.0.0
       attributes:
         unit_of_measurement: °F
-        current_temperature: 60
+        current_temperature: 62
