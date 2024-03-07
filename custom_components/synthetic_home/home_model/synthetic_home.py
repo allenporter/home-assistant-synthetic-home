@@ -7,7 +7,6 @@ from typing import Any
 
 from mashumaro.codecs.yaml import yaml_decode
 
-
 from .exceptions import SyntheticHomeError
 from .device_types import DeviceTypeRegistry
 
@@ -48,6 +47,24 @@ class SyntheticHome:
     # Device types supported by the home.
     device_type_registry: DeviceTypeRegistry | None = None
 
+    def validate(self) -> None:
+        """Validate a SyntheticHome configuration."""
+        for devices_list in self.device_entities.values():
+            for device in devices_list:
+                if not (
+                    device_type := self.device_type_registry.device_types.get(
+                        device.device_type
+                    )
+                ):
+                    raise SyntheticHomeError(
+                        f"Device {device} has device_type {device.device_type} not found in registry"
+                    )
+                for attribute in device.attributes:
+                    if attribute not in device_type.supported_attributes:
+                        raise SyntheticHomeError(
+                            f"Device {device.name} has attribute '{attribute}' not supported by device type {device_type}"
+                        )
+
 
 def read_config_content(config_file: pathlib.Path) -> str:
     """Create configuration file content, exposed for patching."""
@@ -61,4 +78,5 @@ def load_synthetic_home(config_file: pathlib.Path) -> SyntheticHome:
         content = read_config_content(config_file)
     except FileNotFoundError:
         raise SyntheticHomeError(f"Configuration file '{config_file}' does not exist")
+
     return yaml_decode(content, SyntheticHome)

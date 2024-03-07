@@ -2,9 +2,7 @@
 
 from homeassistant.helpers.entity import Entity
 
-from .home_model import (
-    ParsedDevice,
-)
+from .model import ParsedDevice
 
 
 class SyntheticDeviceEntity(Entity):

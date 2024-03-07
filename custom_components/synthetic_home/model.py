@@ -9,14 +9,12 @@ import logging
 from homeassistant.helpers.device_registry import DeviceInfo
 
 from .const import DOMAIN
-from .home_model.exceptions import SyntheticHomeError
 from .home_model.synthetic_home import (
     Device,
     load_synthetic_home,
 )
 from .home_model.device_types import (
     load_device_type_registry,
-    EntityEntry,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -85,43 +83,21 @@ def parse_home_config(config_file: pathlib.Path) -> ParsedHome:
     _LOGGER.debug(
         "Loaded %s device types", len(synthetic_home.device_type_registry.device_types)
     )
+    synthetic_home.validate()
 
     parsed_devices: list[ParsedDevice] = []
     for area_name, devices_list in synthetic_home.device_entities.items():
         for device in devices_list:
-            if not (device_type := registry.device_types.get(device.device_type)):
-                raise SyntheticHomeError(
-                    f"Device {device} has device_type {device.device_type} not found in registry"
-                )
-            for attribute in device.attributes:
-                if attribute not in device_type.supported_attributes:
-                    raise SyntheticHomeError(
-                        f"Device {device.name} has attribute '{attribute}' not supported by device type {device_type}"
-                    )
+            device_type = registry.device_types[device.device_type]
 
             parsed_entities: list[ParsedEntity] = []
-            for platform, entity_entries in device_type.entities.items():
+            for platform, entity_entries in device_type.entity_entries.items():
                 for entity_entry in entity_entries:
-                    # Map attributes from the device to this entity if appropriate
-                    if isinstance(entity_entry, str):
-                        entity_entry = EntityEntry(key=entity_entry)
-                    elif isinstance(entity_entry, dict):
-                        entity_entry = EntityEntry(**entity_entry)
-                    attributes = {}
-                    for attribute in entity_entry.supported_attributes:
-                        _LOGGER.debug("attribute=%s", attribute)
-                        device_attribute_key = attribute
-                        entity_attribute_key = attribute
-                        if "=" in attribute:
-                            parts = attribute.split("=")
-                            entity_attribute_key = parts[0]
-                            device_attribute_key = parts[1]
-                        _LOGGER.debug("entity_attribute_key=%s", entity_attribute_key)
-                        _LOGGER.debug("device_attribute_key=%s", device_attribute_key)
-                        if device_attribute_key in device.attributes:
-                            attributes[entity_attribute_key] = device.attributes.get(
-                                device_attribute_key
-                            )
+                    attributes = {
+                        entity_attribute_key: device.attributes[device_attribute_key]
+                        for device_attribute_key, entity_attribute_key in entity_entry.attribute_keys
+                        if device_attribute_key in device.attributes
+                    }
                     _LOGGER.debug("key=%s attributes=%s", entity_entry.key, attributes)
                     parsed_entities.append(
                         ParsedEntity(
