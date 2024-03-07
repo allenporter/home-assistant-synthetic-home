@@ -16,8 +16,8 @@ from homeassistant.exceptions import ConfigEntryError
 from homeassistant.helpers import area_registry as ar, device_registry as dr
 
 from .const import DOMAIN, CONF_FILENAME
-from .model import load_synthetic_home
-from .exceptions import SyntheticHomeError
+from .model import parse_home_config
+from .home_model.exceptions import SyntheticHomeError
 
 SCAN_INTERVAL = timedelta(seconds=30)
 
@@ -40,7 +40,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     config_file = pathlib.Path(hass.config.path(entry.data[CONF_FILENAME]))
     try:
-        synthetic_home = load_synthetic_home(config_file)
+        synthetic_home = parse_home_config(config_file)
     except SyntheticHomeError as err:
         raise ConfigEntryError from err
 

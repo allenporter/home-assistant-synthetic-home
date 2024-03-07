@@ -72,7 +72,7 @@ def mock_config_yaml(config_yaml_fixture: str | None) -> str:
 def mock_config_content(config_yaml: str) -> None:
     """Mock out the yaml config file contents."""
     with patch(
-        "custom_components.synthetic_home.model.read_config_content",
+        "custom_components.synthetic_home.home_model.synthetic_home.read_config_content",
         mock_open(read_data=config_yaml),
     ):
         yield

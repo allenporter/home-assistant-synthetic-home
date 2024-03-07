@@ -2,7 +2,7 @@
 
 from homeassistant.helpers.entity import Entity
 
-from .model import (
+from .home_model import (
     ParsedDevice,
 )
 
