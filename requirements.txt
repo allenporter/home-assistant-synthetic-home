@@ -1,5 +1,5 @@
 mashumaro==3.12
-pytest-homeassistant-custom-component==0.13.103
+pytest-homeassistant-custom-component==0.13.107
 mypy==1.8.0
 pre-commit==3.6.2
 ruff==0.3.0
