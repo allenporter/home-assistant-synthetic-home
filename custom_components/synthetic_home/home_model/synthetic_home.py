@@ -42,14 +42,14 @@ class SyntheticHome:
     """Data about a synthetic home."""
 
     # Devices by area
-    device_entities: dict[str, list[Device]]
+    devices: dict[str, list[Device]]
 
     # Device types supported by the home.
     device_type_registry: DeviceTypeRegistry | None = None
 
     def validate(self) -> None:
         """Validate a SyntheticHome configuration."""
-        for devices_list in self.device_entities.values():
+        for devices_list in self.devices.values():
             for device in devices_list:
                 if not (
                     device_type := self.device_type_registry.device_types.get(
@@ -78,5 +78,7 @@ def load_synthetic_home(config_file: pathlib.Path) -> SyntheticHome:
         content = read_config_content(config_file)
     except FileNotFoundError:
         raise SyntheticHomeError(f"Configuration file '{config_file}' does not exist")
-
-    return yaml_decode(content, SyntheticHome)
+    try:
+        return yaml_decode(content, SyntheticHome)
+    except ValueError as err:
+        raise SyntheticHomeError(f"Could not parse config file '{config_file}': {err}")

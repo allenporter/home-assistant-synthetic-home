@@ -1,6 +1,6 @@
 ---
 name: Family Farmhouse
-device_entities:
+devices:
   Front door:
     - name: Front Door Lock
       device_type: smart-lock

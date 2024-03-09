@@ -86,7 +86,7 @@ def parse_home_config(config_file: pathlib.Path) -> ParsedHome:
     synthetic_home.validate()
 
     parsed_devices: list[ParsedDevice] = []
-    for area_name, devices_list in synthetic_home.device_entities.items():
+    for area_name, devices_list in synthetic_home.devices.items():
         for device in devices_list:
             device_type = registry.device_types[device.device_type]
 
@@ -117,6 +117,6 @@ def parse_home_config(config_file: pathlib.Path) -> ParsedHome:
             )
 
     return ParsedHome(
-        areas=synthetic_home.device_entities.keys(),
+        areas=synthetic_home.devices.keys(),
         devices=parsed_devices,
     )

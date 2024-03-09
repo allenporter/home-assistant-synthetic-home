@@ -1,6 +1,6 @@
 ---
 name: Family Farmhouse
-device_entities:
+devices:
   Front Yard:
     - name: Front Yard Motion
       device_type: motion-sensor

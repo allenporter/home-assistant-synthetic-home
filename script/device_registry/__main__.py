@@ -41,11 +41,13 @@ def main():
         for name in device_type_names:
             device_type = device_registry.device_types[name]
             data = asdict(device_type)
-            output.append({
+            values = {
                 key: data[key]
                 for key in DUMP_KEYS
                 if data.get(key)
-            })
+            }
+            output.append(values)
+
         print(yaml.dump(output, sort_keys=False, explicit_start=True))
 
     return 0

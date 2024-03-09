@@ -1,6 +1,6 @@
 ---
 name: Family Farmhouse
-device_entities:
+devices:
   Family Room:
   - name: Family Room
     device_type: light-rgbw

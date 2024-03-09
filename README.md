@@ -16,7 +16,7 @@ Given an example synthetic home configuration file `farmhouse.yaml`:
 ```yaml
 ---
 name: Family Farmhouse
-device_entities:
+devices:
   Family Room:
     - name: Family Room Lamp
       device_type: light
@@ -63,7 +63,7 @@ device_entities:
 
 ---
 name: Family Farmhouse
-device_entities:
+devices:
   Family room:
   - name: Family room
     device_type: heat-pump
