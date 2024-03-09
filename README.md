@@ -5,7 +5,7 @@ configuration file, used for testing.
 
 ## Synthetic Home Configuration
 
-See `custom_components/synthetic_home/model.py` for a description of the configuration
+See `custom_components/synthetic_home/home_model/synthetic_home.py` for a description of the configuration
 file format. This is essentially modeled after Home Assistants `demo` platform
 but allows you to name devices and stick them in areas using a configuration file.
 
@@ -95,6 +95,9 @@ See `tests/` for examples of how to create a synthetic devices in your tests
 using `pytest-homeassistant-custom-component`.
 
 ## Device Registry
+
+The device types are defined in `custom_components/synthetic_home/device_types/`
+where each device type is defined in a separate file. See the [README](custom_components/synthetic_home/device_types/README.md) for more details.
 
 You can interact with the device registry using the device registry tooling:
 
