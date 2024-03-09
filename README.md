@@ -106,3 +106,29 @@ step the storage generation tool is doing internally).
 
 See `tests/` for examples of how to create a synthetic devices in your tests
 using `pytest-homeassistant-custom-component`.
+
+## Device Registry
+
+You can interact with the device registry using the device registry tooling:
+
+```bash
+$ export PYTHONPATH="${PYTHONPATH}:${PWD}/custom_components"
+$ python3 -m script.device_registry --command=dump
+```
+
+This will output the available device types for use in other data generation tools:
+```
+---
+- desc: A device attached to a door that can detect if it is opened or closed.
+  device_type: door-sensor
+- desc: A a garage door that can be controlled remotely.
+  device_type: garage-door
+- desc: An movable barrier that can be monitored and opened and closed remotely.
+  device_type: gate
+- desc: A climate devie that only supports heating.
+  supported_attributes:
+  - unit_of_measurement
+  - current_temperature
+  device_type: heat-pump
+...
+```

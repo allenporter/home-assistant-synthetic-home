@@ -13,7 +13,7 @@ _LOGGER = logging.getLogger(__name__)
 
 def get_arguments() -> argparse.Namespace:
     """Get parsed passed in arguments."""
-    parser = argparse.ArgumentParser(description="Home Assistant Scaffolder")
+    parser = argparse.ArgumentParser(description="Synthetic Home Storage Driver")
     parser.add_argument(
         "--config",
         type=str,
