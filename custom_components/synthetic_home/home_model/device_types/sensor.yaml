@@ -1,0 +1,14 @@
+---
+device_type: sensor
+desc: A generic sensor that is taking measurements of some value
+supported_attributes:
+  - unit_of_measurement
+  - value
+  - device_class
+entities:
+  sensor:
+    - key: generic
+      supported_attributes:
+        - native_value=value
+        - native_unit_of_measurement=unit_of_measurement
+        - device_class

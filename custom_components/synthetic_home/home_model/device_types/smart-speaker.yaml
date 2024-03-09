@@ -1,0 +1,6 @@
+---
+device_type: smart-speaker
+desc: A music speaker that can be controlled remotely.
+entities:
+  media_player:
+    - speaker

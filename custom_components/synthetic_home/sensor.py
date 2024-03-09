@@ -23,6 +23,11 @@ class SyntheticSensorEntityDescription(SensorEntityDescription, frozen_or_thawed
 
 SENSORS: tuple[SyntheticSensorEntityDescription, ...] = (
     SyntheticSensorEntityDescription(
+        key="generic",
+        state_class=SensorStateClass.MEASUREMENT,
+        native_value=0,
+    ),
+    SyntheticSensorEntityDescription(
         key="temperature",
         native_unit_of_measurement=UnitOfTemperature.CELSIUS,
         device_class=SensorDeviceClass.TEMPERATURE,

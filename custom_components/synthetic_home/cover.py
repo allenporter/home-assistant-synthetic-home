@@ -55,7 +55,7 @@ COVER_MAP = {desc.key: desc for desc in COVERS}
 async def async_setup_entry(
     hass: HomeAssistant, entry: ConfigEntry, async_add_devices: AddEntitiesCallback
 ):
-    """Set up light platform."""
+    """Set up cover platform."""
     synthetic_home = hass.data[DOMAIN][entry.entry_id]
 
     async_add_devices(

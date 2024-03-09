@@ -37,6 +37,14 @@ BINARY_SENSORS: tuple[BinarySensorEntityDescription, ...] = (
         key="motion",
         device_class=BinarySensorDeviceClass.MOTION,
     ),
+    BinarySensorEntityDescription(
+        key="person",
+        device_class=BinarySensorDeviceClass.OCCUPANCY,
+    ),
+    BinarySensorEntityDescription(
+        key="sound",
+        device_class=BinarySensorDeviceClass.SOUND,
+    ),
 )
 SENSOR_MAP = {desc.key: desc for desc in BINARY_SENSORS}
 

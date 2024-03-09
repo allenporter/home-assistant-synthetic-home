@@ -1,0 +1,13 @@
+---
+name: Home1
+country_code: US
+location: Suburban neighborhood in Texas
+type: Single-family house
+devices:
+  Living Room:
+  - name: Smart Speaker
+    device_type: smart-speaker
+    device_info:
+      model: Echo Dot (4th Gen)
+      manufacturer: Amazon
+      sw_version: 4.5.1

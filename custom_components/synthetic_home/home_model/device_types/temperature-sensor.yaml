@@ -1,0 +1,16 @@
+---
+device_type: temperature-sensor
+desc: A device that measures the current temperature and humidity.
+supported_attributes:
+  - unit_of_measurement
+  - current_temperature
+  - current_humidity
+entities:
+  sensor:
+    - key: temperature
+      supported_attributes:
+        - native_value=current_temperature
+        - native_unit_of_measurement=unit_of_measurement
+    - key: humidity
+      supported_attributes:
+        - native_value=current_humidity

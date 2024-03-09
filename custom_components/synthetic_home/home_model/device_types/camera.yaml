@@ -1,0 +1,12 @@
+---
+device_type: camera
+desc: A video camera that supports motion detection and other events.
+entities:
+  # TODO: The camera entity is not currently implemented
+  camera:
+    - camera
+  binary_sensor:
+    - motion
+    - person
+    - sound
+  # TODO: In the future would be good to add an event entity here
