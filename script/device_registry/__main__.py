@@ -1,8 +1,9 @@
 """A command line tool for interacting with the device registry."""
 
+# ruff: noqa: T201
+
 import argparse
 from dataclasses import asdict
-import pathlib
 import sys
 import logging
 import yaml
@@ -41,11 +42,7 @@ def main():
         for name in device_type_names:
             device_type = device_registry.device_types[name]
             data = asdict(device_type)
-            values = {
-                key: data[key]
-                for key in DUMP_KEYS
-                if data.get(key)
-            }
+            values = {key: data[key] for key in DUMP_KEYS if data.get(key)}
             output.append(values)
 
         print(yaml.dump(output, sort_keys=False, explicit_start=True))

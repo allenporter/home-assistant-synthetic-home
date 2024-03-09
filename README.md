@@ -28,6 +28,9 @@ devices:
       device_info:
         manufacturer: Nest
         sw_version: 1.0.0
+      attributes:
+        unit_of_measurement: °F
+        current_temperature: 60
     - name: Left Window
       device_type: window-sensor
     - name: Right Window
@@ -60,22 +63,6 @@ devices:
     - name: Front motion
       device_type: motion-sensor
 ```
-
----
-name: Family Farmhouse
-devices:
-  Family room:
-  - name: Family room
-    device_type: heat-pump
-    unique_id: d4df546410f90f1c1d9be6a8443b8ec6
-    device_info:
-      model: Thermostat
-      manufacturer: Nest
-      sw_version: 1.0.0
-    attributes:
-      unit_of_measurement: °F
-      current_temperature: 60
-
 
 You can generate a Home Assistant `config/` directory that is setup with the
 synthetic home integration:
