@@ -1,0 +1,12 @@
+---
+name: Home1
+country_code: US
+location: Suburban neighborhood in Texas
+devices:
+  Backyard:
+    - name: Outdoor Camera
+      device_type: camera
+      device_info:
+        model: Spotlight Cam Battery
+        manufacturer: Ring
+        sw_version: 2.4.1

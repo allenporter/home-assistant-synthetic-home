@@ -1,5 +1,6 @@
 """Data model for home assistant synthetic home."""
 
+import itertools
 from dataclasses import dataclass, field
 import pathlib
 import logging
@@ -32,9 +33,27 @@ class Device:
     """A synthetic device."""
 
     name: str
+    """A human readable name for the device."""
+
     device_type: str | None = None
+    """The type of the device in the device registry that determines how it maps to entities."""
+
     device_info: SyntheticDeviceInfo | None = None
+    """Device make and model information."""
+
     attributes: dict[str, Any] = field(default_factory=dict)
+    """Attributes that determine how the entities are configured or their state"""
+
+    restorable_attribute_keys: list[str] = field(default_factory=list)
+    """A list of pre-canned RestorableStateAttributes specified by the key.
+
+    These are used for restoring a device into a specific state supported by the
+    device type. This is used to use a label rather than specifying low level
+    entity details. This is an alternative to specifying low level attributes above.
+
+    Restorable attributes overwrite normal attributes since they can be reloaded
+    at runtime.
+    """
 
 
 @dataclass
@@ -60,10 +79,37 @@ class SyntheticHome:
                         f"Device {device} has device_type {device.device_type} not found in registry"
                     )
                 for attribute in device.attributes:
-                    if attribute not in device_type.supported_attributes:
+                    if (
+                        attribute not in device_type.supported_attributes
+                        and attribute not in device_type.supported_state_attributes
+                    ):
                         raise SyntheticHomeError(
                             f"Device {device.name} has attribute '{attribute}' not supported by device type {device_type}"
                         )
+
+    def find_devices_by_name(
+        self, area_name: str | None, device_name: str
+    ) -> Device | None:
+        """Find devices by optional area and device name."""
+        devices = list(
+            itertools.chain.from_iterable(
+                [
+                    area_devices
+                    for area, area_devices in self.devices.items()
+                    if area_name is None or area == area_name
+                ]
+            )
+        )
+        if area_name is not None and not devices:
+            raise SyntheticHomeError(f"Area name '{area_name}' matched no devices")
+        found_devices = [device for device in devices if device.name == device_name]
+        if len(found_devices) == 0:
+            raise SyntheticHomeError(f"Device name '{device_name}' matched no devices")
+        if len(found_devices) > 1:
+            raise SyntheticHomeError(
+                f"Device name '{device_name}' matched multiple devices, must specify an area"
+            )
+        return found_devices[0]
 
 
 def read_config_content(config_file: pathlib.Path) -> str:

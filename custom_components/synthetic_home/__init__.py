@@ -15,9 +15,10 @@ from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryError
 from homeassistant.helpers import area_registry as ar, device_registry as dr
 
-from .const import DOMAIN, CONF_FILENAME
+from .const import DOMAIN, CONF_FILENAME, DATA_RESTORABLE_ATTRIBUTES
 from .model import parse_home_config
 from .home_model.exceptions import SyntheticHomeError
+from .services import async_register_services
 
 SCAN_INTERVAL = timedelta(seconds=30)
 
@@ -38,10 +39,12 @@ PLATFORMS: list[Platform] = [
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up this integration using UI."""
     hass.data.setdefault(DOMAIN, {})
+    hass.data[DOMAIN].setdefault(DATA_RESTORABLE_ATTRIBUTES, {})
 
     config_file = pathlib.Path(hass.config.path(entry.data[CONF_FILENAME]))
+    states = hass.data[DOMAIN][DATA_RESTORABLE_ATTRIBUTES].get(entry.entry_id)
     try:
-        synthetic_home = parse_home_config(config_file)
+        synthetic_home = parse_home_config(config_file, states)
     except SyntheticHomeError as err:
         raise ConfigEntryError from err
 
@@ -66,6 +69,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     entry.async_on_unload(entry.add_update_listener(async_reload_entry))
+
+    async_register_services(hass)
 
     return True
 

@@ -5,6 +5,7 @@ from dataclasses import dataclass, field
 import pathlib
 import logging
 import yaml
+from typing import Any
 
 from mashumaro.codecs.yaml import yaml_decode
 from mashumaro.exceptions import MissingField
@@ -23,7 +24,12 @@ DEVICE_TYPES_PATH = pathlib.Path(
 
 @dataclass
 class EntityEntry:
-    """Defines an entity type."""
+    """Defines an entity type.
+
+    An entity is the lowest level object that maps to a device. The supported
+    attributes are used to map device level attributes to entity level attributes
+    used in the platforms when creating Home Assistant entities.
+    """
 
     key: str
     """The entity description key"""
@@ -45,6 +51,23 @@ class EntityEntry:
 
 
 @dataclass
+class RestoreableAttributes:
+    """Represents a device state that can be used to save a pre-canned restore state.
+
+    This is used as a grouping of state values representing the "interesting"
+    states of the device that can be enumerated during evaluation. For example,
+    instead of explicitly specifying specific temperature values, a restorable
+    state could implement "warm" and "cool".
+    """
+
+    key: str
+    """An identifier for this set of attributes used for labeling"""
+
+    attributes: dict[str, Any] = field(default_factory=dict)
+    """The key/values that map to the device `supported_state_attributes` for this evaluation state."""
+
+
+@dataclass
 class DeviceType:
     """Defines of device type."""
 
@@ -59,6 +82,12 @@ class DeviceType:
 
     supported_attributes: list[str] = field(default_factory=list)
     """Attributes supported by this device, mapped to entity attributes."""
+
+    supported_state_attributes: list[str] = field(default_factory=list)
+    """State values that can be set on this device, mapped to entity attributes."""
+
+    restoreable_attributes: list[RestoreableAttributes] = field(default_factory=list)
+    """A series of different attribute values that are most interesting to use during evaluation."""
 
     @property
     def entity_entries(self) -> dict[str, EntityEntry]:
@@ -78,6 +107,20 @@ class DeviceType:
                     )
             result[key] = updated_entries
         return result
+
+    @property
+    def all_restore_attribute_keys(self) -> list[str]:
+        """Return all restorable attribute keys supported."""
+        return [state.key for state in self.restoreable_attributes]
+
+    def get_restoreable_attributes_by_key(
+        self, restore_attribute_key: str
+    ) -> RestoreableAttributes | None:
+        """Get the set of restorable attributes by the specified key."""
+        for restore_attribute in self.restoreable_attributes:
+            if restore_attribute.key == restore_attribute_key:
+                return restore_attribute
+        return None
 
 
 @dataclass
@@ -125,3 +168,10 @@ def load_device_type_registry() -> DeviceTypeRegistry:
             )
         device_types[device_type.device_type] = device_type
     return DeviceTypeRegistry(device_types=device_types)
+
+
+def load_restoreable_attributes(device_type: str) -> list[str]:
+    """Enumerate the evaluation states for the specified device type."""
+    device_type_registry = load_device_type_registry()
+    camera_device_type = device_type_registry.device_types[device_type]
+    return [eval_state.key for eval_state in camera_device_type.restoreable_attributes]

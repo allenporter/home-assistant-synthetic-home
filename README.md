@@ -89,6 +89,56 @@ flow you specify a yaml file like `farmhouse.yaml` and it expects to find it in 
 `config/` folder next to `configuration.yaml`. (This is similar above, and the same
 step the storage generation tool is doing internally).
 
+## Device & Entity Attributes and State
+
+Synthetic Home is defined in terms of top level devices which are mapped into
+lower level Home Assistant entities (e.g. a thermostate has a climate entity
+and a temperature sensor entity). Each device has `attributes` which are mapped
+to entity level attributes by the device registry (e.g. `hvac_action` maps to
+a climate entity and `temperature` maps to a temperature sensor). See the
+[Device Registry documentation](custom_components/synthetic_home/home_model/device_types/README.md)
+for more detail on how these mappings are configured.
+
+### Setting Attributes and State in yaml config
+
+The most basic way to set a devices attributes and state is in the main yaml
+config by setting the `attributes` on the device. This is an example pulled out
+from the example above:
+
+```yaml
+- name: Family Room
+  device_type: hvac
+  device_info:
+    manufacturer: Nest
+    sw_version: 1.0.0
+  attributes:
+    unit_of_measurement: °F
+    current_temperature: 60
+```
+
+### Restorable Attributes in yaml config
+
+The next way to set attributes is with `restorable_attribute_keys`
+which use pre-canned device states that mean you don't need to use the lower
+level values.
+
+```yaml
+- name: Family Room
+  device_type: hvac
+  device_info:
+    manufacturer: Nest
+    sw_version: 1.0.0
+  restorable_attribute_keys:
+    - warm_and_cooling
+```
+
+### Restorable Attributes using service calls
+
+You may also use a service call to set restorable attributes, similar to
+specifying in yaml but without overwriting the config file. The `set_synthetic_device_state`
+call can set a restorable attribute key and will reload the integration to pick
+up the new value. The `clear_synthetic_device_state` will restore the state back to normal.
+
 ## Testing
 
 See `tests/` for examples of how to create a synthetic devices in your tests
@@ -107,6 +157,7 @@ $ python3 -m script.device_registry --command=dump
 ```
 
 This will output the available device types for use in other data generation tools:
+
 ```
 ---
 - desc: A device attached to a door that can detect if it is opened or closed.

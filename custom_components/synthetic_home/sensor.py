@@ -1,5 +1,7 @@
 """Sensor platform for Synthetic Home."""
 
+import logging
+
 from homeassistant.components.sensor import (
     SensorEntity,
     SensorDeviceClass,
@@ -13,6 +15,8 @@ from homeassistant.const import PERCENTAGE, UnitOfTemperature, UnitOfEnergy
 from .const import DOMAIN
 from .model import ParsedHome, ParsedDevice
 from .entity import SyntheticDeviceEntity
+
+_LOGGER = logging.getLogger(__name__)
 
 
 class SyntheticSensorEntityDescription(SensorEntityDescription, frozen_or_thawed=True):
@@ -63,7 +67,6 @@ async def async_setup_entry(hass, entry, async_add_devices):
     """Set up sensor platform."""
 
     synthetic_home: ParsedHome = hass.data[DOMAIN][entry.entry_id]
-
     async_add_devices(
         SyntheticHomeSensor(device, SENSOR_MAP[entity.entity_key], **entity.attributes)
         for device in synthetic_home.devices

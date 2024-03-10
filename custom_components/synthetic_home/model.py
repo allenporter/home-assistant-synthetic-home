@@ -5,7 +5,6 @@ import hashlib
 import pathlib
 import logging
 
-
 from homeassistant.helpers.device_registry import DeviceInfo
 
 from .const import DOMAIN
@@ -15,7 +14,10 @@ from .home_model.synthetic_home import (
 )
 from .home_model.device_types import (
     load_device_type_registry,
+    DeviceType,
 )
+from .home_model.exceptions import SyntheticHomeError
+
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -70,7 +72,37 @@ def generate_device_id(device_name: str, area_name: str) -> str:
     return hash.hexdigest()
 
 
-def parse_home_config(config_file: pathlib.Path) -> ParsedHome:
+def _restore_attributes(
+    device_type: DeviceType,
+    device: Device,
+) -> None:
+    """Apply an evaluation state update to the specified device."""
+    if device.restorable_attribute_keys:
+        # Clear any existing state values and overwrite from the evaluation state
+        for state_value in device_type.supported_state_attributes:
+            if state_value in device.attributes:
+                del device.attributes[state_value]
+
+    # Find the evaluation states from the device registry
+    for restore_attribute_key in device.restorable_attribute_keys:
+        if not (
+            restorable_attributes := device_type.get_restoreable_attributes_by_key(
+                restore_attribute_key
+            )
+        ):
+            raise SyntheticHomeError(
+                f"Device type '{device_type.device_type}' does not support state key '{restore_attribute_key}'. Options are: {device_type.all_restore_attribute_keys}"
+            )
+        _LOGGER.debug(
+            "Applying attribute overrides: %s", restorable_attributes.attributes
+        )
+        device.attributes.update(restorable_attributes.attributes)
+
+
+def parse_home_config(
+    config_file: pathlib.Path,
+    restorable_attributes: dict[tuple[str | None, str], str] | None,
+) -> ParsedHome:
     """Load synthetic home configuration from disk."""
     synthetic_home = load_synthetic_home(config_file)
 
@@ -79,6 +111,14 @@ def parse_home_config(config_file: pathlib.Path) -> ParsedHome:
     if synthetic_home.device_type_registry:
         registry.device_types.update(synthetic_home.device_type_registry.device_types)
     synthetic_home.device_type_registry = registry
+
+    if restorable_attributes:
+        for (
+            area_name,
+            device_name,
+        ), restorable_attribute_key in restorable_attributes.items():
+            found_device = synthetic_home.find_devices_by_name(area_name, device_name)
+            found_device.restorable_attribute_keys.append(restorable_attribute_key)
 
     _LOGGER.debug(
         "Loaded %s device types", len(synthetic_home.device_type_registry.device_types)
@@ -89,6 +129,9 @@ def parse_home_config(config_file: pathlib.Path) -> ParsedHome:
     for area_name, devices_list in synthetic_home.devices.items():
         for device in devices_list:
             device_type = registry.device_types[device.device_type]
+
+            # Populate pre-canned restorable attributes
+            _restore_attributes(device_type, device)
 
             parsed_entities: list[ParsedEntity] = []
             for platform, entity_entries in device_type.entity_entries.items():

@@ -1,12 +1,38 @@
 ---
 device_type: camera
 desc: A video camera that supports motion detection and other events.
+supported_state_attributes:
+  - motion_detected
+  - person_detected
+  - sound_detected
 entities:
   # TODO: The camera entity is not currently implemented
   camera:
     - camera
   binary_sensor:
-    - motion
-    - person
-    - sound
+    - key: motion
+      supported_attributes:
+        - is_on=motion_detected
+    - key: person
+      supported_attributes:
+        - is_on=person_detected
+    - key: sound
+      supported_attributes:
+        - is_on=sound_detected
   # TODO: In the future would be good to add an event entity here
+
+#
+# The states below are useful for evaluating the device.
+#
+restoreable_attributes:
+  - key: idle
+  - key: motion-detected
+    attributes:
+      motion_detected: true
+  - key: person-detected
+    attributes:
+      person_detected: true
+      motion_detected: true
+  - key: sound-detected
+    attributes:
+      sound_detected: true

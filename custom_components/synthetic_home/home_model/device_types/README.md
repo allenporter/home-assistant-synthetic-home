@@ -20,13 +20,38 @@ Entities are specified by platform, where each value is an entity description
 key defined in the code. That is, adding a new enttiy type requires adding a
 new entity description.
 
-## Supported Attributes
+## Supported Attributes and State
 
-A device type can have attributes like 'unit_of_measure' or 'native_value' that
-can vary for any specific device that is configured. However, a device
-is represented by multiple entities. Therefore we define `supported_attributes`
-at the device level and a mapping to `supported_attributes` on each entity. By
-default the device attribute will be mapped to entity attributes with the same
-name, or the attribute value can map with a key value pair like `native_value=current_temperature`
+A device type can have attributes like `unit_of_measure` that can vary for any
+specific instance of the device that is configured. One complication is that
+attributes on a device need to map to specific entities inside Home Assistant.
+Therefore we define `supported_attributes` at the device level and a mapping to
+`supported_attributes` on each entity.
+
+We make a distinction between `supported_attributes` and `supported_state_attributes`
+where the latter are attributes that may change throughout the lifecycle of the
+device. See _Restorable attributes below_. Both types of attributes can be used
+with entity supported attributes.
+
+An entity can map attributes with key value pair like `native_value=current_temperature`
 that maps the device attribute `current_temperature` to the entities
 `native_value`.
+
+## Restorable attributes
+
+A device type can define `restoreable_attributes` that can support a pre-canned
+restorable states that can be used for testing and evaluating the other systems
+using synthetic entities.
+
+For example: When testing an HVAC device there are many different state attributes
+but there may only be a few _interesting_ states to evaluate such as:
+
+- The device is not running
+- The device target temperature is set to a normal range
+- The device target temperature is set to an abnormal range
+
+We use the pre-canned restorable states to simplify data generation to not need
+to consider every possibibility. This is implemented effectively as if setting
+these attributes in the config file.
+
+These should only be used with `supported_state_attributes`.
