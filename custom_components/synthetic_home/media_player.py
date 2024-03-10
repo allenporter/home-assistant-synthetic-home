@@ -1,10 +1,8 @@
 """Media platform for Synthetic Home."""
 
-import datetime
-from typing import Any
 
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.core import HomeAssistant, callback, CALLBACK_TYPE
+from homeassistant.core import HomeAssistant
 from homeassistant.components.media_player import (
     MediaPlayerEntity,
     MediaPlayerEntityDescription,
@@ -14,7 +12,6 @@ from homeassistant.components.media_player import (
     DOMAIN as MEDIA_PLAYER_DOMAIN,
 )
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from homeassistant.helpers.event import async_track_time_interval
 
 from .const import DOMAIN
 from .entity import SyntheticDeviceEntity
@@ -23,15 +20,18 @@ from .model import ParsedDevice
 VOLUME_STEP = 1
 SUPPORTED_FEATURES = (
     MediaPlayerEntityFeature.PLAY
-        | MediaPlayerEntityFeature.STOP
-        | MediaPlayerEntityFeature.VOLUME_STEP
-        | MediaPlayerEntityFeature.VOLUME_MUTE
-        | MediaPlayerEntityFeature.VOLUME_SET
-        | MediaPlayerEntityFeature.TURN_ON
-        | MediaPlayerEntityFeature.TURN_OFF
+    | MediaPlayerEntityFeature.STOP
+    | MediaPlayerEntityFeature.VOLUME_STEP
+    | MediaPlayerEntityFeature.VOLUME_MUTE
+    | MediaPlayerEntityFeature.VOLUME_SET
+    | MediaPlayerEntityFeature.TURN_ON
+    | MediaPlayerEntityFeature.TURN_OFF
 )
 
-class SyntheticMediaPlayerEntityDescription(MediaPlayerEntityDescription, frozen_or_thawed=True):
+
+class SyntheticMediaPlayerEntityDescription(
+    MediaPlayerEntityDescription, frozen_or_thawed=True
+):
     """Entity description for a media player entity."""
 
     supported_features: MediaPlayerEntityFeature | None = None
@@ -59,7 +59,9 @@ async def async_setup_entry(
     synthetic_home = hass.data[DOMAIN][entry.entry_id]
 
     async_add_devices(
-        SyntheticMediaPlayer(device, MEDIA_PLAYER_MAP[entity.entity_key], **entity.attributes)
+        SyntheticMediaPlayer(
+            device, MEDIA_PLAYER_MAP[entity.entity_key], **entity.attributes
+        )
         for device in synthetic_home.devices
         for entity in device.entities
         if entity.platform == MEDIA_PLAYER_DOMAIN

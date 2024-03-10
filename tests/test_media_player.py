@@ -1,6 +1,5 @@
 """Test Synthetic Home media player."""
 
-import datetime
 
 import pytest
 
@@ -8,18 +7,14 @@ import pytest
 from homeassistant.const import Platform
 from homeassistant.components.media_player import (
     DOMAIN as MEDIA_PLAYER_DOMAIN,
-    SERVICE_MEDIA_PLAY,
     SERVICE_MEDIA_STOP,
     SERVICE_TURN_ON,
     SERVICE_TURN_OFF,
     SERVICE_VOLUME_SET,
     ATTR_MEDIA_VOLUME_LEVEL,
-    ATTR_MEDIA_VOLUME_MUTED,
 )
 from homeassistant.const import ATTR_ENTITY_ID
 from homeassistant.core import HomeAssistant
-from homeassistant.util import dt as dt_util
-from pytest_homeassistant_custom_component.common import async_fire_time_changed
 
 from .conftest import FIXTURES
 
@@ -59,7 +54,6 @@ async def test_smart_speaker(
     state = hass.states.get(test_entity)
     assert state
     assert state.state == "off"
-
 
     await hass.services.async_call(
         MEDIA_PLAYER_DOMAIN,
