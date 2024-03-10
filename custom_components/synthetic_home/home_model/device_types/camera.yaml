@@ -24,7 +24,7 @@ entities:
 #
 # The states below are useful for evaluating the device.
 #
-restoreable_attributes:
+restorable_attributes:
   - key: idle
   - key: motion-detected
     attributes:

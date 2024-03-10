@@ -1,6 +1,7 @@
 """Test Synthetic Home climate entity."""
 
 import pytest
+from syrupy import SnapshotAssertion
 
 from homeassistant.const import Platform
 from homeassistant.components.climate import (
@@ -12,7 +13,9 @@ from homeassistant.const import ATTR_ENTITY_ID
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import device_registry as dr
 
-from .conftest import FIXTURES
+from pytest_homeassistant_custom_component.common import MockConfigEntry
+
+from .conftest import FIXTURES, restore_state
 
 TEST_ENTITY = "climate.family_room"
 
@@ -109,3 +112,27 @@ async def test_heat_pump(
     assert state
     assert state.state == "heat"
     assert state.attributes == attributes
+
+
+@pytest.mark.parametrize(
+    ("config_yaml_fixture", "restorable_attributes_key"),
+    [
+        (f"{FIXTURES}/hvac-example.yaml", attribute_key)
+        for attribute_key in ("cooling", "very-low", "off")
+    ],
+)
+async def test_hvac_restorable_attributes(
+    hass: HomeAssistant,
+    setup_integration: None,
+    config_entry: MockConfigEntry,
+    restorable_attributes_key: str,
+    snapshot: SnapshotAssertion,
+) -> None:
+    """Test an HVAC device with restorable state."""
+
+    await restore_state(
+        hass, config_entry, "Family room", "Family room", restorable_attributes_key
+    )
+    state = hass.states.get(TEST_ENTITY)
+    assert state
+    assert (state.state, state.attributes) == snapshot

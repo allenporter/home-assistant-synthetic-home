@@ -1,0 +1,82 @@
+# serializer version: 1
+# name: test_hvac_restorable_attributes[tests/fixtures/hvac-example.yaml-cooling]
+  tuple(
+    'cool',
+    ReadOnlyDict({
+      'current_temperature': 25,
+      'fan_mode': None,
+      'fan_modes': list([
+        'low',
+        'high',
+        'off',
+      ]),
+      'friendly_name': 'Family Room',
+      'hvac_action': 'cooling',
+      'hvac_modes': list([
+        <HVACMode.OFF: 'off'>,
+        <HVACMode.COOL: 'cool'>,
+        <HVACMode.HEAT: 'heat'>,
+        <HVACMode.AUTO: 'auto'>,
+      ]),
+      'max_temp': 35,
+      'min_temp': 7,
+      'supported_features': <ClimateEntityFeature: 394>,
+      'target_temp_high': None,
+      'target_temp_low': None,
+    }),
+  )
+# ---
+# name: test_hvac_restorable_attributes[tests/fixtures/hvac-example.yaml-off]
+  tuple(
+    'cool',
+    ReadOnlyDict({
+      'current_temperature': 22,
+      'fan_mode': None,
+      'fan_modes': list([
+        'low',
+        'high',
+        'off',
+      ]),
+      'friendly_name': 'Family Room',
+      'hvac_action': 'off',
+      'hvac_modes': list([
+        <HVACMode.OFF: 'off'>,
+        <HVACMode.COOL: 'cool'>,
+        <HVACMode.HEAT: 'heat'>,
+        <HVACMode.AUTO: 'auto'>,
+      ]),
+      'max_temp': 35,
+      'min_temp': 7,
+      'supported_features': <ClimateEntityFeature: 394>,
+      'target_temp_high': None,
+      'target_temp_low': None,
+    }),
+  )
+# ---
+# name: test_hvac_restorable_attributes[tests/fixtures/hvac-example.yaml-very-low]
+  tuple(
+    'cool',
+    ReadOnlyDict({
+      'current_temperature': 25,
+      'fan_mode': None,
+      'fan_modes': list([
+        'low',
+        'high',
+        'off',
+      ]),
+      'friendly_name': 'Family Room',
+      'hvac_action': 'cooling',
+      'hvac_modes': list([
+        <HVACMode.OFF: 'off'>,
+        <HVACMode.COOL: 'cool'>,
+        <HVACMode.HEAT: 'heat'>,
+        <HVACMode.AUTO: 'auto'>,
+      ]),
+      'max_temp': 35,
+      'min_temp': 7,
+      'supported_features': <ClimateEntityFeature: 394>,
+      'target_temp_high': None,
+      'target_temp_low': None,
+    }),
+  )
+# ---

@@ -39,7 +39,7 @@ that maps the device attribute `current_temperature` to the entities
 
 ## Restorable attributes
 
-A device type can define `restoreable_attributes` that can support a pre-canned
+A device type can define `restorable_attributes` that can support a pre-canned
 restorable states that can be used for testing and evaluating the other systems
 using synthetic entities.
 

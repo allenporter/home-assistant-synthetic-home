@@ -51,7 +51,7 @@ class EntityEntry:
 
 
 @dataclass
-class RestoreableAttributes:
+class RestorableAttributes:
     """Represents a device state that can be used to save a pre-canned restore state.
 
     This is used as a grouping of state values representing the "interesting"
@@ -86,7 +86,7 @@ class DeviceType:
     supported_state_attributes: list[str] = field(default_factory=list)
     """State values that can be set on this device, mapped to entity attributes."""
 
-    restoreable_attributes: list[RestoreableAttributes] = field(default_factory=list)
+    restorable_attributes: list[RestorableAttributes] = field(default_factory=list)
     """A series of different attribute values that are most interesting to use during evaluation."""
 
     @property
@@ -111,13 +111,13 @@ class DeviceType:
     @property
     def all_restore_attribute_keys(self) -> list[str]:
         """Return all restorable attribute keys supported."""
-        return [state.key for state in self.restoreable_attributes]
+        return [state.key for state in self.restorable_attributes]
 
-    def get_restoreable_attributes_by_key(
+    def get_restorable_attributes_by_key(
         self, restore_attribute_key: str
-    ) -> RestoreableAttributes | None:
+    ) -> RestorableAttributes | None:
         """Get the set of restorable attributes by the specified key."""
-        for restore_attribute in self.restoreable_attributes:
+        for restore_attribute in self.restorable_attributes:
             if restore_attribute.key == restore_attribute_key:
                 return restore_attribute
         return None
@@ -170,8 +170,8 @@ def load_device_type_registry() -> DeviceTypeRegistry:
     return DeviceTypeRegistry(device_types=device_types)
 
 
-def load_restoreable_attributes(device_type: str) -> list[str]:
+def load_restorable_attributes(device_type: str) -> list[str]:
     """Enumerate the evaluation states for the specified device type."""
     device_type_registry = load_device_type_registry()
     camera_device_type = device_type_registry.device_types[device_type]
-    return [eval_state.key for eval_state in camera_device_type.restoreable_attributes]
+    return [eval_state.key for eval_state in camera_device_type.restorable_attributes]

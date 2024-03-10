@@ -8,7 +8,7 @@ entities:
     - key: light
       supported_attributes:
         - state
-restoreable_attributes:
+restorable_attributes:
   - key: "on"
     attributes:
       state: "on"

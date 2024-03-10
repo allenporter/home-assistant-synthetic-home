@@ -105,18 +105,23 @@ class SyntheticHomeClimate(SyntheticDeviceEntity, ClimateEntity):
         *,
         unit_of_measurement: str | None = None,
         current_temperature: float | None = None,
+        target_temperature: float | None = None,
+        hvac_mode: HVACMode | None = None,
+        hvac_action: HVACAction | None = None,
     ) -> None:
         """Initialize the climate device."""
         super().__init__(device, entity_desc.key)
         self.entity_description = entity_desc
         self._attr_supported_features = entity_desc.supported_features
-        self._attr_target_temperature = entity_desc.target_temperature
+        self._attr_target_temperature = (
+            target_temperature or entity_desc.target_temperature
+        )
         self._attr_target_temperature_high = None
         self._attr_target_temperature_low = None
         self._attr_current_temperature = (
             current_temperature or entity_desc.current_temperature
         )
-        self._attr_hvac_action = entity_desc.hvac_action
+        self._attr_hvac_action = hvac_action or entity_desc.hvac_action
         self._attr_hvac_mode = entity_desc.hvac_mode
         self._attr_hvac_modes = entity_desc.hvac_modes
         self._attr_temperature_unit = unit_of_measurement

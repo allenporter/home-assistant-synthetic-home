@@ -86,12 +86,12 @@ def _restore_attributes(
     # Find the evaluation states from the device registry
     for restore_attribute_key in device.restorable_attribute_keys:
         if not (
-            restorable_attributes := device_type.get_restoreable_attributes_by_key(
+            restorable_attributes := device_type.get_restorable_attributes_by_key(
                 restore_attribute_key
             )
         ):
             raise SyntheticHomeError(
-                f"Device type '{device_type.device_type}' does not support state key '{restore_attribute_key}'. Options are: {device_type.all_restore_attribute_keys}"
+                f"Device type '{device_type.device_type}' does not support restorable attribute key '{restore_attribute_key}'. Options are: {device_type.all_restore_attribute_keys}"
             )
         _LOGGER.debug(
             "Applying attribute overrides: %s", restorable_attributes.attributes
