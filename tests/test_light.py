@@ -1,6 +1,7 @@
 """Test Synthetic Home switch."""
 
 import pytest
+from syrupy import SnapshotAssertion
 
 from homeassistant.const import Platform
 from homeassistant.components.light import (
@@ -13,7 +14,9 @@ from homeassistant.components.light import (
 from homeassistant.const import ATTR_ENTITY_ID
 from homeassistant.core import HomeAssistant
 
-from .conftest import FIXTURES
+from pytest_homeassistant_custom_component.common import MockConfigEntry
+
+from .conftest import FIXTURES, restore_state
 
 TEST_FIXTURE_FILE = f"{FIXTURES}/light-example.yaml"
 TEST_ENTITY = "light.family_room"
@@ -80,11 +83,11 @@ async def test_dimmable_light(hass: HomeAssistant, setup_integration: None) -> N
 
     state = hass.states.get(TEST_ENTITY)
     assert state
-    assert state.state == "off"
+    assert state.state == "on"
     assert state.attributes == {
-        "brightness": None,
+        "brightness": 30,
         "friendly_name": "Family Room",
-        "color_mode": None,
+        "color_mode": "brightness",
         "supported_color_modes": ["brightness"],
         "supported_features": 0,
     }
@@ -234,3 +237,31 @@ async def test_garage_door(hass: HomeAssistant, setup_integration: None) -> None
         "supported_color_modes": ["onoff"],
         "supported_features": 0,
     }
+
+
+@pytest.mark.parametrize(
+    ("platforms", "config_yaml_fixture", "restorable_attributes_key"),
+    [
+        ([Platform.LIGHT], f"{FIXTURES}/light-example.yaml", attribute_key)
+        for attribute_key in (
+            "on",
+            "off",
+        )
+    ],
+)
+async def test_restorable_attributes(
+    hass: HomeAssistant,
+    setup_integration: None,
+    config_entry: MockConfigEntry,
+    config_yaml_fixture: str,
+    restorable_attributes_key: str,
+    snapshot: SnapshotAssertion,
+) -> None:
+    """Test the loading evaluation states for a specific device."""
+
+    await restore_state(
+        hass, config_entry, "Family Room", "Family Room", restorable_attributes_key
+    )
+    state = hass.states.get("light.family_room")
+    assert state
+    assert state.state == restorable_attributes_key

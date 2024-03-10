@@ -8,3 +8,13 @@ entities:
     - key: light-dimmable
       supported_attributes:
         - brightness
+restoreable_attributes:
+  - key: "on"
+    attributes:
+      brightness: 100
+  - key: "off"
+    attributes:
+      brightness: 0
+  - key: dim
+    attributes:
+      brightness: 5

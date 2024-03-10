@@ -1,11 +1,14 @@
 """Test Synthetic Home sensor."""
 
 import pytest
+from syrupy import SnapshotAssertion
 
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 
-from .conftest import FIXTURES
+from pytest_homeassistant_custom_component.common import MockConfigEntry
+
+from .conftest import FIXTURES, restore_state, clear_restore_state
 
 
 @pytest.fixture(name="platforms")
@@ -95,4 +98,56 @@ async def test_window_sensor(hass: HomeAssistant, setup_integration: None) -> No
     assert state.attributes == {
         "friendly_name": "Left Window Sensor Battery",
         "device_class": "battery",
+    }
+
+
+@pytest.mark.parametrize(
+    ("config_yaml_fixture", "restorable_attributes_key"),
+    [
+        (f"{FIXTURES}/camera-example.yaml", attribute_key)
+        for attribute_key in (
+            "idle",
+            "person-detected",
+            "sound-detected",
+            "motion-detected",
+        )
+    ],
+)
+async def test_evaluation_states(
+    hass: HomeAssistant,
+    setup_integration: None,
+    config_entry: MockConfigEntry,
+    restorable_attributes_key: str,
+    snapshot: SnapshotAssertion,
+) -> None:
+    """Test the loading evaluation states for a specific device."""
+
+    await restore_state(
+        hass, config_entry, "Backyard", "Outdoor Camera", restorable_attributes_key
+    )
+    states = {
+        entity: hass.states.get(entity).state
+        for entity in (
+            "binary_sensor.outdoor_camera_motion",
+            "binary_sensor.outdoor_camera_person",
+            "binary_sensor.outdoor_camera_sound",
+        )
+    }
+    assert states == snapshot
+
+    await clear_restore_state(hass, config_entry)
+
+    # Verify all states have been restored
+    states = {
+        entity: hass.states.get(entity).state
+        for entity in (
+            "binary_sensor.outdoor_camera_motion",
+            "binary_sensor.outdoor_camera_person",
+            "binary_sensor.outdoor_camera_sound",
+        )
+    }
+    assert states == {
+        "binary_sensor.outdoor_camera_motion": "off",
+        "binary_sensor.outdoor_camera_person": "off",
+        "binary_sensor.outdoor_camera_sound": "off",
     }

@@ -1,0 +1,29 @@
+# serializer version: 1
+# name: test_evaluation_states[tests/fixtures/camera-example.yaml-idle]
+  dict({
+    'binary_sensor.outdoor_camera_motion': 'off',
+    'binary_sensor.outdoor_camera_person': 'off',
+    'binary_sensor.outdoor_camera_sound': 'off',
+  })
+# ---
+# name: test_evaluation_states[tests/fixtures/camera-example.yaml-motion-detected]
+  dict({
+    'binary_sensor.outdoor_camera_motion': 'on',
+    'binary_sensor.outdoor_camera_person': 'off',
+    'binary_sensor.outdoor_camera_sound': 'off',
+  })
+# ---
+# name: test_evaluation_states[tests/fixtures/camera-example.yaml-person-detected]
+  dict({
+    'binary_sensor.outdoor_camera_motion': 'on',
+    'binary_sensor.outdoor_camera_person': 'on',
+    'binary_sensor.outdoor_camera_sound': 'off',
+  })
+# ---
+# name: test_evaluation_states[tests/fixtures/camera-example.yaml-sound-detected]
+  dict({
+    'binary_sensor.outdoor_camera_motion': 'off',
+    'binary_sensor.outdoor_camera_person': 'off',
+    'binary_sensor.outdoor_camera_sound': 'on',
+  })
+# ---

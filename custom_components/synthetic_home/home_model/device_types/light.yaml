@@ -1,6 +1,17 @@
 ---
 device_type: light
 desc: A generic light that can be turned on/off.
+supported_attributes:
+  - state
 entities:
   light:
-    - light
+    - key: light
+      supported_attributes:
+        - state
+restoreable_attributes:
+  - key: "on"
+    attributes:
+      state: "on"
+  - key: "off"
+    attributes:
+      state: "off"
