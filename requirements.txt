@@ -4,4 +4,4 @@ mypy==1.8.0
 pre-commit==3.6.2
 ruff==0.3.0
 pytest-asyncio==0.23.5
-syrupy==4.6.0
+syrupy==4.6.1
