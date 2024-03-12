@@ -10,7 +10,10 @@ import pytest
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.setup import async_setup_component
+from syrupy.extensions.amber import AmberSnapshotExtension
+from syrupy.location import PyTestLocation
 
+DIFFERENT_DIRECTORY = "__snaps_example__"
 from custom_components.synthetic_home.const import (
     DOMAIN,
     CONF_FILENAME,
@@ -24,6 +27,21 @@ from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 TEST_FILENAME = "example.yaml"
 FIXTURES = "tests/fixtures"
+
+DIFFERENT_DIRECTORY = "snapshots"
+
+
+class DifferentDirectoryExtension(AmberSnapshotExtension):
+    @classmethod
+    def dirname(cls, *, test_location: "PyTestLocation") -> str:
+        return str(
+            pathlib.Path(test_location.filepath).parent.joinpath(DIFFERENT_DIRECTORY)
+        )
+
+
+@pytest.fixture
+def snapshot(snapshot):
+    return snapshot.use_extension(DifferentDirectoryExtension)
 
 
 @pytest.fixture(autouse=True)
