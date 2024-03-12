@@ -1,0 +1,30 @@
+set_synthetic_device_state
+  fields:
+    config_entry:
+      required: true
+      selector:
+        config_entry:
+          integration: synthetic_home
+    area_name:
+      required: true
+      example: Family Room
+      selector:
+        text:
+    device_name:
+      required: true
+      example: Family Room Thermostat
+      selector:
+        text:
+    restorable_attributes_key:
+      required: true
+      example: cool
+      selector:
+        text:
+
+clear_synthetic_device_state:
+  fields:
+    config_entry:
+      required: true
+      selector:
+        config_entry:
+          integration: synthetic_home
