@@ -1,4 +1,4 @@
-set_synthetic_device_state
+set_synthetic_device_state:
   fields:
     config_entry:
       required: true

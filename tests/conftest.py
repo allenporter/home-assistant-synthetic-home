@@ -5,11 +5,13 @@ from collections.abc import Generator
 from unittest.mock import patch, mock_open
 
 import pytest
-
+from syrupy import SnapshotAssertion
 
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.setup import async_setup_component
+from syrupy.extensions.amber import AmberSnapshotExtension
+from syrupy.location import PyTestLocation
 
 from custom_components.synthetic_home.const import (
     DOMAIN,
@@ -24,6 +26,25 @@ from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 TEST_FILENAME = "example.yaml"
 FIXTURES = "tests/fixtures"
+
+DIFFERENT_DIRECTORY = "snapshots"
+
+
+class DifferentDirectoryExtension(AmberSnapshotExtension):
+    """Extension to set a different snapshot directory."""
+
+    @classmethod
+    def dirname(cls, *, test_location: "PyTestLocation") -> str:
+        """Override the snapshot directory name."""
+        return str(
+            pathlib.Path(test_location.filepath).parent.joinpath(DIFFERENT_DIRECTORY)
+        )
+
+
+@pytest.fixture
+def snapshot(snapshot: SnapshotAssertion):
+    """Fixture to override the snapshot directory."""
+    return snapshot.use_extension(DifferentDirectoryExtension)
 
 
 @pytest.fixture(autouse=True)
