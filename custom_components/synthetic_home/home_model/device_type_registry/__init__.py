@@ -1,0 +1,1 @@
+"""Device type registry."""

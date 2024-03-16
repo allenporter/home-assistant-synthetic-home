@@ -123,6 +123,8 @@ def parse_home_config(
     _LOGGER.debug(
         "Loaded %s device types", len(synthetic_home.device_type_registry.device_types)
     )
+    if not synthetic_home.device_type_registry.device_types:
+        raise SyntheticHomeError("No device types found in the synthetic home")
     synthetic_home.validate()
 
     parsed_devices: list[ParsedDevice] = []

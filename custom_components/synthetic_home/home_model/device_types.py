@@ -2,10 +2,12 @@
 
 from collections.abc import Generator
 from dataclasses import dataclass, field
-import pathlib
+from importlib import resources
+from importlib.resources.abc import Traversable
 import logging
-import yaml
+import pathlib
 from typing import Any
+import yaml
 
 from mashumaro.codecs.yaml import yaml_decode
 from mashumaro.exceptions import MissingField
@@ -17,9 +19,7 @@ from .exceptions import SyntheticHomeError
 _LOGGER = logging.getLogger(__name__)
 
 
-DEVICE_TYPES_PATH = pathlib.Path(
-    "./custom_components/synthetic_home/home_model/device_types/"
-)
+DEVICE_TYPES_RESOURCE_PATH = resources.files().joinpath("device_type_registry")
 
 
 @dataclass
@@ -130,11 +130,13 @@ class DeviceTypeRegistry:
     device_types: dict[str, DeviceType] = field(default_factory=dict)
 
 
-def _read_device_types(device_types_path: pathlib.Path) -> Generator[DeviceType]:
+def _read_device_types(device_types_path: Traversable) -> Generator[DeviceType]:
     """Read device types from the device type directory."""
     _LOGGER.debug("Loading device type registry from %s", device_types_path.absolute())
 
-    for device_type_file in DEVICE_TYPES_PATH.glob("*.yaml"):
+    for device_type_file in device_types_path.iterdir():
+        if not device_type_file.name.endswith(".yaml"):
+            continue
         _LOGGER.debug("Loading %s", device_type_file)
         try:
             with device_type_file.open("r") as f:
@@ -161,7 +163,7 @@ def _read_device_types(device_types_path: pathlib.Path) -> Generator[DeviceType]
 def load_device_type_registry() -> DeviceTypeRegistry:
     """Load device types from the yaml configuration files."""
     device_types = {}
-    for device_type in _read_device_types(DEVICE_TYPES_PATH):
+    for device_type in _read_device_types(DEVICE_TYPES_RESOURCE_PATH):
         if device_type.device_type in device_types:
             raise SyntheticHomeError(
                 f"Device registry contains duplicate device type '{device_type.device_type}"
