@@ -5,7 +5,6 @@ from dataclasses import dataclass, field
 from importlib import resources
 from importlib.resources.abc import Traversable
 import logging
-import pathlib
 from typing import Any
 import yaml
 
