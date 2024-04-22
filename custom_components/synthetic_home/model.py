@@ -37,7 +37,7 @@ class ParsedDevice:
 
     unique_id: str
     device: Device
-    area_name: str
+    area_name: str | None
     entities: list[ParsedEntity]
 
     @property
@@ -64,11 +64,12 @@ class ParsedHome:
     devices: list[ParsedDevice] = field(default_factory=list)
 
 
-def generate_device_id(device_name: str, area_name: str) -> str:
+def generate_device_id(device_name: str, area_name: str | None) -> str:
     """Generate a device id from the hash of device name and area name."""
     hash = hashlib.sha256()
     hash.update(device_name.encode())
-    hash.update(area_name.encode())
+    if area_name:
+        hash.update(area_name.encode())
     return hash.hexdigest()
 
 
@@ -128,9 +129,15 @@ def parse_home_config(
     synthetic_home.validate()
 
     parsed_devices: list[ParsedDevice] = []
-    for area_name, devices_list in synthetic_home.devices.items():
+    pairs = [*synthetic_home.devices.items()]
+    if synthetic_home.services:
+        pairs.append((None, synthetic_home.services))
+    for area_name, devices_list in pairs:
         for device in devices_list:
-            device_type = registry.device_types[device.device_type]
+            if (device_type := registry.device_types.get(device.device_type)) is None:
+                raise SyntheticHomeError(
+                    f"Device '{device.name}' device_type '{device.device_type}' not found in registry"
+                )
 
             # Populate pre-canned restorable attributes
             _restore_attributes(device_type, device)
@@ -143,7 +150,6 @@ def parse_home_config(
                         for device_attribute_key, entity_attribute_key in entity_entry.attribute_keys
                         if device_attribute_key in device.attributes
                     }
-                    _LOGGER.debug("key=%s attributes=%s", entity_entry.key, attributes)
                     parsed_entities.append(
                         ParsedEntity(
                             platform=platform,

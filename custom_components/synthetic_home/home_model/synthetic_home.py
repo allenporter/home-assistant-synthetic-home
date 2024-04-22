@@ -61,7 +61,10 @@ class SyntheticHome:
     """Data about a synthetic home."""
 
     # Devices by area
-    devices: dict[str, list[Device]]
+    devices: dict[str, list[Device]] = field(default_factory=dict)
+
+    # Services for the home not for a specific area
+    services: list[Device] = field(default_factory=list)
 
     # Device types supported by the home.
     device_type_registry: DeviceTypeRegistry | None = None

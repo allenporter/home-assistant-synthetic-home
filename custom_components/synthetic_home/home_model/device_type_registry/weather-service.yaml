@@ -1,0 +1,97 @@
+---
+device_type: weather-service
+desc: A service that provides weather related integrations.
+supported_attributes:
+  - condition
+  - temperature
+  - temperature_unit_of_measurement
+  - humidity
+  - wind_speed
+  - wind_speed_unit_of_measurement
+
+  # These forecasts are specified as a list of conditions in the 'restorable_attributes'
+  # below. e.g. daily_forecast: ['sunny', 'sunny', 'cloudy']
+  # below by name to define their properties
+  - daily_forecast
+  - hourly_forecast
+  - twice_daily_forecast
+entities:
+  weather:
+    - key: weather
+      supported_attributes:
+        - condition
+        - native_temperature=temperature
+        - native_temperature_unit=temperature_unit_of_measurement
+        - humidity
+        - native_wind_speed=wind_speed
+        - native_wind_speed_unit=wind_speed_unit_of_measurement
+        - daily_forecast
+        - hourly_forecast
+        - twice_daily_forecast
+
+#
+# The states below are useful for evaluating the device.
+#
+restorable_attributes:
+  - key: fair
+    attributes:
+      condition: sunny
+      temperature: 72
+      temperature_unit_of_measurement: °F
+      humidity: 60
+      wind_speed: 5
+      wind_speed_unit_of_measurement: mph
+
+  - key: cloudy
+    attributes:
+      condition: cloudy
+      temperature: 60
+      temperature_unit_of_measurement: °F
+      humidity: 70
+      wind_speed: 10
+      wind_speed_unit_of_measurement: mph
+
+  - key: rainy
+    attributes:
+      condition: rainy
+      temperature: 50
+      temperature_unit_of_measurement: °F
+      humidity: 80
+      wind_speed: 15
+      wind_speed_unit_of_measurement: mph
+
+  - key: snowy
+    attributes:
+      condition: snowy
+      temperature: 32
+      temperature_unit_of_measurement: °F
+      humidity: 90
+      wind_speed: 20
+      wind_speed_unit_of_measurement: mph
+
+  - key: windy
+    attributes:
+      condition: windy
+      temperature: 65
+      temperature_unit_of_measurement: °F
+      humidity: 50
+      wind_speed: 30
+      wind_speed_unit_of_measurement: mph
+
+  - key: hot
+    attributes:
+      condition: sunny
+      temperature: 90
+      temperature_unit_of_measurement: °F
+      humidity: 40
+      wind_speed: 10
+      wind_speed_unit_of_measurement: mph
+
+  - key: cold
+    attributes:
+      condition: partlycloudy
+      temperature: 20
+      temperature_unit_of_measurement: °F
+      humidity: 60
+      wind_speed: 5
+      wind_speed_unit_of_measurement: mph

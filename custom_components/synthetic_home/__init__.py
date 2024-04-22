@@ -54,7 +54,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     area_registry = ar.async_get(hass)
     device_registry = dr.async_get(hass)
     for device in synthetic_home.devices:
-        area_entry = area_registry.async_get_or_create(device.area_name)
         _LOGGER.debug(
             "Creating device %s with unique_id %s",
             device.friendly_name,
@@ -65,7 +64,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             name=device.friendly_name,
             identifiers={(DOMAIN, device.unique_id)},
         )
-        device_registry.async_update_device(device_entry.id, area_id=area_entry.id)
+        if device.area_name:
+            area_entry = area_registry.async_get_or_create(device.area_name)
+            device_registry.async_update_device(device_entry.id, area_id=area_entry.id)
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     entry.async_on_unload(entry.add_update_listener(async_reload_entry))
