@@ -1,4 +1,4 @@
-mashumaro==3.12
+mashumaro==3.13
 pytest-homeassistant-custom-component==0.13.114
 mypy==1.9.0
 pre-commit==3.7.0
