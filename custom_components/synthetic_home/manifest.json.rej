@@ -1,8 +1,0 @@
-diff a/custom_components/synthetic_home/manifest.json b/custom_components/synthetic_home/manifest.json	(rejected hunks)
-@@ -7,5 +7,5 @@
-   "integration_type": "integration",
-   "iot_class": "calculated",
-   "issue_tracker": "https://github.com/allenporter/home-assistant-synthetic-home/issues",
--  "version": 1.0.0"
-+  "version": "1.0.0"
- }
