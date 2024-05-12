@@ -9,7 +9,6 @@ from homeassistant.components.switch import (
     SwitchEntityDescription,
 )
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from homeassistant.helpers.entity import EntityDescription
 
 from .const import DOMAIN
 from .entity import SyntheticDeviceEntity
