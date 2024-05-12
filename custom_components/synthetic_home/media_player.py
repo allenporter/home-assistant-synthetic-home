@@ -86,46 +86,46 @@ class SyntheticMediaPlayer(SyntheticDeviceEntity, MediaPlayerEntity):
     def turn_on(self) -> None:
         """Turn the media player on."""
         self._attr_state = MediaPlayerState.PLAYING
-        self.async_write_ha_state()
+        self.schedule_update_ha_state()
 
     def turn_off(self) -> None:
         """Turn the media player off."""
         self._attr_state = MediaPlayerState.OFF
-        self.async_write_ha_state()
+        self.schedule_update_ha_state()
 
     def mute_volume(self, mute: bool) -> None:
         """Mute the volume."""
         self._attr_is_volume_muted = mute
-        self.async_write_ha_state()
+        self.schedule_update_ha_state()
 
     def volume_up(self) -> None:
         """Increase volume."""
         assert self.volume_level is not None
         self._attr_volume_level = min(1.0, self.volume_level + 0.1)
-        self.async_write_ha_state()
+        self.schedule_update_ha_state()
 
     def volume_down(self) -> None:
         """Decrease volume."""
         assert self.volume_level is not None
         self._attr_volume_level = max(0.0, self.volume_level - 0.1)
-        self.async_write_ha_state()
+        self.schedule_update_ha_state()
 
     def set_volume_level(self, volume: float) -> None:
         """Set the volume level, range 0..1."""
         self._attr_volume_level = volume
-        self.async_write_ha_state()
+        self.schedule_update_ha_state()
 
     def media_play(self) -> None:
         """Send play command."""
         self._attr_state = MediaPlayerState.PLAYING
-        self.async_write_ha_state()
+        self.schedule_update_ha_state()
 
     def media_pause(self) -> None:
         """Send pause command."""
         self._attr_state = MediaPlayerState.PAUSED
-        self.async_write_ha_state()
+        self.schedule_update_ha_state()
 
     def media_stop(self) -> None:
         """Send stop command."""
         self._attr_state = MediaPlayerState.OFF
-        self.async_write_ha_state()
+        self.schedule_update_ha_state()
