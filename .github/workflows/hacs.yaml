@@ -4,9 +4,8 @@ name: hacs
 on:
   push:
   pull_request:
-  # Disable cron given no brands repo setup
-  # schedule:
-  # - cron: "0 0 * * *"
+  schedule:
+  - cron: "0 0 * * *"
 
 jobs:
   validate:
