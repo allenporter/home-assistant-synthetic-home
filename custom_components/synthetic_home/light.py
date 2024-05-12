@@ -71,7 +71,7 @@ class SyntheticHomeLight(SyntheticDeviceEntity, LightEntity):
         device: ParsedDevice,
         entity_desc: SyntheticLightEntityDescription,
         *,
-        state: bool | None = None,
+        state: str | None = False,
         brightness: int | None = None,
         rgbw_color: tuple[int, int, int, int] | None = None,
     ) -> None:
@@ -81,8 +81,8 @@ class SyntheticHomeLight(SyntheticDeviceEntity, LightEntity):
         self.entity_description = entity_desc
         self._attr_supported_color_modes = entity_desc.supported_color_modes
         if state is not None:
-            self._attr_is_on = state
-        elif brightness is not None and brightness > 0:
+            self._attr_is_on = (state == "on")
+        if brightness is not None and brightness > 0:
             self._attr_is_on = True
         self._attr_color_mode = entity_desc.color_mode
         self._attr_brightness = brightness
@@ -94,15 +94,15 @@ class SyntheticHomeLight(SyntheticDeviceEntity, LightEntity):
             self._attr_brightness = brightness
         if rgbw_color := kwargs.get(ATTR_RGBW_COLOR):
             self._attr_rgbw_color = rgbw_color
-        self._attr_state = "on"
+        self._attr_is_on = True
         self.async_write_ha_state()
 
     async def async_turn_off(self, **kwargs):  # pylint: disable=unused-argument
         """Turn off the light."""
-        self._attr_state = "off"
+        self._attr_is_on = False
         self.async_write_ha_state()
 
     @property
     def is_on(self):
         """Return true if the light is on."""
-        return self._attr_state == "on"
+        return self._attr_is_on
