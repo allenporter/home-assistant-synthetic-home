@@ -1,8 +1,13 @@
+.mypy_cache/
+*.pyc
+venv
+*.egg-info
+deps
+ls
 __pycache__
-pythonenv*
 .python-version
 .coverage
-venv
-.venv
+
+**/secrets.yaml
 config
 tmp

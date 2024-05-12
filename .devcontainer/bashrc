@@ -1,6 +1,0 @@
-if [ ! -L ~/.homeassistant ]; then
-  ln -s /workspaces/home-asssistant-synthetic-home/config ~/.homeassistant
-fi
-if [ ! -L /workspaces/home-asssistant-synthetic-homeconfig/custom_components ]; then
-  ln -s /workspaces/home-asssistant-synthetic-home/custom_components /workspaces/home-asssistant-synthetic-home/config/custom_components
-fi

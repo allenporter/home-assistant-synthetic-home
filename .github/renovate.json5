@@ -1,18 +1,9 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:base",
-    "regexManagers:dockerfileVersions",
+    "config:base"
   ],
   "assignees": ["allenporter"],
-  "regexManagers": [
-    {
-      "fileMatch": [".+\\.yaml$"],
-      "matchStrings": [
-        "# renovate: datasource=(?<datasource>[a-z-]+?) depName=(?<depName>[^\\s]+?)(?: (lookupName|packageName)=(?<packageName>[^\\s]+?))?(?: versioning=(?<versioning>[^\\s]+?))?(?: registryUrl=(?<registryUrl>[^\\s]+?))?\\s(?:ENV|ARG) .+?_version: (?<currentValue>.+?)\\s"
-      ]
-    }
-  ],
   "packageRules": [
     {
       "description": "Minor updates are automatic",
@@ -21,7 +12,8 @@
       "matchUpdateTypes": ["minor", "patch"]
     }
   ],
-  "pre-commit": {
-    "enabled": true
+  "pip_requirements": {
+    "fileMatch": ["requirements_dev.txt"]
   },
+  "pre-commit": {"enabled": true}
 }
