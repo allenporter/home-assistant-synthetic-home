@@ -151,12 +151,12 @@ class SyntheticCover(SyntheticDeviceEntity, CoverEntity):
 
     async def _move_cover(self, now: datetime.datetime) -> None:
         """Track time changes."""
-        if self._target_cover_position and self._attr_current_cover_position > self._target_cover_position:
+        if self._target_cover_position is not None and self._attr_current_cover_position > self._target_cover_position:
             self._attr_current_cover_position -= COVER_STEP
             self._attr_current_cover_position = max(
                 self._attr_current_cover_position, self._target_cover_position
             )
-        elif self._target_cover_position and self._attr_current_cover_position < self._target_cover_position:
+        elif self._target_cover_position is not None and self._attr_current_cover_position < self._target_cover_position:
             self._attr_current_cover_position += COVER_STEP
             self._attr_current_cover_position = min(
                 self._attr_current_cover_position, self._target_cover_position
