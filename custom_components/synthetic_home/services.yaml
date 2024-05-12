@@ -1,29 +1,38 @@
 set_synthetic_device_state:
+  name: Set the synthetic device state
+  description: Sets the synthetic device state to a predefined restorable attribute value.
   fields:
     config_entry:
+      name: Config Entryt
       required: true
       selector:
         config_entry:
           integration: synthetic_home
     area_name:
+      name: Area Name
       required: true
       example: Family Room
       selector:
         text:
     device_name:
+      name: Device name
       required: true
       example: Family Room Thermostat
       selector:
         text:
     restorable_attributes_key:
+      name: Restorable Attribute Key
       required: true
       example: cool
       selector:
         text:
 
 clear_synthetic_device_state:
+  name: Clear Synthetic Device State
+  description: Reset the Synthetic Device State back to the default value.
   fields:
     config_entry:
+      name: Config Entry
       required: true
       selector:
         config_entry:
