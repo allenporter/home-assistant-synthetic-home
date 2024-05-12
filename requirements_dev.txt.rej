@@ -4,6 +4,6 @@ diff a/requirements_dev.txt b/requirements_dev.txt	(rejected hunks)
  black==24.4.2
  mypy==1.10.0
 -pdoc==12.1.0
- pip==23.0.1
+ pip==23.3.2
  pre-commit==3.6.0
  pytest==8.2.0
