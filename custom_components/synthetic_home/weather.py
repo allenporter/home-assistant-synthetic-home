@@ -5,6 +5,8 @@ from dataclasses import dataclass
 import logging
 from typing import Any
 
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.core import HomeAssistant
 from homeassistant.components.weather import (
     WeatherEntity,
     WeatherEntityDescription,
@@ -13,6 +15,7 @@ from homeassistant.components.weather import (
     Forecast,
 )
 from homeassistant.util import dt as dt_util
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import DOMAIN
 from .model import ParsedHome, ParsedDevice
@@ -22,9 +25,7 @@ from .home_model import device_types
 _LOGGER = logging.getLogger(__name__)
 
 
-class SyntheticWeatherEntityDescription(
-    WeatherEntityDescription, frozen_or_thawed=True
-):
+class SyntheticWeatherEntityDescription(WeatherEntityDescription):
     """Entity description for weather."""
 
 
@@ -36,12 +37,12 @@ class WeatherCondition:
     or for forecast data in the future.
     """
 
-    condition: str | None = (None,)
-    temperature: float | None = (None,)
-    temperature_unit_of_measurement: str | None = (None,)
-    humidity: float | None = (None,)
-    wind_speed: float | None = (None,)
-    wind_speed_unit_of_measurement: str | None = (None,)
+    condition: str | None = None
+    temperature: float | None = None
+    temperature_unit_of_measurement: str | None = None
+    humidity: float | None = None
+    wind_speed: float | None = None
+    wind_speed_unit_of_measurement: str | None = None
 
     def as_forecast(self, dt: datetime.datetime) -> Forecast:
         """Convert the WeatherCondition to a forecast."""
@@ -86,7 +87,9 @@ def map_attributes(
     return attributes
 
 
-async def async_setup_entry(hass, entry, async_add_devices):
+async def async_setup_entry(
+    hass: HomeAssistant, entry: ConfigEntry, async_add_devices: AddEntitiesCallback
+) -> None:
     """Set up weather platform."""
     synthetic_home: ParsedHome = hass.data[DOMAIN][entry.entry_id]
 

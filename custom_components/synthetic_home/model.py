@@ -4,6 +4,7 @@ from dataclasses import dataclass, field, asdict
 import hashlib
 import pathlib
 import logging
+from typing import Any
 
 from homeassistant.helpers.device_registry import DeviceInfo
 
@@ -28,7 +29,7 @@ class ParsedEntity:
 
     platform: str
     entity_key: str
-    attributes: str
+    attributes: dict[str, Any]
 
 
 @dataclass
@@ -52,7 +53,7 @@ class ParsedDevice:
             name=self.friendly_name,
             suggested_area=self.area_name,
             identifiers={(DOMAIN, self.unique_id)},
-            **(asdict(self.device.device_info) if self.device.device_info else {}),
+            **(asdict(self.device.device_info) if self.device.device_info else {}),  # type: ignore[typeddict-item]
         )
 
 
@@ -119,6 +120,7 @@ def parse_home_config(
             device_name,
         ), restorable_attribute_key in restorable_attributes.items():
             found_device = synthetic_home.find_devices_by_name(area_name, device_name)
+            assert found_device
             found_device.restorable_attribute_keys.append(restorable_attribute_key)
 
     _LOGGER.debug(
@@ -129,11 +131,12 @@ def parse_home_config(
     synthetic_home.validate()
 
     parsed_devices: list[ParsedDevice] = []
-    pairs = [*synthetic_home.devices.items()]
+    pairs: list[tuple[str | None, list[Device]]] = [*synthetic_home.devices.items()]
     if synthetic_home.services:
         pairs.append((None, synthetic_home.services))
     for area_name, devices_list in pairs:
         for device in devices_list:
+            assert device.device_type
             if (device_type := registry.device_types.get(device.device_type)) is None:
                 raise SyntheticHomeError(
                     f"Device '{device.name}' device_type '{device.device_type}' not found in registry"
@@ -168,6 +171,6 @@ def parse_home_config(
             )
 
     return ParsedHome(
-        areas=synthetic_home.devices.keys(),
+        areas=list(synthetic_home.devices.keys()),
         devices=parsed_devices,
     )

@@ -89,11 +89,11 @@ class DeviceType:
     """A series of different attribute values that are most interesting to use during evaluation."""
 
     @property
-    def entity_entries(self) -> dict[str, EntityEntry]:
+    def entity_entries(self) -> dict[str, list[EntityEntry]]:
         """Return the parsed entitty attributes for consumption."""
-        result = {}
+        result: dict[str, list[EntityEntry]] = {}
         for key, entity_entries in self.entities.items():
-            updated_entries = []
+            updated_entries: list[EntityEntry] = []
             for entity_entry in entity_entries:
                 # Map attributes from the device to this entity if appropriate
                 if isinstance(entity_entry, str):
@@ -129,9 +129,11 @@ class DeviceTypeRegistry:
     device_types: dict[str, DeviceType] = field(default_factory=dict)
 
 
-def _read_device_types(device_types_path: Traversable) -> Generator[DeviceType]:
+def _read_device_types(
+    device_types_path: Traversable,
+) -> Generator[DeviceType, None, None]:
     """Read device types from the device type directory."""
-    _LOGGER.debug("Loading device type registry from %s", device_types_path.absolute())
+    _LOGGER.debug("Loading device type registry from %s", device_types_path.absolute())  # type: ignore[attr-defined]
 
     for device_type_file in device_types_path.iterdir():
         if not device_type_file.name.endswith(".yaml"):
@@ -146,7 +148,7 @@ def _read_device_types(device_types_path: Traversable) -> Generator[DeviceType]:
             )
 
         try:
-            device_type = yaml_decode(content, DeviceType)
+            device_type: DeviceType = yaml_decode(content, DeviceType)
         except MissingField as err:
             raise SyntheticHomeError(f"Unable to decode file {device_type_file}: {err}")
         except yaml.YAMLError as err:

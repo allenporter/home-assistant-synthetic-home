@@ -9,7 +9,7 @@ class SyntheticDeviceEntity(Entity):
     """synthetic_home light class."""
 
     _attr_has_entity_name = True
-    _attr_name = None
+    _attr_name: str | None = None
 
     def __init__(self, device: ParsedDevice, key: str) -> None:
         """Initialize SyntheticHomeLight."""

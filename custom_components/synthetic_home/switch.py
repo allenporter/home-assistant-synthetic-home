@@ -30,7 +30,7 @@ SENSOR_MAP = {desc.key: desc for desc in SWITCHES}
 
 async def async_setup_entry(
     hass: HomeAssistant, entry: ConfigEntry, async_add_devices: AddEntitiesCallback
-):
+) -> None:
     """Set up switch platform."""
     synthetic_home = hass.data[DOMAIN][entry.entry_id]
 

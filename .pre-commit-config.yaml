@@ -25,6 +25,8 @@ repos:
     hooks:
       - id: mypy
         files: ^custom_components/
+        additional_dependencies:
+          - types-PyYAML
   - repo: https://github.com/codespell-project/codespell
     rev: v2.2.6
     hooks:

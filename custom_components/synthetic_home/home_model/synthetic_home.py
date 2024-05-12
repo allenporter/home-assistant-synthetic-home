@@ -73,10 +73,14 @@ class SyntheticHome:
         """Validate a SyntheticHome configuration."""
         for devices_list in self.devices.values():
             for device in devices_list:
-                if not (
-                    device_type := self.device_type_registry.device_types.get(
-                        device.device_type
+                if (
+                    self.device_type_registry is None
+                    or (
+                        device_type := self.device_type_registry.device_types.get(
+                            device.device_type or ""
+                        )
                     )
+                    is None
                 ):
                     raise SyntheticHomeError(
                         f"Device {device} has device_type {device.device_type} not found in registry"
