@@ -81,7 +81,8 @@ class SyntheticMediaPlayer(SyntheticDeviceEntity, MediaPlayerEntity):
         self._attr_state = MediaPlayerState.PLAYING
         self._attr_volume_level = 1.0
         self.entity_description = entity_desc
-        self._attr_supported_features = entity_desc.supported_features
+        if entity_desc.supported_features is not None:
+            self._attr_supported_features = entity_desc.supported_features
 
     def turn_on(self) -> None:
         """Turn the media player on."""

@@ -74,7 +74,7 @@ class SyntheticCover(SyntheticDeviceEntity, CoverEntity):
     _attr_is_closed = True
     _attr_is_opening = False
     # The position is used to infer the other attributes (0 is closed, 100 is open)
-    _attr_current_cover_position = 0
+    _attr_current_cover_position: int = 0
 
     _target_cover_position: int | None = None
     _timer_unsub: CALLBACK_TYPE | None = None
@@ -151,12 +151,12 @@ class SyntheticCover(SyntheticDeviceEntity, CoverEntity):
 
     async def _move_cover(self, now: datetime.datetime) -> None:
         """Track time changes."""
-        if self._attr_current_cover_position > self._target_cover_position:
+        if self._target_cover_position and self._attr_current_cover_position > self._target_cover_position:
             self._attr_current_cover_position -= COVER_STEP
             self._attr_current_cover_position = max(
                 self._attr_current_cover_position, self._target_cover_position
             )
-        elif self._attr_current_cover_position < self._target_cover_position:
+        elif self._target_cover_position and self._attr_current_cover_position < self._target_cover_position:
             self._attr_current_cover_position += COVER_STEP
             self._attr_current_cover_position = min(
                 self._attr_current_cover_position, self._target_cover_position

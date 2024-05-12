@@ -112,7 +112,8 @@ class SyntheticHomeClimate(SyntheticDeviceEntity, ClimateEntity):
         """Initialize the climate device."""
         super().__init__(device, entity_desc.key)
         self.entity_description = entity_desc
-        self._attr_supported_features = entity_desc.supported_features
+        if entity_desc.supported_features is not None:
+            self._attr_supported_features = entity_desc.supported_features
         self._attr_target_temperature = (
             target_temperature or entity_desc.target_temperature
         )
@@ -122,9 +123,11 @@ class SyntheticHomeClimate(SyntheticDeviceEntity, ClimateEntity):
             current_temperature or entity_desc.current_temperature
         )
         self._attr_hvac_action = hvac_action or entity_desc.hvac_action
-        self._attr_hvac_mode = entity_desc.hvac_mode
-        self._attr_hvac_modes = entity_desc.hvac_modes
-        self._attr_temperature_unit = unit_of_measurement
+        self._attr_hvac_mode = entity_desc.hvac_mode or hvac_mode
+        if entity_desc.hvac_modes is not None:
+            self._attr_hvac_modes = entity_desc.hvac_modes
+        if unit_of_measurement is not None:
+            self._attr_temperature_unit = unit_of_measurement
 
     async def async_set_temperature(self, **kwargs: Any) -> None:
         """Set new target temperatures."""

@@ -6,6 +6,7 @@ from homeassistant.components.switch import (
     SwitchEntity,
     SwitchDeviceClass,
     DOMAIN as SWITCH_DOMAIN,
+    SwitchEntityDescription,
 )
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.entity import EntityDescription
@@ -15,12 +16,12 @@ from .entity import SyntheticDeviceEntity
 from .model import ParsedDevice
 
 
-SWITCHES: tuple[EntityDescription, ...] = (
-    EntityDescription(
+SWITCHES: tuple[SwitchEntityDescription, ...] = (
+    SwitchEntityDescription(
         key="outlet",
         device_class=SwitchDeviceClass.OUTLET,
     ),
-    EntityDescription(
+    SwitchEntityDescription(
         key="switch",
         device_class=SwitchDeviceClass.SWITCH,
     ),
@@ -48,7 +49,7 @@ class SyntheticHomeBinarySwitch(SyntheticDeviceEntity, SwitchEntity):
     def __init__(
         self,
         device: ParsedDevice,
-        entity_desc: EntityDescription,
+        entity_desc: SwitchEntityDescription,
     ) -> None:
         """Initialize SyntheticHomeBinarySwitch."""
         super().__init__(device, entity_desc.key)

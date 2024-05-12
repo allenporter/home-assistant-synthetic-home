@@ -10,7 +10,10 @@ from homeassistant.components.sensor import (
     StateType,
     DOMAIN as SENSOR_DOMAIN,
 )
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.core import HomeAssistant
 from homeassistant.const import PERCENTAGE, UnitOfTemperature, UnitOfEnergy
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import DOMAIN
 from .model import ParsedHome, ParsedDevice
@@ -63,7 +66,9 @@ SENSORS: tuple[SyntheticSensorEntityDescription, ...] = (
 SENSOR_MAP = {desc.key: desc for desc in SENSORS}
 
 
-async def async_setup_entry(hass, entry, async_add_devices):
+async def async_setup_entry(
+    hass: HomeAssistant, entry: ConfigEntry, async_add_devices: AddEntitiesCallback
+) -> None:
     """Set up sensor platform."""
 
     synthetic_home: ParsedHome = hass.data[DOMAIN][entry.entry_id]

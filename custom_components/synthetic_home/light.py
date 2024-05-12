@@ -23,13 +23,13 @@ _LOGGER = logging.getLogger(__name__)
 class SyntheticLightEntityDescription(LightEntityDescription, frozen_or_thawed=True):
     """Entity description for a light."""
 
-    supported_color_modes: set[ColorMode] | None = (None,)
-    color_mode: ColorMode | None = (None,)
-    brightness: int | None = (None,)
-    rgbw_color: tuple[int, int, int, int] | None = (None,)
+    supported_color_modes: set[ColorMode] | None = None
+    color_mode: ColorMode | None = None
+    brightness: int | None = None
+    rgbw_color: tuple[int, int, int, int] | None = None
 
 
-LIGHTS: tuple[LightEntityDescription, ...] = (
+LIGHTS: tuple[SyntheticLightEntityDescription, ...] = (
     SyntheticLightEntityDescription(
         key="light-dimmable",
         supported_color_modes={ColorMode.BRIGHTNESS},
@@ -51,7 +51,7 @@ LIGHT_MAP = {desc.key: desc for desc in LIGHTS}
 
 async def async_setup_entry(
     hass: HomeAssistant, entry: ConfigEntry, async_add_devices: AddEntitiesCallback
-):
+) -> None:
     """Set up light platform."""
     synthetic_home = hass.data[DOMAIN][entry.entry_id]
 
@@ -71,7 +71,7 @@ class SyntheticHomeLight(SyntheticDeviceEntity, LightEntity):
         device: ParsedDevice,
         entity_desc: SyntheticLightEntityDescription,
         *,
-        state: str | None = None,
+        state: bool | None = None,
         brightness: int | None = None,
         rgbw_color: tuple[int, int, int, int] | None = None,
     ) -> None:
@@ -81,9 +81,9 @@ class SyntheticHomeLight(SyntheticDeviceEntity, LightEntity):
         self.entity_description = entity_desc
         self._attr_supported_color_modes = entity_desc.supported_color_modes
         if state is not None:
-            self._attr_state = state
+            self._attr_is_on = state
         elif brightness is not None and brightness > 0:
-            self._attr_state = "on"
+            self._attr_is_on = True
         self._attr_color_mode = entity_desc.color_mode
         self._attr_brightness = brightness
         self._attr_rgbw_color = rgbw_color
