@@ -1,6 +1,7 @@
 """Light platform for Synthetic Home."""
 
 import logging
+from dataclasses import dataclass
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
@@ -20,7 +21,9 @@ from .model import ParsedDevice
 
 _LOGGER = logging.getLogger(__name__)
 
-class SyntheticLightEntityDescription(LightEntityDescription, frozen_or_thawed=True):
+
+@dataclass
+class SyntheticLightEntityDescription(LightEntityDescription):
     """Entity description for a light."""
 
     supported_color_modes: set[ColorMode] | None = None
@@ -71,17 +74,15 @@ class SyntheticHomeLight(SyntheticDeviceEntity, LightEntity):
         device: ParsedDevice,
         entity_desc: SyntheticLightEntityDescription,
         *,
-        state: str | None = False,
+        state: str | None = None,
         brightness: int | None = None,
         rgbw_color: tuple[int, int, int, int] | None = None,
     ) -> None:
         """Initialize the device."""
         super().__init__(device, entity_desc.key)
-        _LOGGER.debug("state=%s", state)
         self.entity_description = entity_desc
         self._attr_supported_color_modes = entity_desc.supported_color_modes
-        if state is not None:
-            self._attr_is_on = (state == "on")
+        self._attr_is_on = state is not None and state == "on"
         if brightness is not None and brightness > 0:
             self._attr_is_on = True
         self._attr_color_mode = entity_desc.color_mode
