@@ -1,8 +1,0 @@
----
-device_type: garage-door
-desc: A a garage door that can be controlled remotely.
-entities:
-  cover:
-    - garage-door-cover
-  light:
-    - light

@@ -1,8 +1,0 @@
----
-device_type: smart-blinds
-desc: A remotely controllable set of window blinds.
-entities:
-  cover:
-    - blinds-cover
-  sensor:
-    - battery

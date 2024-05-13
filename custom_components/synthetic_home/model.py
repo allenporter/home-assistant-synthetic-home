@@ -6,18 +6,19 @@ import pathlib
 import logging
 from typing import Any
 
-from homeassistant.helpers.device_registry import DeviceInfo
-
-from .const import DOMAIN
-from .home_model.synthetic_home import (
+from synthetic_home.synthetic_home import (
     Device,
     load_synthetic_home,
 )
-from .home_model.device_types import (
+from synthetic_home.device_types import (
     load_device_type_registry,
     DeviceType,
 )
-from .home_model.exceptions import SyntheticHomeError
+from synthetic_home.exceptions import SyntheticHomeError
+
+from homeassistant.helpers.device_registry import DeviceInfo
+
+from .const import DOMAIN
 
 
 _LOGGER = logging.getLogger(__name__)

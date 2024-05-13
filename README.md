@@ -5,7 +5,7 @@ configuration file, used for testing.
 
 ## Synthetic Home Configuration
 
-See `custom_components/synthetic_home/home_model/synthetic_home.py` for a description of the configuration
+See the [synthetic home documentation](https://allenporter.github.io/synthetic-home/synthetic_home.html) for a description of the configuration
 file format. This is essentially modeled after Home Assistants `demo` platform
 but allows you to name devices and stick them in areas using a configuration file.
 
@@ -96,7 +96,7 @@ lower level Home Assistant entities (e.g. a thermostate has a climate entity
 and a temperature sensor entity). Each device has `attributes` which are mapped
 to entity level attributes by the device registry (e.g. `hvac_action` maps to
 a climate entity and `temperature` maps to a temperature sensor). See the
-[Device Registry documentation](custom_components/synthetic_home/home_model/device_type_registry/README.md)
+[Device Registry documentation](https://allenporter.github.io/synthetic-home/synthetic_home.html)
 for more detail on how these mappings are configured.
 
 ### Setting Attributes and State in yaml config
@@ -146,8 +146,8 @@ using `pytest-homeassistant-custom-component`.
 
 ## Device Registry
 
-The device types are defined in `custom_components/synthetic_home/home_model/device_type_registry/`
-where each device type is defined in a separate file. See the [README](custom_components/synthetic_home/home_model/device_type_registry/README.md) for more details.
+The device types are defined in `https://github.com/allenporter/synthetic-home/tree/main/synthetic_home/registry`
+where each device type is defined in a separate file. See the [README](https://github.com/allenporter/synthetic-home/) for more details.
 
 You can interact with the device registry using the device registry tooling:
 

@@ -17,8 +17,9 @@ from homeassistant.helpers import area_registry as ar, device_registry as dr
 
 from .const import DOMAIN, CONF_FILENAME, DATA_RESTORABLE_ATTRIBUTES
 from .model import parse_home_config
-from .home_model.exceptions import SyntheticHomeError
 from .services import async_register_services
+
+from synthetic_home.exceptions import SyntheticHomeError
 
 SCAN_INTERVAL = timedelta(seconds=30)
 

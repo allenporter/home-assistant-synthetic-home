@@ -8,7 +8,7 @@ import sys
 import logging
 import yaml
 
-from custom_components.synthetic_home.home_model import device_types
+from synthetic_home import device_types
 
 _LOGGER = logging.getLogger(__name__)
 

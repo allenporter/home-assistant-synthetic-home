@@ -5,6 +5,9 @@ from dataclasses import dataclass
 import logging
 from typing import Any
 
+from synthetic_home import device_types
+
+
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.components.weather import (
@@ -20,7 +23,7 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from .const import DOMAIN
 from .model import ParsedHome, ParsedDevice
 from .entity import SyntheticDeviceEntity
-from .home_model import device_types
+
 
 _LOGGER = logging.getLogger(__name__)
 
