@@ -1,9 +1,0 @@
-diff a/requirements_dev.txt b/requirements_dev.txt	(rejected hunks)
-@@ -1,7 +1,6 @@
- # Generic python dependencies
- black==24.4.2
- mypy==1.10.0
--pdoc==12.1.0
- pip==23.0.1
- pre-commit==3.6.0
- pytest==8.2.0
