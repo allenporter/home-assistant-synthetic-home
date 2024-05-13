@@ -54,7 +54,7 @@ COVER_MAP = {desc.key: desc for desc in COVERS}
 
 async def async_setup_entry(
     hass: HomeAssistant, entry: ConfigEntry, async_add_devices: AddEntitiesCallback
-):
+) -> None:
     """Set up cover platform."""
     synthetic_home = hass.data[DOMAIN][entry.entry_id]
 
@@ -151,12 +151,18 @@ class SyntheticCover(SyntheticDeviceEntity, CoverEntity):
 
     async def _move_cover(self, now: datetime.datetime) -> None:
         """Track time changes."""
-        if self._target_cover_position is not None and self._attr_current_cover_position > self._target_cover_position:
+        if (
+            self._target_cover_position is not None
+            and self._attr_current_cover_position > self._target_cover_position
+        ):
             self._attr_current_cover_position -= COVER_STEP
             self._attr_current_cover_position = max(
                 self._attr_current_cover_position, self._target_cover_position
             )
-        elif self._target_cover_position is not None and self._attr_current_cover_position < self._target_cover_position:
+        elif (
+            self._target_cover_position is not None
+            and self._attr_current_cover_position < self._target_cover_position
+        ):
             self._attr_current_cover_position += COVER_STEP
             self._attr_current_cover_position = min(
                 self._attr_current_cover_position, self._target_cover_position

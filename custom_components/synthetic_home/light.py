@@ -2,6 +2,7 @@
 
 import logging
 from dataclasses import dataclass
+from typing import Any
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
@@ -89,7 +90,9 @@ class SyntheticHomeLight(SyntheticDeviceEntity, LightEntity):
         self._attr_brightness = brightness
         self._attr_rgbw_color = rgbw_color
 
-    async def async_turn_on(self, **kwargs):  # pylint: disable=unused-argument
+    async def async_turn_on(
+        self, **kwargs: Any
+    ) -> None:  # pylint: disable=unused-argument
         """Turn on the light."""
         if brightness := kwargs.get(ATTR_BRIGHTNESS):
             self._attr_brightness = brightness
@@ -98,12 +101,14 @@ class SyntheticHomeLight(SyntheticDeviceEntity, LightEntity):
         self._attr_is_on = True
         self.async_write_ha_state()
 
-    async def async_turn_off(self, **kwargs):  # pylint: disable=unused-argument
+    async def async_turn_off(
+        self, **kwargs: Any
+    ) -> None:  # pylint: disable=unused-argument
         """Turn off the light."""
         self._attr_is_on = False
         self.async_write_ha_state()
 
     @property
-    def is_on(self):
+    def is_on(self) -> bool | None:
         """Return true if the light is on."""
         return self._attr_is_on

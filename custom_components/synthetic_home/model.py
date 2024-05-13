@@ -50,12 +50,13 @@ class ParsedDevice:
     @property
     def device_info(self) -> DeviceInfo:
         """Home Assistant device info for this device."""
-        return DeviceInfo(
+        device_info = DeviceInfo(
             name=self.friendly_name,
             suggested_area=self.area_name,
             identifiers={(DOMAIN, self.unique_id)},
             **(asdict(self.device.device_info) if self.device.device_info else {}),  # type: ignore[typeddict-item]
         )
+        return device_info  # type: ignore[no-any-return]
 
 
 @dataclass

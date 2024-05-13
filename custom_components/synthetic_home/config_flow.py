@@ -1,6 +1,7 @@
 """Adds config flow for Synthetic Home."""
 
 import pathlib
+from typing import Any
 
 import voluptuous as vol
 
@@ -14,6 +15,7 @@ STEP_USER_DATA_SCHEMA = vol.Schema(
     }
 )
 
+
 def read_config(config_file: pathlib.Path) -> str:
     """Read config filename from disk."""
     with config_file.open("r") as f:
@@ -26,11 +28,9 @@ class SyntheticHomeFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
     VERSION = 1
     CONNECTION_CLASS = config_entries.CONN_CLASS_CLOUD_POLL
 
-    def __init__(self):
-        """Initialize."""
-        self._errors = {}
-
-    async def async_step_user(self, user_input=None):
+    async def async_step_user(
+        self, user_input: dict[str, Any] | None = None
+    ) -> config_entries.ConfigFlowResult:
         """Handle a flow initialized by the user."""
         errors = {}
         if user_input is not None:
@@ -40,7 +40,9 @@ class SyntheticHomeFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
             except FileNotFoundError:
                 errors[CONF_FILENAME] = "does_not_exist"
             else:
-                return self.async_create_entry(title=user_input[CONF_FILENAME], data=user_input)
+                return self.async_create_entry(
+                    title=user_input[CONF_FILENAME], data=user_input
+                )
 
         return self.async_show_form(
             step_id="user", data_schema=STEP_USER_DATA_SCHEMA, errors=errors

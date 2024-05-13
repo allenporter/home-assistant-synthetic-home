@@ -3,6 +3,7 @@
 import pytest
 from syrupy import SnapshotAssertion
 
+
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 

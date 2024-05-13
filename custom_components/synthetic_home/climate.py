@@ -3,6 +3,7 @@
 from typing import Any
 
 
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.components.climate import (
     ATTR_HVAC_MODE,
     ATTR_TARGET_TEMP_HIGH,
@@ -14,6 +15,8 @@ from homeassistant.components.climate import (
     HVACMode,
     DOMAIN as CLIMATE_DOMAIN,
 )
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from homeassistant.core import HomeAssistant
 from homeassistant.const import ATTR_TEMPERATURE
 
 from .const import DOMAIN
@@ -73,7 +76,9 @@ CLIMATE_MAP = {desc.key: desc for desc in CLIMATES}
 FAN_MODES = ["low", "high", "off"]
 
 
-async def async_setup_entry(hass, entry, async_add_devices):
+async def async_setup_entry(
+    hass: HomeAssistant, entry: ConfigEntry, async_add_devices: AddEntitiesCallback
+) -> None:
     """Set up climate platform."""
 
     synthetic_home = hass.data[DOMAIN][entry.entry_id]

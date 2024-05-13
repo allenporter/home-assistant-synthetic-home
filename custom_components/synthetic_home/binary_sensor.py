@@ -1,11 +1,14 @@
 """Binary sensor platform for Synthetic Home."""
 
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.components.binary_sensor import (
     BinarySensorEntity,
     BinarySensorDeviceClass,
     BinarySensorEntityDescription,
     DOMAIN as BINARY_SENSOR_DOMAIN,
 )
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from homeassistant.core import HomeAssistant
 
 from .const import DOMAIN
 from .model import ParsedDevice
@@ -49,7 +52,9 @@ BINARY_SENSORS: tuple[BinarySensorEntityDescription, ...] = (
 SENSOR_MAP = {desc.key: desc for desc in BINARY_SENSORS}
 
 
-async def async_setup_entry(hass, entry, async_add_devices):
+async def async_setup_entry(
+    hass: HomeAssistant, entry: ConfigEntry, async_add_devices: AddEntitiesCallback
+) -> None:
     """Set up binary_sensor platform."""
 
     synthetic_home = hass.data[DOMAIN][entry.entry_id]

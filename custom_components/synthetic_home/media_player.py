@@ -1,6 +1,5 @@
 """Media platform for Synthetic Home."""
 
-
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.components.media_player import (
@@ -54,7 +53,7 @@ MEDIA_PLAYER_MAP = {desc.key: desc for desc in MEDIA_PLAYERS}
 
 async def async_setup_entry(
     hass: HomeAssistant, entry: ConfigEntry, async_add_devices: AddEntitiesCallback
-):
+) -> None:
     """Set up media player platform."""
     synthetic_home = hass.data[DOMAIN][entry.entry_id]
 
