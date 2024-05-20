@@ -15,7 +15,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryError
 from homeassistant.helpers import area_registry as ar, device_registry as dr
 
-from .const import DOMAIN, CONF_FILENAME, DATA_RESTORABLE_ATTRIBUTES
+from .const import DOMAIN, CONF_FILENAME, DATA_DEVICE_STATES
 from .model import parse_home_config
 from .services import async_register_services
 
@@ -40,10 +40,10 @@ PLATFORMS: list[Platform] = [
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up this integration using UI."""
     hass.data.setdefault(DOMAIN, {})
-    hass.data[DOMAIN].setdefault(DATA_RESTORABLE_ATTRIBUTES, {})
+    hass.data[DOMAIN].setdefault(DATA_DEVICE_STATES, {})
 
     config_file = pathlib.Path(hass.config.path(entry.data[CONF_FILENAME]))
-    states = hass.data[DOMAIN][DATA_RESTORABLE_ATTRIBUTES].get(entry.entry_id)
+    states = hass.data[DOMAIN][DATA_DEVICE_STATES].get(entry.entry_id)
     try:
         synthetic_home = parse_home_config(config_file, states)
     except SyntheticHomeError as err:

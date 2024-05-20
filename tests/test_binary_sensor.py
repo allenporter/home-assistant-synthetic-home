@@ -44,7 +44,7 @@ async def test_motion_sensor(hass: HomeAssistant, setup_integration: None) -> No
 @pytest.mark.parametrize(
     ("config_yaml_fixture"), [(f"{FIXTURES}/smart-lock-example.yaml")]
 )
-async def tests_smart_lock(hass: HomeAssistant, setup_integration: None) -> None:
+async def test_smart_lock(hass: HomeAssistant, setup_integration: None) -> None:
     """Test a binary sensors for a smart lock."""
 
     state = hass.states.get("binary_sensor.front_door_lock")
@@ -103,10 +103,10 @@ async def test_window_sensor(hass: HomeAssistant, setup_integration: None) -> No
 
 
 @pytest.mark.parametrize(
-    ("config_yaml_fixture", "restorable_attributes_key"),
+    ("config_yaml_fixture", "device_state"),
     [
-        (f"{FIXTURES}/camera-example.yaml", attribute_key)
-        for attribute_key in (
+        (f"{FIXTURES}/camera-example.yaml", device_state)
+        for device_state in (
             "idle",
             "person-detected",
             "sound-detected",
@@ -118,14 +118,19 @@ async def test_evaluation_states(
     hass: HomeAssistant,
     setup_integration: None,
     config_entry: MockConfigEntry,
-    restorable_attributes_key: str,
+    device_state: str,
     snapshot: SnapshotAssertion,
 ) -> None:
     """Test the loading evaluation states for a specific device."""
 
-    await restore_state(
-        hass, config_entry, "Backyard", "Outdoor Camera", restorable_attributes_key
-    )
+    for entity in (
+        "binary_sensor.outdoor_camera_motion",
+        "binary_sensor.outdoor_camera_person",
+        "binary_sensor.outdoor_camera_sound",
+    ):
+        assert hass.states.get(entity), f"Entity {entity} not found"
+
+    await restore_state(hass, config_entry, "Backyard", "Outdoor Camera", device_state)
     states = {
         entity: hass.states.get(entity).state
         for entity in (

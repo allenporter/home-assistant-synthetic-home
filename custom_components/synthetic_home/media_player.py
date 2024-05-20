@@ -4,7 +4,6 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.components.media_player import (
     MediaPlayerEntity,
-    MediaPlayerEntityDescription,
     MediaPlayerEntityFeature,
     MediaPlayerState,
     MediaPlayerDeviceClass,
@@ -17,38 +16,6 @@ from .entity import SyntheticDeviceEntity
 from .model import ParsedDevice
 
 VOLUME_STEP = 1
-SUPPORTED_FEATURES = (
-    MediaPlayerEntityFeature.PLAY
-    | MediaPlayerEntityFeature.STOP
-    | MediaPlayerEntityFeature.VOLUME_STEP
-    | MediaPlayerEntityFeature.VOLUME_MUTE
-    | MediaPlayerEntityFeature.VOLUME_SET
-    | MediaPlayerEntityFeature.TURN_ON
-    | MediaPlayerEntityFeature.TURN_OFF
-)
-
-
-class SyntheticMediaPlayerEntityDescription(
-    MediaPlayerEntityDescription, frozen_or_thawed=True
-):
-    """Entity description for a media player entity."""
-
-    supported_features: MediaPlayerEntityFeature | None = None
-
-
-MEDIA_PLAYERS: tuple[SyntheticMediaPlayerEntityDescription, ...] = (
-    SyntheticMediaPlayerEntityDescription(
-        key="speaker",
-        supported_features=SUPPORTED_FEATURES,
-        device_class=MediaPlayerDeviceClass.SPEAKER,
-    ),
-    SyntheticMediaPlayerEntityDescription(
-        key="tv",
-        supported_features=SUPPORTED_FEATURES,
-        device_class=MediaPlayerDeviceClass.TV,
-    ),
-)
-MEDIA_PLAYER_MAP = {desc.key: desc for desc in MEDIA_PLAYERS}
 
 
 async def async_setup_entry(
@@ -58,9 +25,7 @@ async def async_setup_entry(
     synthetic_home = hass.data[DOMAIN][entry.entry_id]
 
     async_add_devices(
-        SyntheticMediaPlayer(
-            device, MEDIA_PLAYER_MAP[entity.entity_key], **entity.attributes
-        )
+        SyntheticMediaPlayer(device, entity.entity_key, **entity.attributes)
         for device in synthetic_home.devices
         for entity in device.entities
         if entity.platform == MEDIA_PLAYER_DOMAIN
@@ -73,15 +38,22 @@ class SyntheticMediaPlayer(SyntheticDeviceEntity, MediaPlayerEntity):
     def __init__(
         self,
         device: ParsedDevice,
-        entity_desc: SyntheticMediaPlayerEntityDescription,
+        key: str,
+        device_class: MediaPlayerDeviceClass,
+        *,
+        supported_features: MediaPlayerEntityFeature | None = None,
+        state: MediaPlayerState | None = None
     ) -> None:
         """Initialize the SyntheticMediaPlayer."""
-        super().__init__(device, entity_desc.key)
-        self._attr_state = MediaPlayerState.PLAYING
+        super().__init__(device, key)
+        self._attr_device_class = device_class
+        if supported_features is not None:
+            self._attr_supported_features = (
+                MediaPlayerEntityFeature(0) | supported_features
+            )
+        if state:
+            self._attr_state = state
         self._attr_volume_level = 1.0
-        self.entity_description = entity_desc
-        if entity_desc.supported_features is not None:
-            self._attr_supported_features = entity_desc.supported_features
 
     def turn_on(self) -> None:
         """Turn the media player on."""

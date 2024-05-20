@@ -12,7 +12,6 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.components.weather import (
     WeatherEntity,
-    WeatherEntityDescription,
     WeatherEntityFeature,
     DOMAIN as WEATHER_DOMAIN,
     Forecast,
@@ -28,10 +27,6 @@ from .entity import SyntheticDeviceEntity
 _LOGGER = logging.getLogger(__name__)
 
 
-class SyntheticWeatherEntityDescription(WeatherEntityDescription):
-    """Entity description for weather."""
-
-
 @dataclass
 class WeatherCondition:
     """Definition of a weather condition.
@@ -41,10 +36,10 @@ class WeatherCondition:
     """
 
     condition: str | None = None
-    temperature: float | None = None
+    native_temperature: float | None = None
     temperature_unit_of_measurement: str | None = None
     humidity: float | None = None
-    wind_speed: float | None = None
+    native_wind_speed: float | None = None
     wind_speed_unit_of_measurement: str | None = None
 
     def as_forecast(self, dt: datetime.datetime) -> Forecast:
@@ -52,9 +47,9 @@ class WeatherCondition:
         return Forecast(
             datetime=dt.isoformat(),
             condition=self.condition,
-            native_temperature=self.temperature,
+            native_temperature=self.native_temperature,
             humidity=self.humidity,
-            native_wind_speed=self.wind_speed,
+            native_wind_speed=self.native_wind_speed,
         )
 
 
@@ -65,17 +60,9 @@ FORECAST_TYPES = [
 ]
 
 
-ENTITIES: tuple[SyntheticWeatherEntityDescription, ...] = (
-    SyntheticWeatherEntityDescription(
-        key="weather",
-    ),
-)
-ENTITY_MAP = {desc.key: desc for desc in ENTITIES}
-
-
 def map_attributes(
     attributes: dict[str, Any],
-    condition_map: dict[str, device_types.RestorableAttributes],
+    condition_map: dict[str, device_types.DeviceState],
 ) -> dict[str, Any]:
     """Override some specific weather forecast attributes."""
     for forecast_key in FORECAST_TYPES:
@@ -83,9 +70,17 @@ def map_attributes(
             conditions = []
             for key in daily_forecast:
                 if not (condition := condition_map.get(key)):
-                    raise ValueError("Could not find weather condition '{key}'")
-                _LOGGER.debug(condition.attributes)
-                conditions.append(WeatherCondition(**condition.attributes))
+                    raise ValueError(f"Could not find weather condition '{key}'")
+                if not condition.entity_states:
+                    raise ValueError(
+                        f"Could not load condition entity state for '{key}'"
+                    )
+                entity_state = condition.entity_states[0].state
+                if not isinstance(entity_state, dict):
+                    raise TypeError(
+                        f"Could not load entity state for '{key}', required dict for entity_state condition"
+                    )
+                conditions.append(WeatherCondition(**entity_state))
             attributes[forecast_key] = conditions
     return attributes
 
@@ -98,13 +93,12 @@ async def async_setup_entry(
 
     registry = device_types.load_device_type_registry()
     weather_service: device_types.DeviceType = registry.device_types["weather-service"]
-    condition_map = {attr.key: attr for attr in weather_service.restorable_attributes}
 
     async_add_devices(
         SyntheticHomeWeather(
             device,
-            ENTITY_MAP[entity.entity_key],
-            **map_attributes(entity.attributes, condition_map),
+            entity.entity_key,
+            **map_attributes(entity.attributes, weather_service.device_states_dict),
         )
         for device in synthetic_home.devices
         for entity in device.entities
@@ -120,7 +114,7 @@ class SyntheticHomeWeather(SyntheticDeviceEntity, WeatherEntity):
     def __init__(
         self,
         device: ParsedDevice,
-        entity_desc: SyntheticWeatherEntityDescription,
+        key: str,
         *,
         condition: str | None = None,
         native_temperature: float | None = None,
@@ -133,9 +127,8 @@ class SyntheticHomeWeather(SyntheticDeviceEntity, WeatherEntity):
         twice_daily_forecast: list[WeatherCondition] | None = None,
     ) -> None:
         """Initialize SyntheticHomeWeather."""
-        super().__init__(device, entity_desc.key)
+        super().__init__(device, key)
         self._attr_name = None  # Use device name
-        self.entity_description = entity_desc
         self._attr_condition = condition
         self._attr_native_temperature = native_temperature
         self._attr_native_temperature_unit = native_temperature_unit

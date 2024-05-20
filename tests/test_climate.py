@@ -37,13 +37,13 @@ async def test_climate_hvac_entity(
 
     state = hass.states.get(TEST_ENTITY)
     assert state
-    assert state.state == "cool"
+    assert state.state == "off"
     assert state.attributes == {
         "friendly_name": "Family Room",
         "current_temperature": 16.7,
         "fan_mode": None,
         "fan_modes": ["low", "high", "off"],
-        "hvac_action": "cooling",
+        "hvac_action": "off",
         "hvac_modes": ["off", "cool", "heat", "auto"],
         "max_temp": 35,
         "min_temp": 7,
@@ -87,13 +87,13 @@ async def test_heat_pump(
 
     state = hass.states.get(test_entity)
     assert state
-    assert state.state == "heat"
+    assert state.state == "off"
     assert state.attributes == {
         "friendly_name": "Family Room",
         "current_temperature": 15.6,
         "fan_mode": None,
         "fan_modes": ["low", "high", "off"],
-        "hvac_action": "heating",
+        "hvac_action": "off",
         "hvac_modes": ["heat", "off"],
         "max_temp": 35,
         "min_temp": 7,
@@ -115,24 +115,22 @@ async def test_heat_pump(
 
 
 @pytest.mark.parametrize(
-    ("config_yaml_fixture", "restorable_attributes_key"),
+    ("config_yaml_fixture", "device_state"),
     [
-        (f"{FIXTURES}/hvac-example.yaml", attribute_key)
-        for attribute_key in ("cooling", "very-low", "off")
+        (f"{FIXTURES}/hvac-example.yaml", device_state)
+        for device_state in ("cooling", "very-low", "off")
     ],
 )
-async def test_hvac_restorable_attributes(
+async def test_hvac_device_state(
     hass: HomeAssistant,
     setup_integration: None,
     config_entry: MockConfigEntry,
-    restorable_attributes_key: str,
+    device_state: str,
     snapshot: SnapshotAssertion,
 ) -> None:
     """Test an HVAC device with restorable state."""
 
-    await restore_state(
-        hass, config_entry, "Family room", "Family room", restorable_attributes_key
-    )
+    await restore_state(hass, config_entry, "Family room", "Family room", device_state)
     state = hass.states.get(TEST_ENTITY)
     assert state
     assert (state.state, state.attributes) == snapshot

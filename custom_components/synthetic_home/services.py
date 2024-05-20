@@ -13,9 +13,9 @@ from .const import (
     DOMAIN,
     ATTR_AREA_NAME,
     ATTR_DEVICE_NAME,
-    ATTR_RESTORABLE_ATTRIBUTES_KEY,
+    ATTR_DEVICE_STATE_KEY,
     ATTR_CONFIG_ENTRY_ID,
-    DATA_RESTORABLE_ATTRIBUTES,
+    DATA_DEVICE_STATES,
 )
 
 _LOGGER: logging.Logger = logging.getLogger(__package__)
@@ -35,18 +35,18 @@ def async_register_services(hass: HomeAssistant) -> None:
         entry_id = call.data[ATTR_CONFIG_ENTRY_ID]
         area_name = call.data.get(ATTR_AREA_NAME)
         device_name = call.data[ATTR_DEVICE_NAME]
-        restorable_attribute_key = call.data[ATTR_RESTORABLE_ATTRIBUTES_KEY]
+        device_state_key = call.data[ATTR_DEVICE_STATE_KEY]
 
-        state_data = hass.data[DOMAIN][DATA_RESTORABLE_ATTRIBUTES].get(entry_id, {})
-        state_data[(area_name, device_name)] = restorable_attribute_key
-        hass.data[DOMAIN][DATA_RESTORABLE_ATTRIBUTES][entry_id] = state_data
+        state_data = hass.data[DOMAIN][DATA_DEVICE_STATES].get(entry_id, {})
+        state_data[(area_name, device_name)] = device_state_key
+        hass.data[DOMAIN][DATA_DEVICE_STATES][entry_id] = state_data
 
         await hass.config_entries.async_reload(entry_id)
 
     async def async_clear_synthetic_device_state(call: ServiceCall) -> None:
         """Reset the device state."""
         entry_id = call.data[ATTR_CONFIG_ENTRY_ID]
-        hass.data[DOMAIN][DATA_RESTORABLE_ATTRIBUTES][entry_id] = {}
+        hass.data[DOMAIN][DATA_DEVICE_STATES][entry_id] = {}
         await hass.config_entries.async_reload(entry_id)
 
     hass.services.async_register(
@@ -58,7 +58,7 @@ def async_register_services(hass: HomeAssistant) -> None:
                 vol.Required(ATTR_CONFIG_ENTRY_ID): cv.string,
                 vol.Optional(ATTR_AREA_NAME): cv.string,
                 vol.Required(ATTR_DEVICE_NAME): cv.string,
-                vol.Required(ATTR_RESTORABLE_ATTRIBUTES_KEY): cv.string,
+                vol.Required(ATTR_DEVICE_STATE_KEY): cv.string,
             }
         ),
     )
