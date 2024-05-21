@@ -4,7 +4,9 @@ from dataclasses import dataclass, field, asdict
 import hashlib
 import pathlib
 import logging
-from typing import Any
+import importlib
+from typing import Any, cast
+from functools import cache
 
 from synthetic_home.synthetic_home import (
     Device,
@@ -12,7 +14,6 @@ from synthetic_home.synthetic_home import (
 )
 from synthetic_home.device_types import (
     load_device_type_registry,
-    DeviceType,
 )
 from synthetic_home.exceptions import SyntheticHomeError
 
@@ -76,36 +77,59 @@ def generate_device_id(device_name: str, area_name: str | None) -> str:
     return hash.hexdigest()
 
 
-def _restore_attributes(
-    device_type: DeviceType,
-    device: Device,
-) -> None:
-    """Apply an evaluation state update to the specified device."""
-    if device.restorable_attribute_keys:
-        # Clear any existing state values and overwrite from the evaluation state
-        for state_value in device_type.supported_state_attributes:
-            if state_value in device.attributes:
-                del device.attributes[state_value]
+@cache
+def _entity_feature_flag(domain: str, enum_name: str, feature_value: str) -> Any:
+    """Return a cached lookup of an entity feature enum.
 
-    # Find the evaluation states from the device registry
-    for restore_attribute_key in device.restorable_attribute_keys:
-        if not (
-            restorable_attributes := device_type.get_restorable_attributes_by_key(
-                restore_attribute_key
-            )
-        ):
-            raise SyntheticHomeError(
-                f"Device type '{device_type.device_type}' does not support restorable attribute key '{restore_attribute_key}'. Options are: {device_type.all_restore_attribute_keys}"
-            )
-        _LOGGER.debug(
-            "Applying attribute overrides: %s", restorable_attributes.attributes
-        )
-        device.attributes.update(restorable_attributes.attributes)
+    This will import a module from disk and is run from an executor when
+    loading the services schema files.
+    """
+    module = importlib.import_module(f"homeassistant.components.{domain}")
+    enum = getattr(module, enum_name)
+    feature = getattr(enum, feature_value)
+    return feature
+
+
+def _validate_supported_feature(supported_feature: str) -> Any:
+    """Validate a supported feature and resolve an enum string to its value."""
+
+    try:
+        domain, enum, feature = supported_feature.split(".", 2)
+    except ValueError as exc:
+        raise ValueError(
+            f"Invalid supported feature '{supported_feature}', expected "
+            "<domain>.<enum>.<member>"
+        ) from exc
+
+    try:
+        return _entity_feature_flag(domain, enum, feature)
+    except (ModuleNotFoundError, AttributeError) as exc:
+        raise ValueError(f"Unknown supported feature '{supported_feature}'") from exc
+
+
+def parse_attributes(values: dict[str, str | list[str]]) -> dict[str, Any]:
+    """Parse special string attributes as constants."""
+    result = {}
+    for key, value in values.items():
+        new_value: str | int | None = None
+        if key == "device_class" or key == "state_class":
+            new_value = _validate_supported_feature(str(value))
+        if key == "supported_features":
+            if not isinstance(value, list):
+                raise ValueError(
+                    f"Expected type 'list' for 'supported_features', got: '{value}'"
+                )
+            flag = 0
+            for subvalue in value:
+                flag |= cast(int, _validate_supported_feature(subvalue).value)
+            new_value = flag
+        result[key] = new_value or value
+    return result
 
 
 def parse_home_config(
     config_file: pathlib.Path,
-    restorable_attributes: dict[tuple[str | None, str], str] | None,
+    device_states: dict[tuple[str | None, str], str] | None,
 ) -> ParsedHome:
     """Load synthetic home configuration from disk."""
     synthetic_home = load_synthetic_home(config_file)
@@ -116,21 +140,24 @@ def parse_home_config(
         registry.device_types.update(synthetic_home.device_type_registry.device_types)
     synthetic_home.device_type_registry = registry
 
-    if restorable_attributes:
+    if device_states:
         for (
             area_name,
             device_name,
-        ), restorable_attribute_key in restorable_attributes.items():
+        ), device_state_key in device_states.items():
             found_device = synthetic_home.find_devices_by_name(area_name, device_name)
             assert found_device
-            found_device.restorable_attribute_keys.append(restorable_attribute_key)
+            _LOGGER.debug(
+                "Assigning device state for '%s': %s", device_name, device_state_key
+            )
+            found_device.device_state = device_state_key
 
     _LOGGER.debug(
         "Loaded %s device types", len(synthetic_home.device_type_registry.device_types)
     )
     if not synthetic_home.device_type_registry.device_types:
         raise SyntheticHomeError("No device types found in the synthetic home")
-    synthetic_home.validate()
+    synthetic_home = synthetic_home.build()
 
     parsed_devices: list[ParsedDevice] = []
     pairs: list[tuple[str | None, list[Device]]] = [*synthetic_home.devices.items()]
@@ -138,28 +165,14 @@ def parse_home_config(
         pairs.append((None, synthetic_home.services))
     for area_name, devices_list in pairs:
         for device in devices_list:
-            assert device.device_type
-            if (device_type := registry.device_types.get(device.device_type)) is None:
-                raise SyntheticHomeError(
-                    f"Device '{device.name}' device_type '{device.device_type}' not found in registry"
-                )
-
-            # Populate pre-canned restorable attributes
-            _restore_attributes(device_type, device)
-
             parsed_entities: list[ParsedEntity] = []
-            for platform, entity_entries in device_type.entity_entries.items():
+            for platform, entity_entries in device.entity_entries.items():
                 for entity_entry in entity_entries:
-                    attributes = {
-                        entity_attribute_key: device.attributes[device_attribute_key]
-                        for device_attribute_key, entity_attribute_key in entity_entry.attribute_keys
-                        if device_attribute_key in device.attributes
-                    }
                     parsed_entities.append(
                         ParsedEntity(
                             platform=platform,
                             entity_key=entity_entry.key,
-                            attributes=attributes,
+                            attributes=parse_attributes(entity_entry.attributes),
                         )
                     )
 

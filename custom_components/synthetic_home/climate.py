@@ -10,7 +10,6 @@ from homeassistant.components.climate import (
     ATTR_TARGET_TEMP_LOW,
     ClimateEntity,
     ClimateEntityFeature,
-    ClimateEntityDescription,
     HVACAction,
     HVACMode,
     DOMAIN as CLIMATE_DOMAIN,
@@ -24,55 +23,6 @@ from .model import ParsedDevice
 from .entity import SyntheticDeviceEntity
 
 
-DEFAULT_SUPPORTED_FEATURES = (
-    ClimateEntityFeature(0)
-    | ClimateEntityFeature.FAN_MODE
-    | ClimateEntityFeature.TURN_ON
-    | ClimateEntityFeature.TURN_OFF
-)
-
-
-class SyntheticClimateEntityDescription(
-    ClimateEntityDescription, frozen_or_thawed=True
-):
-    """A class that describes climate entities."""
-
-    supported_features: ClimateEntityFeature | None = None
-    target_temperature: float | None = None
-    current_temperature: float | None = None
-    hvac_mode: HVACMode | None = None
-    hvac_action: HVACAction | None | None = None
-    hvac_modes: list[HVACMode] | None = None
-
-
-CLIMATES: tuple[SyntheticClimateEntityDescription, ...] = (
-    SyntheticClimateEntityDescription(
-        key="heat-pump",
-        supported_features=DEFAULT_SUPPORTED_FEATURES,
-        target_temperature=68,
-        hvac_mode=HVACMode.HEAT,
-        hvac_action=HVACAction.HEATING,
-        hvac_modes=[HVACMode.HEAT, HVACMode.OFF],
-    ),
-    SyntheticClimateEntityDescription(
-        key="hvac",
-        supported_features=(
-            DEFAULT_SUPPORTED_FEATURES | ClimateEntityFeature.TARGET_TEMPERATURE_RANGE
-        ),
-        target_temperature=21,
-        hvac_mode=HVACMode.COOL,
-        hvac_action=HVACAction.COOLING,
-        hvac_modes=[
-            HVACMode.OFF,
-            HVACMode.COOL,
-            HVACMode.HEAT,
-            HVACMode.AUTO,
-        ],
-    ),
-)
-CLIMATE_MAP = {desc.key: desc for desc in CLIMATES}
-
-
 FAN_MODES = ["low", "high", "off"]
 
 
@@ -84,9 +34,7 @@ async def async_setup_entry(
     synthetic_home = hass.data[DOMAIN][entry.entry_id]
 
     async_add_devices(
-        SyntheticHomeClimate(
-            device, CLIMATE_MAP[entity.entity_key], **entity.attributes
-        )
+        SyntheticHomeClimate(device, entity.entity_key, **entity.attributes)
         for device in synthetic_home.devices
         for entity in device.entities
         if entity.platform == CLIMATE_DOMAIN
@@ -106,8 +54,10 @@ class SyntheticHomeClimate(SyntheticDeviceEntity, ClimateEntity):
     def __init__(
         self,
         device: ParsedDevice,
-        entity_desc: SyntheticClimateEntityDescription,
+        key: str,
+        hvac_modes: list[HVACMode],
         *,
+        supported_features: ClimateEntityFeature | None = None,
         unit_of_measurement: str | None = None,
         current_temperature: float | None = None,
         target_temperature: float | None = None,
@@ -115,22 +65,17 @@ class SyntheticHomeClimate(SyntheticDeviceEntity, ClimateEntity):
         hvac_action: HVACAction | None = None,
     ) -> None:
         """Initialize the climate device."""
-        super().__init__(device, entity_desc.key)
-        self.entity_description = entity_desc
-        if entity_desc.supported_features is not None:
-            self._attr_supported_features = entity_desc.supported_features
-        self._attr_target_temperature = (
-            target_temperature or entity_desc.target_temperature
-        )
+        super().__init__(device, key)
+        if supported_features is not None:
+            self._attr_supported_features = ClimateEntityFeature(0) | supported_features
+        self._attr_target_temperature = target_temperature
         self._attr_target_temperature_high = None
         self._attr_target_temperature_low = None
-        self._attr_current_temperature = (
-            current_temperature or entity_desc.current_temperature
-        )
-        self._attr_hvac_action = hvac_action or entity_desc.hvac_action
-        self._attr_hvac_mode = entity_desc.hvac_mode or hvac_mode
-        if entity_desc.hvac_modes is not None:
-            self._attr_hvac_modes = entity_desc.hvac_modes
+        self._attr_current_temperature = current_temperature
+        self._attr_hvac_action = hvac_action
+        self._attr_hvac_mode = hvac_mode
+        if hvac_modes is not None:
+            self._attr_hvac_modes = hvac_modes
         if unit_of_measurement is not None:
             self._attr_temperature_unit = unit_of_measurement
 

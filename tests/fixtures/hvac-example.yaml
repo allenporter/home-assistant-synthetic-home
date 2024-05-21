@@ -9,6 +9,10 @@ devices:
         model: Thermostat
         manufacturer: Nest
         sw_version: 1.0.0
-      attributes:
-        unit_of_measurement: °F
-        current_temperature: 62
+      device_state:
+        climate.hvac:
+          unit_of_measurement: °F
+          current_temperature: 62
+        sensor.temperature:
+          native_value: 62
+          native_unit_of_measurement: °F

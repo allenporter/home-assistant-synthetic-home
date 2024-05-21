@@ -17,7 +17,7 @@ from custom_components.synthetic_home.const import (
     DOMAIN,
     CONF_FILENAME,
     ATTR_AREA_NAME,
-    ATTR_RESTORABLE_ATTRIBUTES_KEY,
+    ATTR_DEVICE_STATE_KEY,
     ATTR_DEVICE_NAME,
     ATTR_CONFIG_ENTRY_ID,
 )
@@ -112,7 +112,7 @@ async def restore_state(
     config_entry: MockConfigEntry,
     area_name: str,
     device_name: str,
-    restorable_attributes_key: str,
+    device_state_key: str,
 ) -> None:
     """Restore the specified pre-canned state."""
     await hass.services.async_call(
@@ -122,7 +122,7 @@ async def restore_state(
             ATTR_CONFIG_ENTRY_ID: config_entry.entry_id,
             ATTR_DEVICE_NAME: device_name,
             ATTR_AREA_NAME: area_name,
-            ATTR_RESTORABLE_ATTRIBUTES_KEY: restorable_attributes_key,
+            ATTR_DEVICE_STATE_KEY: device_state_key,
         },
         blocking=True,
     )

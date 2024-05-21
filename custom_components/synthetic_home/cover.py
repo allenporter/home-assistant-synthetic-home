@@ -10,7 +10,6 @@ from homeassistant.components.cover import (
     CoverDeviceClass,
     CoverEntityFeature,
     ATTR_POSITION,
-    CoverEntityDescription,
     DOMAIN as COVER_DOMAIN,
 )
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
@@ -24,34 +23,6 @@ COVER_STEP = 10
 COVER_STEP_TIME = datetime.timedelta(seconds=1)
 
 
-class SyntheticCoverEntityDescription(CoverEntityDescription, frozen_or_thawed=True):
-    """Entity description for a cover entity."""
-
-    supported_features: CoverEntityFeature | None = None
-
-
-COVERS: tuple[SyntheticCoverEntityDescription, ...] = (
-    SyntheticCoverEntityDescription(
-        key="blinds-cover",
-        supported_features=CoverEntityFeature.OPEN
-        | CoverEntityFeature.CLOSE
-        | CoverEntityFeature.SET_POSITION,
-        device_class=CoverDeviceClass.BLIND,
-    ),
-    SyntheticCoverEntityDescription(
-        key="garage-door-cover",
-        device_class=CoverDeviceClass.GARAGE,
-        supported_features=CoverEntityFeature.OPEN | CoverEntityFeature.CLOSE,
-    ),
-    SyntheticCoverEntityDescription(
-        key="gate-cover",
-        device_class=CoverDeviceClass.GATE,
-        supported_features=CoverEntityFeature.OPEN | CoverEntityFeature.CLOSE,
-    ),
-)
-COVER_MAP = {desc.key: desc for desc in COVERS}
-
-
 async def async_setup_entry(
     hass: HomeAssistant, entry: ConfigEntry, async_add_devices: AddEntitiesCallback
 ) -> None:
@@ -59,7 +30,7 @@ async def async_setup_entry(
     synthetic_home = hass.data[DOMAIN][entry.entry_id]
 
     async_add_devices(
-        SyntheticCover(device, COVER_MAP[entity.entity_key], **entity.attributes)
+        SyntheticCover(device, entity.entity_key, **entity.attributes)
         for device in synthetic_home.devices
         for entity in device.entities
         if entity.platform == COVER_DOMAIN
@@ -82,12 +53,19 @@ class SyntheticCover(SyntheticDeviceEntity, CoverEntity):
     def __init__(
         self,
         device: ParsedDevice,
-        entity_desc: SyntheticCoverEntityDescription,
+        key: str,
+        supported_features: CoverEntityFeature,
+        *,
+        device_class: CoverDeviceClass | None = None,
+        state: bool | None = None,
     ) -> None:
         """Initialize the SyntheticCover."""
-        super().__init__(device, entity_desc.key)
-        self.entity_description = entity_desc
-        self._attr_supported_features = entity_desc.supported_features
+        super().__init__(device, key)
+        self._attr_supported_features = supported_features
+        if device_class:
+            self._attr_device_class = device_class
+        if state:
+            self._attr_current_cover_position = 100
 
     async def async_close_cover(self, **kwargs: Any) -> None:
         """Close the cover."""

@@ -128,8 +128,7 @@ level values.
   device_info:
     manufacturer: Nest
     sw_version: 1.0.0
-  restorable_attribute_keys:
-    - warm_and_cooling
+  device_state: cooling
 ```
 
 ### Restorable Attributes using service calls

@@ -1,5 +1,5 @@
 # serializer version: 1
-# name: test_hvac_restorable_attributes[tests/fixtures/hvac-example.yaml-cooling]
+# name: test_hvac_device_state[tests/fixtures/hvac-example.yaml-cooling]
   tuple(
     'cool',
     ReadOnlyDict({
@@ -13,10 +13,10 @@
       'friendly_name': 'Family Room',
       'hvac_action': 'cooling',
       'hvac_modes': list([
-        <HVACMode.OFF: 'off'>,
-        <HVACMode.COOL: 'cool'>,
-        <HVACMode.HEAT: 'heat'>,
-        <HVACMode.AUTO: 'auto'>,
+        'off',
+        'cool',
+        'heat',
+        'auto',
       ]),
       'max_temp': 35,
       'min_temp': 7,
@@ -26,9 +26,9 @@
     }),
   )
 # ---
-# name: test_hvac_restorable_attributes[tests/fixtures/hvac-example.yaml-off]
+# name: test_hvac_device_state[tests/fixtures/hvac-example.yaml-off]
   tuple(
-    'cool',
+    'off',
     ReadOnlyDict({
       'current_temperature': 22,
       'fan_mode': None,
@@ -40,10 +40,10 @@
       'friendly_name': 'Family Room',
       'hvac_action': 'off',
       'hvac_modes': list([
-        <HVACMode.OFF: 'off'>,
-        <HVACMode.COOL: 'cool'>,
-        <HVACMode.HEAT: 'heat'>,
-        <HVACMode.AUTO: 'auto'>,
+        'off',
+        'cool',
+        'heat',
+        'auto',
       ]),
       'max_temp': 35,
       'min_temp': 7,
@@ -53,7 +53,7 @@
     }),
   )
 # ---
-# name: test_hvac_restorable_attributes[tests/fixtures/hvac-example.yaml-very-low]
+# name: test_hvac_device_state[tests/fixtures/hvac-example.yaml-very-low]
   tuple(
     'cool',
     ReadOnlyDict({
@@ -67,10 +67,10 @@
       'friendly_name': 'Family Room',
       'hvac_action': 'cooling',
       'hvac_modes': list([
-        <HVACMode.OFF: 'off'>,
-        <HVACMode.COOL: 'cool'>,
-        <HVACMode.HEAT: 'heat'>,
-        <HVACMode.AUTO: 'auto'>,
+        'off',
+        'cool',
+        'heat',
+        'auto',
       ]),
       'max_temp': 35,
       'min_temp': 7,
