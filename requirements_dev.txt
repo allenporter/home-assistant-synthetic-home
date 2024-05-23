@@ -4,7 +4,7 @@ mypy==1.10.0
 pip==24.0
 pre-commit==3.7.1
 pytest==8.2.1
-ruff==0.4.4
+ruff==0.4.5
 
 # Home Assistant testing dependencies
 pytest-asyncio==0.23.7
