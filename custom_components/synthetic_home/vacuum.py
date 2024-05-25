@@ -43,7 +43,11 @@ class SyntheticVacuum(SyntheticDeviceEntity, StateVacuumEntity):
         key: str,
         *,
         supported_features: VacuumEntityFeature | None = None,
-        state: str | None = None
+        state: str | None = None,
+        fan_speed: str | None = None,
+        fan_speed_list: list[str] | None = None,
+        battery_icon: str | None = None,
+        battery_level: int | None = None,
     ) -> None:
         """Initialize the SyntheticVacuum."""
         super().__init__(device, key)
@@ -51,6 +55,14 @@ class SyntheticVacuum(SyntheticDeviceEntity, StateVacuumEntity):
             self._attr_supported_features = VacuumEntityFeature(0) | supported_features
         if state:
             self._attr_state = state
+        if fan_speed is not None:
+            self._attr_fan_speed = fan_speed
+        if fan_speed_list is not None:
+            self._attr_fan_speed_list = fan_speed_list
+        if battery_icon is not None:
+            self._attr_battery_icon = battery_icon
+        if battery_level is not None:
+            self._attr_battery_level = battery_level
 
     async def async_stop(self, **kwargs: Any) -> None:
         """Stop the vacuum cleaner.
@@ -68,6 +80,11 @@ class SyntheticVacuum(SyntheticDeviceEntity, StateVacuumEntity):
         self._attr_state = STATE_RETURNING
         self.async_write_ha_state()
 
+    async def async_clean_spot(self, **kwargs: Any) -> None:
+        """Perform a spot clean-up."""
+        self._attr_state = STATE_CLEANING
+        self.async_write_ha_state()
+
     async def async_start(self) -> None:
         """Start or resume the cleaning task.
 
@@ -83,3 +100,21 @@ class SyntheticVacuum(SyntheticDeviceEntity, StateVacuumEntity):
         """
         self._attr_state = STATE_PAUSED
         self.async_write_ha_state()
+
+    async def async_set_fan_speed(self, fan_speed: str, **kwargs: Any) -> None:
+        """Set fan speed."""
+        self._attr_fan_speed = fan_speed
+        self.async_write_ha_state()
+
+    async def async_send_command(
+        self,
+        command: str,
+        params: dict[str, Any] | list[Any] | None = None,
+        **kwargs: Any,
+    ) -> None:
+        """Send a command to a vacuum cleaner."""
+        pass
+
+    async def async_locate(self, **kwargs: Any) -> None:
+        """Locate the vacuum cleaner."""
+        pass
