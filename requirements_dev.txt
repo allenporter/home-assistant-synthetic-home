@@ -3,11 +3,11 @@ black==24.4.2
 mypy==1.10.0
 pip==24.0
 pre-commit==3.7.1
-pytest==8.2.1
+pytest==8.1.1
 ruff==0.4.5
 
 # Home Assistant testing dependencies
-pytest-asyncio==0.23.7
+pytest-asyncio==0.23.6
 pytest-homeassistant-custom-component==0.13.124
 syrupy==4.6.1
 
@@ -17,4 +17,4 @@ home-assistant-intents>=2024.4.3
 voluptuous-stubs==0.1.1
 
 mashumaro==3.13
-synthetic-home==2.0.1
+synthetic-home==2.1.0
