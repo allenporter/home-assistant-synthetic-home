@@ -17,4 +17,4 @@ home-assistant-intents>=2024.4.3
 voluptuous-stubs==0.1.1
 
 mashumaro==3.13
-synthetic-home==2.1.0
+synthetic-home==2.2.0

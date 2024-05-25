@@ -1,0 +1,6 @@
+---
+name: Family Farmhouse
+devices:
+  Garden:
+    - name: Back Yard Water Valve
+      device_type: water-valve
