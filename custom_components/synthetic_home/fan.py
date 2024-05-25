@@ -1,6 +1,6 @@
 """Fan platform for Synthetic Home."""
 
-from typing import Any, Optional
+from typing import Any
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
@@ -45,6 +45,11 @@ class SyntheticFan(SyntheticDeviceEntity, FanEntity):
         state: str | None = None,
         is_on: bool | None = None,
         oscillating: bool | None = None,
+        current_direction: str | None = None,
+        percentage: int | None = None,
+        preset_mode: str | None = None,
+        preset_modes: list[str] | None = None,
+        speed_count: int | None = None,
     ) -> None:
         """Initialize the SyntheticFan."""
         super().__init__(device, key)
@@ -56,12 +61,37 @@ class SyntheticFan(SyntheticDeviceEntity, FanEntity):
             self._attr_percentage = 100 if is_on else 0
         if oscillating is not None:
             self._attr_oscillating = oscillating
+        if current_direction is not None:
+            self._attr_current_direction = current_direction
+        if percentage is not None:
+            self._attr_percentage = percentage
+        if preset_mode is not None:
+            self._attr_preset_mode = preset_mode
+        if preset_modes is not None:
+            self._preset_modes = preset_modes
+        if speed_count is not None:
+            self._attr_speed_count = speed_count
+
+    async def async_set_direction(self, direction: str) -> None:
+        """Set the direction of the fan."""
+        self._attr_current_direction = direction
+        self.async_write_ha_state()
+
+    async def async_set_preset_mode(self, preset_mode: str) -> None:
+        """Set the preset mode of the fan."""
+        self._attr_preset_mode = preset_mode
+        self.async_write_ha_state()
+
+    async def async_set_percentage(self, percentage: int) -> None:
+        """Set the speed percentage of the fan."""
+        self._attr_percentage = percentage
+        self.async_write_ha_state()
 
     async def async_turn_on(
         self,
-        speed: Optional[str] = None,
-        percentage: Optional[int] = None,
-        preset_mode: Optional[str] = None,
+        speed: str | None = None,
+        percentage: int | None = None,
+        preset_mode: str | None = None,
         **kwargs: Any,
     ) -> None:
         """Turn on the fan."""

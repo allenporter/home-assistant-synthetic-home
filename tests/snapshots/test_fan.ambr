@@ -1,0 +1,43 @@
+# serializer version: 1
+# name: test_fan_device_state[off-tests/fixtures/fan-example.yaml-fan.counter_fan]
+  tuple(
+    'off',
+    ReadOnlyDict({
+      'friendly_name': 'Counter Fan',
+      'oscillating': False,
+      'percentage': 0,
+      'percentage_step': 1.0,
+      'preset_mode': None,
+      'preset_modes': None,
+      'supported_features': <FanEntityFeature.SET_SPEED|OSCILLATE: 3>,
+    }),
+  )
+# ---
+# name: test_fan_device_state[on-tests/fixtures/fan-example.yaml-fan.counter_fan]
+  tuple(
+    'on',
+    ReadOnlyDict({
+      'friendly_name': 'Counter Fan',
+      'oscillating': False,
+      'percentage': 100,
+      'percentage_step': 1.0,
+      'preset_mode': None,
+      'preset_modes': None,
+      'supported_features': <FanEntityFeature.SET_SPEED|OSCILLATE: 3>,
+    }),
+  )
+# ---
+# name: test_fan_device_state[oscillating-tests/fixtures/fan-example.yaml-fan.counter_fan]
+  tuple(
+    'on',
+    ReadOnlyDict({
+      'friendly_name': 'Counter Fan',
+      'oscillating': True,
+      'percentage': 100,
+      'percentage_step': 1.0,
+      'preset_mode': None,
+      'preset_modes': None,
+      'supported_features': <FanEntityFeature.SET_SPEED|OSCILLATE: 3>,
+    }),
+  )
+# ---

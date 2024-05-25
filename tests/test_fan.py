@@ -1,7 +1,7 @@
 """Test Synthetic Home fan."""
 
 import pytest
-
+from syrupy import SnapshotAssertion
 
 from homeassistant.const import Platform
 from homeassistant.components.fan import (
@@ -12,7 +12,9 @@ from homeassistant.components.fan import (
 from homeassistant.const import ATTR_ENTITY_ID, SERVICE_TURN_ON, SERVICE_TURN_OFF
 from homeassistant.core import HomeAssistant
 
-from .conftest import FIXTURES
+from pytest_homeassistant_custom_component.common import MockConfigEntry
+
+from .conftest import FIXTURES, restore_state
 
 
 @pytest.fixture(name="platforms")
@@ -88,3 +90,31 @@ async def test_fan(
     state = hass.states.get(test_entity)
     assert state
     assert state.state == "off"
+
+
+@pytest.mark.parametrize(
+    ("config_yaml_fixture", "test_entity"),
+    [(f"{FIXTURES}/fan-example.yaml", "fan.counter_fan")],
+)
+@pytest.mark.parametrize(
+    ("device_state"),
+    [
+        "off",
+        "on",
+        "oscillating",
+    ],
+)
+async def test_fan_device_state(
+    hass: HomeAssistant,
+    setup_integration: None,
+    config_entry: MockConfigEntry,
+    test_entity: str,
+    device_state: str,
+    snapshot: SnapshotAssertion,
+) -> None:
+    """Test a fan with restorable state."""
+
+    await restore_state(hass, config_entry, "Kitchen", "Counter Fan", device_state)
+    state = hass.states.get(test_entity)
+    assert state
+    assert (state.state, state.attributes) == snapshot
