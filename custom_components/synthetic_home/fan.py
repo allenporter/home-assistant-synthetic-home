@@ -1,6 +1,6 @@
 """Fan platform for Synthetic Home."""
 
-from typing import Any
+from typing import Any, Optional
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
@@ -59,9 +59,9 @@ class SyntheticFan(SyntheticDeviceEntity, FanEntity):
 
     async def async_turn_on(
         self,
-        speed: str | None = None,
-        percentage: int | None = None,
-        preset_mode: str | None = None,
+        speed: Optional[str] = None,
+        percentage: Optional[int] = None,
+        preset_mode: Optional[str] = None,
         **kwargs: Any,
     ) -> None:
         """Turn on the fan."""
