@@ -17,19 +17,6 @@ from .entity import SyntheticDeviceEntity
 from .model import ParsedDevice
 
 
-SWITCHES: tuple[SwitchEntityDescription, ...] = (
-    SwitchEntityDescription(
-        key="outlet",
-        device_class=SwitchDeviceClass.OUTLET,
-    ),
-    SwitchEntityDescription(
-        key="switch",
-        device_class=SwitchDeviceClass.SWITCH,
-    ),
-)
-SENSOR_MAP = {desc.key: desc for desc in SWITCHES}
-
-
 async def async_setup_entry(
     hass: HomeAssistant, entry: ConfigEntry, async_add_devices: AddEntitiesCallback
 ) -> None:
@@ -37,7 +24,7 @@ async def async_setup_entry(
     synthetic_home = hass.data[DOMAIN][entry.entry_id]
 
     async_add_devices(
-        SyntheticHomeBinarySwitch(device, SENSOR_MAP[entity.entity_key])
+        SyntheticHomeBinarySwitch(device, entity.entity_key, **entity.attributes)
         for device in synthetic_home.devices
         for entity in device.entities
         if entity.platform == SWITCH_DOMAIN
@@ -50,13 +37,20 @@ class SyntheticHomeBinarySwitch(SyntheticDeviceEntity, SwitchEntity):
     def __init__(
         self,
         device: ParsedDevice,
-        entity_desc: SwitchEntityDescription,
+        entity_key: str,
+        *,
+        state: str | None = None,
+        is_on: bool | None = None,
+        device_class: SwitchDeviceClass | None = None,
     ) -> None:
         """Initialize SyntheticHomeBinarySwitch."""
-        super().__init__(device, entity_desc.key)
-        self._attr_is_on = False
-        self._attr_name = entity_desc.key.capitalize()
-        self.entity_description = entity_desc
+        super().__init__(device, entity_key)
+        if state is not None:
+            self._attr_is_on = (state == "on")
+        if is_on is not None:
+            self._attr_is_on = is_on
+        if device_class is not None:
+            self._attr_device_class = device_class
 
     async def async_turn_on(
         self, **kwargs: Any
