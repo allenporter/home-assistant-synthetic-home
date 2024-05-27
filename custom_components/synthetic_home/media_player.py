@@ -1,5 +1,6 @@
 """Media platform for Synthetic Home."""
 
+from typing import Any
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.components.media_player import (
@@ -7,6 +8,7 @@ from homeassistant.components.media_player import (
     MediaPlayerEntityFeature,
     MediaPlayerState,
     MediaPlayerDeviceClass,
+    MediaPlayerEnqueue,
     DOMAIN as MEDIA_PLAYER_DOMAIN,
 )
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
@@ -55,49 +57,79 @@ class SyntheticMediaPlayer(SyntheticDeviceEntity, MediaPlayerEntity):
             self._attr_state = state
         self._attr_volume_level = 1.0
 
-    def turn_on(self) -> None:
+    async def async_turn_on(self) -> None:
         """Turn the media player on."""
         self._attr_state = MediaPlayerState.PLAYING
-        self.schedule_update_ha_state()
+        self.async_write_ha_state()
 
-    def turn_off(self) -> None:
+    async def async_turn_off(self) -> None:
         """Turn the media player off."""
         self._attr_state = MediaPlayerState.OFF
-        self.schedule_update_ha_state()
+        self.async_write_ha_state()
 
-    def mute_volume(self, mute: bool) -> None:
+    async def async_mute_volume(self, mute: bool) -> None:
         """Mute the volume."""
         self._attr_is_volume_muted = mute
-        self.schedule_update_ha_state()
+        self.async_write_ha_state()
 
-    def volume_up(self) -> None:
+    async def async_volume_up(self) -> None:
         """Increase volume."""
         assert self.volume_level is not None
         self._attr_volume_level = min(1.0, self.volume_level + 0.1)
-        self.schedule_update_ha_state()
+        self.async_write_ha_state()
 
-    def volume_down(self) -> None:
+    async def async_volume_down(self) -> None:
         """Decrease volume."""
         assert self.volume_level is not None
         self._attr_volume_level = max(0.0, self.volume_level - 0.1)
-        self.schedule_update_ha_state()
+        self.async_write_ha_state()
 
-    def set_volume_level(self, volume: float) -> None:
+    async def async_set_volume_level(self, volume: float) -> None:
         """Set the volume level, range 0..1."""
         self._attr_volume_level = volume
-        self.schedule_update_ha_state()
+        self.async_write_ha_state()
 
-    def media_play(self) -> None:
+    async def async_media_play(self) -> None:
         """Send play command."""
         self._attr_state = MediaPlayerState.PLAYING
-        self.schedule_update_ha_state()
+        self.async_write_ha_state()
 
-    def media_pause(self) -> None:
+    async def async_media_pause(self) -> None:
         """Send pause command."""
         self._attr_state = MediaPlayerState.PAUSED
-        self.schedule_update_ha_state()
+        self.async_write_ha_state()
 
-    def media_stop(self) -> None:
+    async def async_media_stop(self) -> None:
         """Send stop command."""
         self._attr_state = MediaPlayerState.OFF
-        self.schedule_update_ha_state()
+        self.async_write_ha_state()
+
+    async def async_play_media(
+        self,
+        media_type: str,
+        media_id: str,
+        enqueue: MediaPlayerEnqueue | None = None,
+        announce: bool | None = None, **kwargs: Any,
+    ) -> None:
+        """Play a piece of media.
+
+        Currently does not yet track the actual media being played.
+        """
+        self._attr_state = MediaPlayerState.PLAYING
+        self.async_write_ha_state()
+
+    async def async_media_next_track(self) -> None:
+        """Send next track command.
+
+        Currently does not yet track the actual media being played.
+        """
+        self._attr_state = MediaPlayerState.PLAYING
+        self.async_write_ha_state()
+
+    async def async_media_previous_track(self) -> None:
+        """Send previous track command.
+
+        Currently does not yet track the actual media being played.
+        """
+        self._attr_state = MediaPlayerState.PLAYING
+        self.async_write_ha_state()

@@ -10,6 +10,8 @@ from homeassistant.components.media_player import (
     SERVICE_TURN_ON,
     SERVICE_TURN_OFF,
     SERVICE_VOLUME_SET,
+    SERVICE_MEDIA_NEXT_TRACK,
+    SERVICE_MEDIA_PREVIOUS_TRACK,
     ATTR_MEDIA_VOLUME_LEVEL,
 )
 from homeassistant.const import ATTR_ENTITY_ID
@@ -40,7 +42,7 @@ async def test_smart_speaker(
         "friendly_name": "Smart Speaker",
         "device_class": "speaker",
         "volume_level": 1.0,
-        "supported_features": 21901,
+        "supported_features": 21949,
     }
 
     await hass.services.async_call(
@@ -79,8 +81,30 @@ async def test_smart_speaker(
         "friendly_name": "Smart Speaker",
         "device_class": "speaker",
         "volume_level": 0.5,
-        "supported_features": 21901,
+        "supported_features": 21949,
     }
+
+    await hass.services.async_call(
+        MEDIA_PLAYER_DOMAIN,
+        SERVICE_MEDIA_NEXT_TRACK,
+        service_data={ATTR_ENTITY_ID: test_entity},
+        blocking=True,
+    )
+    await hass.async_block_till_done()
+    state = hass.states.get(test_entity)
+    assert state
+    assert state.state == "playing"
+
+    await hass.services.async_call(
+        MEDIA_PLAYER_DOMAIN,
+        SERVICE_MEDIA_PREVIOUS_TRACK,
+        service_data={ATTR_ENTITY_ID: test_entity},
+        blocking=True,
+    )
+    await hass.async_block_till_done()
+    state = hass.states.get(test_entity)
+    assert state
+    assert state.state == "playing"
 
     await hass.services.async_call(
         MEDIA_PLAYER_DOMAIN,
