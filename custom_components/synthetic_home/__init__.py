@@ -32,6 +32,7 @@ PLATFORMS: list[Platform] = [
     Platform.COVER,
     Platform.FAN,
     Platform.LIGHT,
+    Platform.LOCK,
     Platform.MEDIA_PLAYER,
     Platform.SENSOR,
     Platform.SWITCH,
