@@ -72,7 +72,7 @@ class SyntheticValve(SyntheticDeviceEntity, ValveEntity):
         self._attr_is_closed = True
         self.async_write_ha_state()
 
-    def set_valve_position(self, position: int) -> None:
+    async def async_set_valve_position(self, position: int) -> None:
         """Move the valve to a specific position."""
         self._attr_current_valve_position = position
         self._attr_is_closed = self._attr_current_valve_position == 0
