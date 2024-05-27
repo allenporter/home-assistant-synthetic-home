@@ -8,7 +8,6 @@ from homeassistant.components.switch import (
     SwitchEntity,
     SwitchDeviceClass,
     DOMAIN as SWITCH_DOMAIN,
-    SwitchEntityDescription,
 )
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
