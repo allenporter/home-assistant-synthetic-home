@@ -24,7 +24,7 @@ def mock_platforms() -> list[Platform]:
 
 @pytest.mark.parametrize(
     ("config_yaml_fixture", "test_entity"),
-    [(f"{FIXTURES}/switch-example.yaml", "switch.smart_feeder_switch")],
+    [(f"{FIXTURES}/switch-example.yaml", "switch.smart_feeder")],
 )
 async def test_switch_services(
     hass: HomeAssistant, setup_integration: None, test_entity: str
@@ -35,7 +35,7 @@ async def test_switch_services(
     assert state
     assert state.state == "off"
     assert state.attributes == {
-        "friendly_name": "Smart Feeder Switch",
+        "friendly_name": "Smart Feeder",
         "device_class": "switch",
     }
 
@@ -64,7 +64,7 @@ async def test_switch_services(
 
 @pytest.mark.parametrize(
     ("config_yaml_fixture", "test_entity"),
-    [(f"{FIXTURES}/smart-plug-example.yaml", "switch.floor_lamp_outlet")],
+    [(f"{FIXTURES}/smart-plug-example.yaml", "switch.floor_lamp")],
 )
 async def test_smart_plug(
     hass: HomeAssistant, setup_integration: None, test_entity: str
@@ -75,7 +75,7 @@ async def test_smart_plug(
     assert state
     assert state.state == "off"
     assert state.attributes == {
-        "friendly_name": "Floor Lamp Outlet",
+        "friendly_name": "Floor Lamp",
         "device_class": "outlet",
     }
 
