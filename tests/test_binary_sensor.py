@@ -14,7 +14,7 @@ from .conftest import FIXTURES, restore_state, clear_restore_state
 
 @pytest.fixture(name="platforms")
 def mock_platforms() -> list[Platform]:
-    """Set up switch platform."""
+    """Set up binary_sensor platform."""
     return [Platform.BINARY_SENSOR]
 
 
