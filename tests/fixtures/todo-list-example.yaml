@@ -1,0 +1,5 @@
+---
+name: Family Farmhouse
+services:
+  - name: Tasks
+    device_type: todo-list
