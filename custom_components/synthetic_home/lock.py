@@ -35,7 +35,7 @@ async def async_setup_entry(
 class SyntheticHomeLock(SyntheticDeviceEntity, LockEntity):
     """synthetic_home lock class."""
 
-    _code = None
+    _code: str | None = None
 
     def __init__(
         self,
