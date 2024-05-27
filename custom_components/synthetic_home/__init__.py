@@ -36,6 +36,7 @@ PLATFORMS: list[Platform] = [
     Platform.MEDIA_PLAYER,
     Platform.SENSOR,
     Platform.SWITCH,
+    Platform.TODO,
     Platform.VACUUM,
     Platform.VALVE,
     Platform.WEATHER,
