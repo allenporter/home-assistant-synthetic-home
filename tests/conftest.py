@@ -77,7 +77,8 @@ async def mock_setup_integration(
     """Set up the integration."""
     config_entry.add_to_hass(hass)
     with patch("custom_components.synthetic_home.PLATFORMS", platforms):
-        assert await async_setup_component(hass, DOMAIN, {})
+        assert await async_setup_component(hass, "homeassistant", {})
+        await hass.config_entries.async_setup(config_entry.entry_id)
         await hass.async_block_till_done()
         yield
 

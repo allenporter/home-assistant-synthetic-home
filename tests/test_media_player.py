@@ -1,6 +1,5 @@
 """Test Synthetic Home media player."""
 
-
 import pytest
 
 
@@ -41,7 +40,7 @@ async def test_smart_speaker(
         "friendly_name": "Smart Speaker",
         "device_class": "speaker",
         "volume_level": 1.0,
-        "supported_features": 21900,
+        "supported_features": 21901,
     }
 
     await hass.services.async_call(
@@ -80,7 +79,7 @@ async def test_smart_speaker(
         "friendly_name": "Smart Speaker",
         "device_class": "speaker",
         "volume_level": 0.5,
-        "supported_features": 21900,
+        "supported_features": 21901,
     }
 
     await hass.services.async_call(

@@ -35,7 +35,7 @@ async def test_water_valve(
     assert state.state == "closed"
     assert state.attributes == {
         "friendly_name": "Back Yard Water Valve",
-        "supported_features": 3,
+        "supported_features": 7,
     }
 
     await hass.services.async_call(
