@@ -67,6 +67,12 @@ class SyntheticCover(SyntheticDeviceEntity, CoverEntity):
         if state:
             self._attr_current_cover_position = 100
 
+    async def async_will_remove_from_hass(self) -> None:
+        """When entity will be removed from Home Assistant."""
+        if self._timer_unsub is not None:
+            self._timer_unsub()
+            self._timer_unsub = None
+
     async def async_close_cover(self, **kwargs: Any) -> None:
         """Close the cover."""
         if self._attr_current_cover_position == 0:

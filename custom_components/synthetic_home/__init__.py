@@ -28,11 +28,16 @@ _LOGGER: logging.Logger = logging.getLogger(__package__)
 
 PLATFORMS: list[Platform] = [
     Platform.BINARY_SENSOR,
+    Platform.CLIMATE,
     Platform.COVER,
+    Platform.FAN,
     Platform.LIGHT,
     Platform.MEDIA_PLAYER,
     Platform.SENSOR,
     Platform.SWITCH,
+    Platform.VACUUM,
+    Platform.VALVE,
+    Platform.WEATHER,
 ]
 
 
@@ -42,7 +47,11 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     hass.data.setdefault(DOMAIN, {})
     hass.data[DOMAIN].setdefault(DATA_DEVICE_STATES, {})
 
-    config_file = pathlib.Path(hass.config.path(entry.data[CONF_FILENAME]))
+    filename = entry.data[CONF_FILENAME]
+    if filename.startswith("/"):
+        config_file = filename
+    else:
+        config_file = pathlib.Path(hass.config.path(filename))
     states = hass.data[DOMAIN][DATA_DEVICE_STATES].get(entry.entry_id)
     try:
         synthetic_home = parse_home_config(config_file, states)
