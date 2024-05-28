@@ -54,14 +54,15 @@ class SyntheticCover(SyntheticDeviceEntity, CoverEntity):
         self,
         device: ParsedDevice,
         key: str,
-        supported_features: CoverEntityFeature,
         *,
+        supported_features: CoverEntityFeature | None = None,
         device_class: CoverDeviceClass | None = None,
         state: bool | None = None,
     ) -> None:
         """Initialize the SyntheticCover."""
         super().__init__(device, key)
-        self._attr_supported_features = supported_features
+        if supported_features is not None:
+            self._attr_supported_features = CoverEntityFeature(0) | supported_features
         if device_class:
             self._attr_device_class = device_class
         if state:
