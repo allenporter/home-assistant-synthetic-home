@@ -39,8 +39,6 @@ async def async_setup_entry(
 class SyntheticMediaPlayer(SyntheticDeviceEntity, MediaPlayerEntity):
     """synthetic_home media player class."""
 
-    _attr_media_track: str | None = None
-
     def __init__(
         self,
         device: ParsedDevice,
