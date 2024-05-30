@@ -19,24 +19,7 @@ from .model import ParsedDevice
 
 VOLUME_STEP = 1
 
-TRACKS = [
-    "Neon Sunrise",
-    "Whispers in the Wind",
-    "City of Starlight",
-    "Renegade Heart",
-    "The Last Campfire",
-    "Daydreamer's Escape",
-    "Symphony of Rain",
-    "Lost in the Algorithm",
-    "Chasing Fireflies",
-    "Echoes of Forever",
-    "Barcode Heart",
-    "Map to Nowhere",
-    "Breathe in the Wild",
-    "Secrets of the Deep",
-    "Stardust Serenade",
-    "Chasing the Sun",
-]
+TRACKS = 20
 
 
 async def async_setup_entry(
@@ -83,7 +66,7 @@ class SyntheticMediaPlayer(SyntheticDeviceEntity, MediaPlayerEntity):
 
     def _update_track(self) -> None:
         if self._attr_state != MediaPlayerState.OFF and self._attr_device_class != MediaPlayerDeviceClass.TV:
-            self._attr_media_track = TRACKS[self._track]
+            self._attr_media_track = self._track
         else:
             self._attr_media_track = None
 
@@ -160,7 +143,7 @@ class SyntheticMediaPlayer(SyntheticDeviceEntity, MediaPlayerEntity):
         """
         self._attr_state = MediaPlayerState.PLAYING
         self._track += 1
-        if self._track >= len(TRACKS):
+        if self._track >= TRACKS:
             self._track = 0
         self._update_track()
         self.async_write_ha_state()
