@@ -7,7 +7,7 @@ pytest==8.1.1
 ruff==0.4.6
 
 # Home Assistant testing dependencies
-pytest-asyncio==0.23.6
+pytest-asyncio==0.23.7
 pytest-homeassistant-custom-component==0.13.124
 syrupy==4.6.1
 
