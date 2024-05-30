@@ -43,6 +43,7 @@ async def test_smart_speaker(
         "device_class": "speaker",
         "volume_level": 1.0,
         "supported_features": 21949,
+        "media_track": "Neon Sunrise",
     }
 
     await hass.services.async_call(
@@ -82,6 +83,7 @@ async def test_smart_speaker(
         "device_class": "speaker",
         "volume_level": 0.5,
         "supported_features": 21949,
+        "media_track": "Neon Sunrise",
     }
 
     await hass.services.async_call(
@@ -94,6 +96,13 @@ async def test_smart_speaker(
     state = hass.states.get(test_entity)
     assert state
     assert state.state == "playing"
+    assert state.attributes == {
+        "friendly_name": "Smart Speaker",
+        "device_class": "speaker",
+        "volume_level": 0.5,
+        "supported_features": 21949,
+        "media_track": "Whispers in the Wind",
+    }
 
     await hass.services.async_call(
         MEDIA_PLAYER_DOMAIN,
@@ -105,6 +114,13 @@ async def test_smart_speaker(
     state = hass.states.get(test_entity)
     assert state
     assert state.state == "playing"
+    assert state.attributes == {
+        "friendly_name": "Smart Speaker",
+        "device_class": "speaker",
+        "volume_level": 0.5,
+        "supported_features": 21949,
+        "media_track": "Neon Sunrise",
+    }
 
     await hass.services.async_call(
         MEDIA_PLAYER_DOMAIN,

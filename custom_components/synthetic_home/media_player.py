@@ -19,6 +19,25 @@ from .model import ParsedDevice
 
 VOLUME_STEP = 1
 
+TRACKS = [
+    "Neon Sunrise",
+    "Whispers in the Wind",
+    "City of Starlight",
+    "Renegade Heart",
+    "The Last Campfire",
+    "Daydreamer's Escape",
+    "Symphony of Rain",
+    "Lost in the Algorithm",
+    "Chasing Fireflies",
+    "Echoes of Forever",
+    "Barcode Heart",
+    "Map to Nowhere",
+    "Breathe in the Wild",
+    "Secrets of the Deep",
+    "Stardust Serenade",
+    "Chasing the Sun",
+]
+
 
 async def async_setup_entry(
     hass: HomeAssistant, entry: ConfigEntry, async_add_devices: AddEntitiesCallback
@@ -53,18 +72,26 @@ class SyntheticMediaPlayer(SyntheticDeviceEntity, MediaPlayerEntity):
             self._attr_supported_features = (
                 MediaPlayerEntityFeature(0) | supported_features
             )
+        self._track = 0
         if state:
             self._attr_state = state
+            if state != MediaPlayerState.OFF:
+                self._attr_media_track = TRACKS[self._track]
+
         self._attr_volume_level = 1.0
 
     async def async_turn_on(self) -> None:
         """Turn the media player on."""
         self._attr_state = MediaPlayerState.PLAYING
+        self._track = 0
+        self._attr_media_track = TRACKS[self._track]
         self.async_write_ha_state()
 
     async def async_turn_off(self) -> None:
         """Turn the media player off."""
         self._attr_state = MediaPlayerState.OFF
+        self._track = 0
+        self._attr_media_track = None
         self.async_write_ha_state()
 
     async def async_mute_volume(self, mute: bool) -> None:
@@ -124,6 +151,10 @@ class SyntheticMediaPlayer(SyntheticDeviceEntity, MediaPlayerEntity):
         Currently does not yet track the actual media being played.
         """
         self._attr_state = MediaPlayerState.PLAYING
+        self._track += 1
+        if self._track >= len(TRACKS):
+            self._track = 0
+        self._attr_media_track = TRACKS[self._track]
         self.async_write_ha_state()
 
     async def async_media_previous_track(self) -> None:
@@ -132,4 +163,8 @@ class SyntheticMediaPlayer(SyntheticDeviceEntity, MediaPlayerEntity):
         Currently does not yet track the actual media being played.
         """
         self._attr_state = MediaPlayerState.PLAYING
+        self._track -= 1
+        if self._track < 0:
+            self._track = len(TRACKS) - 1
+        self._attr_media_track = TRACKS[self._track]
         self.async_write_ha_state()
