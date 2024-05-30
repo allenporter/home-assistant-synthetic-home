@@ -43,7 +43,7 @@ async def test_smart_speaker(
         "device_class": "speaker",
         "volume_level": 1.0,
         "supported_features": 21949,
-        "media_track": "Neon Sunrise",
+        "media_track": 0,
     }
 
     await hass.services.async_call(
@@ -83,7 +83,7 @@ async def test_smart_speaker(
         "device_class": "speaker",
         "volume_level": 0.5,
         "supported_features": 21949,
-        "media_track": "Neon Sunrise",
+        "media_track": 0,
     }
 
     await hass.services.async_call(
@@ -101,7 +101,7 @@ async def test_smart_speaker(
         "device_class": "speaker",
         "volume_level": 0.5,
         "supported_features": 21949,
-        "media_track": "Whispers in the Wind",
+        "media_track": 1,
     }
 
     await hass.services.async_call(
@@ -119,7 +119,7 @@ async def test_smart_speaker(
         "device_class": "speaker",
         "volume_level": 0.5,
         "supported_features": 21949,
-        "media_track": "Neon Sunrise",
+        "media_track": 0,
     }
 
     await hass.services.async_call(
