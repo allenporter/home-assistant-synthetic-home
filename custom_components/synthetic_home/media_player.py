@@ -75,23 +75,29 @@ class SyntheticMediaPlayer(SyntheticDeviceEntity, MediaPlayerEntity):
         self._track = 0
         if state:
             self._attr_state = state
-            if state != MediaPlayerState.OFF:
-                self._attr_media_track = TRACKS[self._track]
+            self._update_track()
 
         self._attr_volume_level = 1.0
+
+    def _update_track(self) -> None:
+        if self._attr_state != MediaPlayerState.OFF and self._attr_device_class != MediaPlayerDeviceClass.TV:
+            self._attr_media_track = TRACKS[self._track]
+        else:
+            self._attr_media_track = None
+
 
     async def async_turn_on(self) -> None:
         """Turn the media player on."""
         self._attr_state = MediaPlayerState.PLAYING
         self._track = 0
-        self._attr_media_track = TRACKS[self._track]
+        self._update_track()
         self.async_write_ha_state()
 
     async def async_turn_off(self) -> None:
         """Turn the media player off."""
         self._attr_state = MediaPlayerState.OFF
         self._track = 0
-        self._attr_media_track = None
+        self._update_track()
         self.async_write_ha_state()
 
     async def async_mute_volume(self, mute: bool) -> None:
@@ -154,7 +160,7 @@ class SyntheticMediaPlayer(SyntheticDeviceEntity, MediaPlayerEntity):
         self._track += 1
         if self._track >= len(TRACKS):
             self._track = 0
-        self._attr_media_track = TRACKS[self._track]
+        self._update_track()
         self.async_write_ha_state()
 
     async def async_media_previous_track(self) -> None:
@@ -166,5 +172,5 @@ class SyntheticMediaPlayer(SyntheticDeviceEntity, MediaPlayerEntity):
         self._track -= 1
         if self._track < 0:
             self._track = len(TRACKS) - 1
-        self._attr_media_track = TRACKS[self._track]
+        self._update_track()
         self.async_write_ha_state()
