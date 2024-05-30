@@ -156,6 +156,6 @@ class SyntheticMediaPlayer(SyntheticDeviceEntity, MediaPlayerEntity):
         self._attr_state = MediaPlayerState.PLAYING
         self._track -= 1
         if self._track < 0:
-            self._track = len(TRACKS) - 1
+            self._track = TRACKS - 1
         self._update_track()
         self.async_write_ha_state()
