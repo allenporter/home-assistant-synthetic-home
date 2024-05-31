@@ -59,3 +59,4 @@ class SyntheticTodoEntity(SyntheticDeviceEntity, TodoListEntity):
         if self._attr_todo_items is None:
             self._attr_todo_items = []
         self._attr_todo_items.append(item)
+        self.async_write_ha_state()
