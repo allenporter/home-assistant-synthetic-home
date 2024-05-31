@@ -5,9 +5,11 @@ on:
   push:
     branches:
       - main
+      - renovate/**
   pull_request:
     branches:
       - main
+      - renovate/**
 
 env:
   PYTHON_VERSION: 3.12
