@@ -3,6 +3,9 @@ name: hacs
 
 on:
   push:
+    branches:
+      - main
+      - renovate/**
   pull_request:
   schedule:
   - cron: "0 0 * * *"
