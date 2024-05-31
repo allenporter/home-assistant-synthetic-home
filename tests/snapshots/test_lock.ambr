@@ -1,0 +1,19 @@
+# serializer version: 1
+# name: test_hvac_device_state[locked-tests/fixtures/smart-lock-example.yaml-lock.front_door_lock]
+  tuple(
+    'locked',
+    ReadOnlyDict({
+      'friendly_name': 'Front Door Lock',
+      'supported_features': <LockEntityFeature: 0>,
+    }),
+  )
+# ---
+# name: test_hvac_device_state[unlocked-tests/fixtures/smart-lock-example.yaml-lock.front_door_lock]
+  tuple(
+    'unlocked',
+    ReadOnlyDict({
+      'friendly_name': 'Front Door Lock',
+      'supported_features': <LockEntityFeature: 0>,
+    }),
+  )
+# ---

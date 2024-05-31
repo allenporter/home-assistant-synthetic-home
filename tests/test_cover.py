@@ -3,7 +3,7 @@
 import datetime
 
 import pytest
-
+from syrupy import SnapshotAssertion
 
 from homeassistant.const import Platform
 from homeassistant.components.cover import (
@@ -18,7 +18,9 @@ from homeassistant.core import HomeAssistant
 from homeassistant.util import dt as dt_util
 from pytest_homeassistant_custom_component.common import async_fire_time_changed
 
-from .conftest import FIXTURES
+from pytest_homeassistant_custom_component.common import MockConfigEntry
+
+from .conftest import FIXTURES, restore_state
 
 
 @pytest.fixture(name="platforms")
@@ -189,3 +191,30 @@ async def test_gate(
         "current_position": 0,
         "supported_features": 3,
     }
+
+
+@pytest.mark.parametrize(
+    ("config_yaml_fixture", "test_entity"),
+    [(f"{FIXTURES}/smart-blinds-example.yaml", "cover.left_shade")],
+)
+@pytest.mark.parametrize(
+    ("device_state"),
+    [
+        (device_state)
+        for device_state in ("open", "closed")
+    ],
+)
+async def test_hvac_device_state(
+    hass: HomeAssistant,
+    setup_integration: None,
+    test_entity: str,
+    device_state: str,
+    config_entry: MockConfigEntry,
+    snapshot: SnapshotAssertion,
+) -> None:
+    """Test an HVAC device with restorable state."""
+
+    await restore_state(hass, config_entry, "Family Room", "Left Shade", device_state)
+    state = hass.states.get(test_entity)
+    assert state
+    assert (state.state, state.attributes) == snapshot

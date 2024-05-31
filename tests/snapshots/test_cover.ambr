@@ -1,0 +1,23 @@
+# serializer version: 1
+# name: test_hvac_device_state[closed-tests/fixtures/smart-blinds-example.yaml-cover.left_shade]
+  tuple(
+    'closed',
+    ReadOnlyDict({
+      'current_position': 0,
+      'device_class': 'blind',
+      'friendly_name': 'Left Shade',
+      'supported_features': <CoverEntityFeature.OPEN|CLOSE|SET_POSITION: 7>,
+    }),
+  )
+# ---
+# name: test_hvac_device_state[open-tests/fixtures/smart-blinds-example.yaml-cover.left_shade]
+  tuple(
+    'open',
+    ReadOnlyDict({
+      'current_position': 100,
+      'device_class': 'blind',
+      'friendly_name': 'Left Shade',
+      'supported_features': <CoverEntityFeature.OPEN|CLOSE|SET_POSITION: 7>,
+    }),
+  )
+# ---
