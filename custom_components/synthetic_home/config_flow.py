@@ -40,10 +40,10 @@ class SyntheticHomeFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
             except FileNotFoundError:
                 errors[CONF_FILENAME] = "does_not_exist"
             else:
-                return self.async_create_entry(
+                return self.async_create_entry(  # type: ignore[no-any-return]
                     title=user_input[CONF_FILENAME], data=user_input
                 )
 
-        return self.async_show_form(
+        return self.async_show_form(  # type: ignore[no-any-return]
             step_id="user", data_schema=STEP_USER_DATA_SCHEMA, errors=errors
         )
