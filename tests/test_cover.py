@@ -200,8 +200,8 @@ async def test_gate(
 @pytest.mark.parametrize(
     ("device_state"),
     [
-        (device_state)
-        for device_state in ("open", "closed")
+        ("open"),
+        ("closed"),
     ],
 )
 async def test_hvac_device_state(

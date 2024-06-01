@@ -63,17 +63,13 @@ async def test_smart_lock(
     assert state.state == "locked"
 
 
-
 @pytest.mark.parametrize(
     ("config_yaml_fixture", "test_entity"),
     [(f"{FIXTURES}/smart-lock-example.yaml", "lock.front_door_lock")],
 )
 @pytest.mark.parametrize(
     ("device_state"),
-    [
-        (device_state)
-        for device_state in ("locked", "unlocked")
-    ],
+    [("locked"), ("unlocked")],
 )
 async def test_hvac_device_state(
     hass: HomeAssistant,
@@ -85,7 +81,9 @@ async def test_hvac_device_state(
 ) -> None:
     """Test an HVAC device with restorable state."""
 
-    await restore_state(hass, config_entry, "Front door", "Front Door Lock", device_state)
+    await restore_state(
+        hass, config_entry, "Front door", "Front Door Lock", device_state
+    )
     state = hass.states.get(test_entity)
     assert state
     assert (state.state, state.attributes) == snapshot
