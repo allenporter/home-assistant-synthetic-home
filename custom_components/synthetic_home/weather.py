@@ -20,8 +20,8 @@ from homeassistant.util import dt as dt_util
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import DOMAIN
-from .model import ParsedHome, ParsedDevice
-from .entity import SyntheticDeviceEntity
+from .model import ParsedHome, ParsedEntity
+from .entity import SyntheticEntity
 
 
 _LOGGER = logging.getLogger(__name__)
@@ -96,25 +96,22 @@ async def async_setup_entry(
 
     async_add_devices(
         SyntheticHomeWeather(
-            device,
-            entity.entity_key,
+            entity,
             **map_attributes(entity.attributes, weather_service.device_states_dict),
         )
-        for device in synthetic_home.devices
-        for entity in device.entities
+        for entity in synthetic_home.entities
         if entity.platform == WEATHER_DOMAIN
     )
 
 
-class SyntheticHomeWeather(SyntheticDeviceEntity, WeatherEntity):
+class SyntheticHomeWeather(SyntheticEntity, WeatherEntity):
     """synthetic_home Weather class."""
 
     _attr_supported_features = 0
 
     def __init__(
         self,
-        device: ParsedDevice,
-        key: str,
+        entity: ParsedEntity,
         *,
         condition: str | None = None,
         native_temperature: float | None = None,
@@ -127,8 +124,7 @@ class SyntheticHomeWeather(SyntheticDeviceEntity, WeatherEntity):
         twice_daily_forecast: list[WeatherCondition] | None = None,
     ) -> None:
         """Initialize SyntheticHomeWeather."""
-        super().__init__(device, key)
-        self._attr_name = None  # Use device name
+        super().__init__(entity)
         self._attr_condition = condition
         self._attr_native_temperature = native_temperature
         self._attr_native_temperature_unit = native_temperature_unit

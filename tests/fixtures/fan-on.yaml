@@ -1,0 +1,7 @@
+---
+name: Family Farmhouse
+devices:
+  Kitchen:
+    - name: Counter Fan
+      device_type: fan-oscilating
+      device_state: "on"

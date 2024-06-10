@@ -2,6 +2,7 @@
 
 import logging
 
+
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.components.binary_sensor import (
     BinarySensorEntity,
@@ -12,8 +13,8 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.core import HomeAssistant
 
 from .const import DOMAIN
-from .model import ParsedDevice
-from .entity import SyntheticDeviceEntity
+from .model import ParsedEntity
+from .entity import SyntheticEntity
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -24,31 +25,26 @@ async def async_setup_entry(
     """Set up binary_sensor platform."""
 
     synthetic_home = hass.data[DOMAIN][entry.entry_id]
-    for device in synthetic_home.devices:
-        for entity in device.entities:
-            _LOGGER.debug(entity)
 
     async_add_devices(
-        SyntheticHomeBinarySensor(device, entity.entity_key, **entity.attributes)
-        for device in synthetic_home.devices
-        for entity in device.entities
+        SyntheticHomeBinarySensor(entity, state=entity.state, **entity.attributes)
+        for entity in synthetic_home.entities
         if entity.platform == BINARY_SENSOR_DOMAIN
     )
 
 
-class SyntheticHomeBinarySensor(SyntheticDeviceEntity, BinarySensorEntity):
+class SyntheticHomeBinarySensor(SyntheticEntity, BinarySensorEntity):
     """synthetic_home binary_sensor class."""
 
     def __init__(
         self,
-        device: ParsedDevice,
-        key: str,
+        entity: ParsedEntity,
+        *,
         device_class: BinarySensorDeviceClass | None = None,
-        state: bool = False,
+        state: bool | None = None,
     ) -> None:
         """Initialize SyntheticHomeSensor."""
-        super().__init__(device, key)
-        if key not in device.friendly_name.lower():  # Avoid "Motion Motion"
-            self._attr_name = key.capitalize()
-        self._attr_device_class = device_class
-        self._attr_is_on = state
+        super().__init__(entity)
+        if device_class is not None:
+            self._attr_device_class = device_class
+        self._attr_is_on = state if state is not None else False

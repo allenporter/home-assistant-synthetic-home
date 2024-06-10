@@ -14,7 +14,7 @@ from homeassistant.core import HomeAssistant
 
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
-from .conftest import FIXTURES, restore_state
+from .conftest import FIXTURES
 
 
 @pytest.fixture(name="platforms")
@@ -30,7 +30,7 @@ def mock_platforms() -> list[Platform]:
 async def test_smart_lock(
     hass: HomeAssistant, setup_integration: None, test_entity: str
 ) -> None:
-    """Test a binary sensors for a smart lock."""
+    """Test a smart lock."""
 
     state = hass.states.get(test_entity)
     assert state
@@ -64,26 +64,20 @@ async def test_smart_lock(
 
 
 @pytest.mark.parametrize(
-    ("config_yaml_fixture", "test_entity"),
-    [(f"{FIXTURES}/smart-lock-example.yaml", "lock.front_door_lock")],
-)
-@pytest.mark.parametrize(
-    ("device_state"),
-    [("locked"), ("unlocked")],
+    ("config_yaml_fixture"),
+    [
+        (f"{FIXTURES}/smart-lock-locked.yaml"),
+        (f"{FIXTURES}/smart-lock-unlocked.yaml"),
+    ],
 )
 async def test_hvac_device_state(
     hass: HomeAssistant,
     setup_integration: None,
-    test_entity: str,
-    device_state: str,
     config_entry: MockConfigEntry,
     snapshot: SnapshotAssertion,
 ) -> None:
-    """Test an HVAC device with restorable state."""
+    """Test a lock device with restorable state."""
 
-    await restore_state(
-        hass, config_entry, "Front door", "Front Door Lock", device_state
-    )
-    state = hass.states.get(test_entity)
+    state = hass.states.get("lock.front_door_lock")
     assert state
     assert (state.state, state.attributes) == snapshot

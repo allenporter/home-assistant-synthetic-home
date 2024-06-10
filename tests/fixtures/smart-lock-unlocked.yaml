@@ -1,0 +1,10 @@
+---
+name: Family Farmhouse
+devices:
+  Front door:
+    - name: Front Door Lock
+      device_type: smart-lock
+      unique_id: d4df546410f90f1c1d9be6a8443b8ec6
+      device_info:
+        manufacturer: Yale
+      device_state: unlocked

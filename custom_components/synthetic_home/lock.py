@@ -14,8 +14,8 @@ from homeassistant.components.lock import (
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import DOMAIN
-from .entity import SyntheticDeviceEntity
-from .model import ParsedDevice
+from .entity import SyntheticEntity
+from .model import ParsedEntity
 
 
 async def async_setup_entry(
@@ -25,25 +25,23 @@ async def async_setup_entry(
     synthetic_home = hass.data[DOMAIN][entry.entry_id]
 
     async_add_devices(
-        SyntheticHomeLock(device, entity.entity_key, **entity.attributes)
-        for device in synthetic_home.devices
-        for entity in device.entities
+        SyntheticHomeLock(entity, state=entity.state, **entity.attributes)
+        for entity in synthetic_home.entities
         if entity.platform == LOCK_DOMAIN
     )
 
 
-class SyntheticHomeLock(SyntheticDeviceEntity, LockEntity):
+class SyntheticHomeLock(SyntheticEntity, LockEntity):
     """synthetic_home lock class."""
 
     _code: str | None = None
 
     def __init__(
         self,
-        device: ParsedDevice,
-        key: str,
+        entity: ParsedEntity,
+        state: str | None = None,
         *,
         supported_features: LockEntityFeature | None = None,
-        state: str | None = None,
         is_locked: bool | None = None,
         is_locking: bool | None = None,
         is_open: bool | None = None,
@@ -53,7 +51,7 @@ class SyntheticHomeLock(SyntheticDeviceEntity, LockEntity):
         code: str | None = None,
     ) -> None:
         """Initialize SyntheticHomeLock."""
-        super().__init__(device, key)
+        super().__init__(entity)
         if supported_features:
             self._attr_supported_features = LockEntityFeature(0) | supported_features
         if state is not None:

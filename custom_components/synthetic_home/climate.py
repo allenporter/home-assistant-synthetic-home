@@ -1,6 +1,7 @@
 """Climate platform for Synthetic Home."""
 
 from typing import Any
+import logging
 
 
 from homeassistant.config_entries import ConfigEntry
@@ -19,9 +20,10 @@ from homeassistant.core import HomeAssistant
 from homeassistant.const import ATTR_TEMPERATURE
 
 from .const import DOMAIN
-from .model import ParsedDevice
-from .entity import SyntheticDeviceEntity
+from .entity import SyntheticEntity
+from .model import ParsedEntity
 
+_LOGGER = logging.getLogger(__name__)
 
 FAN_MODES = ["low", "high", "off"]
 
@@ -33,19 +35,18 @@ async def async_setup_entry(
 
     synthetic_home = hass.data[DOMAIN][entry.entry_id]
 
+    _LOGGER.debug("hvac_mode=%s", synthetic_home.entities)
+
     async_add_devices(
-        SyntheticHomeClimate(device, entity.entity_key, **entity.attributes)
-        for device in synthetic_home.devices
-        for entity in device.entities
+        SyntheticHomeClimate(entity, **entity.attributes)
+        for entity in synthetic_home.entities
         if entity.platform == CLIMATE_DOMAIN
     )
 
 
-class SyntheticHomeClimate(SyntheticDeviceEntity, ClimateEntity):
+class SyntheticHomeClimate(SyntheticEntity, ClimateEntity):
     """Representation of a demo climate device."""
 
-    _attr_has_entity_name = True
-    _attr_name = None
     _attr_should_poll = False
     _attr_fan_modes = FAN_MODES
     _attr_fan_mode = None
@@ -53,8 +54,7 @@ class SyntheticHomeClimate(SyntheticDeviceEntity, ClimateEntity):
 
     def __init__(
         self,
-        device: ParsedDevice,
-        key: str,
+        entity: ParsedEntity,
         hvac_modes: list[HVACMode],
         *,
         supported_features: ClimateEntityFeature | None = None,
@@ -65,7 +65,7 @@ class SyntheticHomeClimate(SyntheticDeviceEntity, ClimateEntity):
         hvac_action: HVACAction | None = None,
     ) -> None:
         """Initialize the climate device."""
-        super().__init__(device, key)
+        super().__init__(entity)
         if supported_features is not None:
             self._attr_supported_features = ClimateEntityFeature(0) | supported_features
         self._attr_target_temperature = target_temperature

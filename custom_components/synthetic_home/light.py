@@ -15,8 +15,8 @@ from homeassistant.components.light import (
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import DOMAIN
-from .entity import SyntheticDeviceEntity
-from .model import ParsedDevice
+from .entity import SyntheticEntity
+from .model import ParsedEntity
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -28,29 +28,27 @@ async def async_setup_entry(
     synthetic_home = hass.data[DOMAIN][entry.entry_id]
 
     async_add_devices(
-        SyntheticHomeLight(device, entity.entity_key, **entity.attributes)
-        for device in synthetic_home.devices
-        for entity in device.entities
+        SyntheticHomeLight(entity, state=entity.state, **entity.attributes)
+        for entity in synthetic_home.entities
         if entity.platform == LIGHT_DOMAIN
     )
 
 
-class SyntheticHomeLight(SyntheticDeviceEntity, LightEntity):
+class SyntheticHomeLight(SyntheticEntity, LightEntity):
     """synthetic_home light class."""
 
     def __init__(
         self,
-        device: ParsedDevice,
-        key: str,
+        entity: ParsedEntity,
+        state: str | None = None,
         supported_color_modes: set[ColorMode] | None = None,
         color_mode: ColorMode | None = None,
         *,
-        state: str | None = None,
         brightness: int | None = None,
         rgbw_color: tuple[int, int, int, int] | None = None,
     ) -> None:
         """Initialize the device."""
-        super().__init__(device, key)
+        super().__init__(entity)
         self._attr_supported_color_modes = supported_color_modes
         self._attr_is_on = state is not None and state == "on"
         if brightness is not None and brightness > 0:

@@ -11,8 +11,8 @@ from homeassistant.components.valve import (
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import DOMAIN
-from .entity import SyntheticDeviceEntity
-from .model import ParsedDevice
+from .entity import SyntheticEntity
+from .model import ParsedEntity
 
 
 async def async_setup_entry(
@@ -22,25 +22,23 @@ async def async_setup_entry(
     synthetic_home = hass.data[DOMAIN][entry.entry_id]
 
     async_add_devices(
-        SyntheticValve(device, entity.entity_key, **entity.attributes)
-        for device in synthetic_home.devices
-        for entity in device.entities
+        SyntheticValve(entity, state=entity.state, **entity.attributes)
+        for entity in synthetic_home.entities
         if entity.platform == VALVE_DOMAIN
     )
 
 
-class SyntheticValve(SyntheticDeviceEntity, ValveEntity):
+class SyntheticValve(SyntheticEntity, ValveEntity):
     """synthetic_home valve class."""
 
     _attr_reports_position = False
 
     def __init__(
         self,
-        device: ParsedDevice,
-        key: str,
+        entity: ParsedEntity,
+        state: str | None = None,
         *,
         supported_features: ValveEntityFeature | None = None,
-        state: str | None = None,
         current_valve_position: int | None = None,
         is_closed: bool | None = None,
         is_closing: bool | None = None,
@@ -48,7 +46,7 @@ class SyntheticValve(SyntheticDeviceEntity, ValveEntity):
         reports_position: bool | None = None,
     ) -> None:
         """Initialize the SyntheticValve."""
-        super().__init__(device, key)
+        super().__init__(entity)
         if supported_features is not None:
             self._attr_supported_features = ValveEntityFeature(0) | supported_features
         if state:

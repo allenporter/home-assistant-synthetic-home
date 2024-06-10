@@ -14,7 +14,7 @@ from homeassistant.core import HomeAssistant
 
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
-from .conftest import FIXTURES, restore_state
+from .conftest import FIXTURES
 
 
 @pytest.fixture(name="platforms")
@@ -93,28 +93,21 @@ async def test_fan(
 
 
 @pytest.mark.parametrize(
-    ("config_yaml_fixture", "test_entity"),
-    [(f"{FIXTURES}/fan-example.yaml", "fan.counter_fan")],
-)
-@pytest.mark.parametrize(
-    ("device_state"),
+    ("config_yaml_fixture"),
     [
-        "off",
-        "on",
-        "oscillating",
+        (f"{FIXTURES}/fan-off.yaml"),
+        (f"{FIXTURES}/fan-on.yaml"),
+        (f"{FIXTURES}/fan-oscillating.yaml"),
     ],
 )
 async def test_fan_device_state(
     hass: HomeAssistant,
     setup_integration: None,
     config_entry: MockConfigEntry,
-    test_entity: str,
-    device_state: str,
     snapshot: SnapshotAssertion,
 ) -> None:
     """Test a fan with restorable state."""
 
-    await restore_state(hass, config_entry, "Kitchen", "Counter Fan", device_state)
-    state = hass.states.get(test_entity)
+    state = hass.states.get("fan.counter_fan")
     assert state
     assert (state.state, state.attributes) == snapshot

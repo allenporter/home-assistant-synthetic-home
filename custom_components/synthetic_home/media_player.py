@@ -14,8 +14,8 @@ from homeassistant.components.media_player import (
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import DOMAIN
-from .entity import SyntheticDeviceEntity
-from .model import ParsedDevice
+from .entity import SyntheticEntity
+from .model import ParsedEntity
 
 VOLUME_STEP = 1
 
@@ -29,27 +29,25 @@ async def async_setup_entry(
     synthetic_home = hass.data[DOMAIN][entry.entry_id]
 
     async_add_devices(
-        SyntheticMediaPlayer(device, entity.entity_key, **entity.attributes)
-        for device in synthetic_home.devices
-        for entity in device.entities
+        SyntheticMediaPlayer(entity, state=entity.state, **entity.attributes)
+        for entity in synthetic_home.entities
         if entity.platform == MEDIA_PLAYER_DOMAIN
     )
 
 
-class SyntheticMediaPlayer(SyntheticDeviceEntity, MediaPlayerEntity):
+class SyntheticMediaPlayer(SyntheticEntity, MediaPlayerEntity):
     """synthetic_home media player class."""
 
     def __init__(
         self,
-        device: ParsedDevice,
-        key: str,
-        device_class: MediaPlayerDeviceClass,
+        entity: ParsedEntity,
+        state: MediaPlayerState | None = None,
         *,
+        device_class: MediaPlayerDeviceClass | None = None,
         supported_features: MediaPlayerEntityFeature | None = None,
-        state: MediaPlayerState | None = None
     ) -> None:
         """Initialize the SyntheticMediaPlayer."""
-        super().__init__(device, key)
+        super().__init__(entity)
         self._attr_device_class = device_class
         if supported_features is not None:
             self._attr_supported_features = (
@@ -63,11 +61,13 @@ class SyntheticMediaPlayer(SyntheticDeviceEntity, MediaPlayerEntity):
         self._attr_volume_level = 1.0
 
     def _update_track(self) -> None:
-        if self._attr_state != MediaPlayerState.OFF and self._attr_device_class != MediaPlayerDeviceClass.TV:
+        if (
+            self._attr_state != MediaPlayerState.OFF
+            and self._attr_device_class != MediaPlayerDeviceClass.TV
+        ):
             self._attr_media_track = self._track
         else:
             self._attr_media_track = None
-
 
     async def async_turn_on(self) -> None:
         """Turn the media player on."""
@@ -125,7 +125,8 @@ class SyntheticMediaPlayer(SyntheticDeviceEntity, MediaPlayerEntity):
         media_type: str,
         media_id: str,
         enqueue: MediaPlayerEnqueue | None = None,
-        announce: bool | None = None, **kwargs: Any,
+        announce: bool | None = None,
+        **kwargs: Any,
     ) -> None:
         """Play a piece of media.
 

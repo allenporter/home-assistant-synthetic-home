@@ -9,7 +9,7 @@ from homeassistant.core import HomeAssistant
 
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
-from .conftest import FIXTURES, restore_state, clear_restore_state
+from .conftest import FIXTURES
 
 
 @pytest.fixture(name="platforms")
@@ -103,25 +103,21 @@ async def test_window_sensor(hass: HomeAssistant, setup_integration: None) -> No
 
 
 @pytest.mark.parametrize(
-    ("config_yaml_fixture", "device_state"),
+    "config_yaml_fixture",
     [
-        (f"{FIXTURES}/camera-example.yaml", device_state)
-        for device_state in (
-            "idle",
-            "person-detected",
-            "sound-detected",
-            "motion-detected",
-        )
+        (f"{FIXTURES}/camera-idle.yaml"),
+        (f"{FIXTURES}/camera-person-detected.yaml"),
+        (f"{FIXTURES}/camera-sound-detected.yaml"),
+        (f"{FIXTURES}/camera-motion-detected.yaml"),
     ],
 )
-async def test_evaluation_states(
+async def test_camera_device_states(
     hass: HomeAssistant,
     setup_integration: None,
     config_entry: MockConfigEntry,
-    device_state: str,
     snapshot: SnapshotAssertion,
 ) -> None:
-    """Test the loading evaluation states for a specific device."""
+    """Test the loading device states for a specific device."""
 
     for entity in (
         "binary_sensor.outdoor_camera_motion",
@@ -130,7 +126,6 @@ async def test_evaluation_states(
     ):
         assert hass.states.get(entity), f"Entity {entity} not found"
 
-    await restore_state(hass, config_entry, "Backyard", "Outdoor Camera", device_state)
     states = {
         entity: hass.states.get(entity).state
         for entity in (
@@ -140,20 +135,3 @@ async def test_evaluation_states(
         )
     }
     assert states == snapshot
-
-    await clear_restore_state(hass, config_entry)
-
-    # Verify all states have been restored
-    states = {
-        entity: hass.states.get(entity).state
-        for entity in (
-            "binary_sensor.outdoor_camera_motion",
-            "binary_sensor.outdoor_camera_person",
-            "binary_sensor.outdoor_camera_sound",
-        )
-    }
-    assert states == {
-        "binary_sensor.outdoor_camera_motion": "off",
-        "binary_sensor.outdoor_camera_person": "off",
-        "binary_sensor.outdoor_camera_sound": "off",
-    }

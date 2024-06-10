@@ -12,8 +12,8 @@ from homeassistant.components.switch import (
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import DOMAIN
-from .entity import SyntheticDeviceEntity
-from .model import ParsedDevice
+from .entity import SyntheticEntity
+from .model import ParsedEntity
 
 
 async def async_setup_entry(
@@ -23,29 +23,27 @@ async def async_setup_entry(
     synthetic_home = hass.data[DOMAIN][entry.entry_id]
 
     async_add_devices(
-        SyntheticHomeBinarySwitch(device, entity.entity_key, **entity.attributes)
-        for device in synthetic_home.devices
-        for entity in device.entities
+        SyntheticHomeBinarySwitch(entity, state=entity.state, **entity.attributes)
+        for entity in synthetic_home.entities
         if entity.platform == SWITCH_DOMAIN
     )
 
 
-class SyntheticHomeBinarySwitch(SyntheticDeviceEntity, SwitchEntity):
+class SyntheticHomeBinarySwitch(SyntheticEntity, SwitchEntity):
     """synthetic_home switch class."""
 
     def __init__(
         self,
-        device: ParsedDevice,
-        entity_key: str,
-        *,
+        entity: ParsedEntity,
         state: str | None = None,
+        *,
         is_on: bool | None = None,
         device_class: SwitchDeviceClass | None = None,
     ) -> None:
         """Initialize SyntheticHomeBinarySwitch."""
-        super().__init__(device, entity_key)
+        super().__init__(entity)
         if state is not None:
-            self._attr_is_on = (state == "on")
+            self._attr_is_on = state == "on"
         if is_on is not None:
             self._attr_is_on = is_on
         if device_class is not None:

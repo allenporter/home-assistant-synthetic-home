@@ -1,21 +1,17 @@
 """Data model for home assistant synthetic home."""
 
 from dataclasses import dataclass, field, asdict
-import hashlib
 import pathlib
 import logging
 import importlib
 from typing import Any, cast
 from functools import cache
 
+from synthetic_home import inventory
 from synthetic_home.synthetic_home import (
-    Device,
     load_synthetic_home,
+    build_inventory,
 )
-from synthetic_home.device_types import (
-    load_device_type_registry,
-)
-from synthetic_home.exceptions import SyntheticHomeError
 
 from homeassistant.helpers.device_registry import DeviceInfo
 
@@ -26,38 +22,55 @@ _LOGGER = logging.getLogger(__name__)
 
 
 @dataclass
-class ParsedEntity:
-    """Data about an entity used in the integration."""
-
-    platform: str
-    entity_key: str
-    attributes: dict[str, Any]
-
-
-@dataclass
 class ParsedDevice:
     """Data about a device as used in the integration."""
 
     unique_id: str
-    device: Device
+    name: str
     area_name: str | None
-    entities: list[ParsedEntity]
 
-    @property
-    def friendly_name(self) -> str:
-        """A friendlier display name for a device."""
-        return self.device.name.replace("_", " ").title()
 
-    @property
-    def device_info(self) -> DeviceInfo:
-        """Home Assistant device info for this device."""
-        device_info = DeviceInfo(
-            name=self.friendly_name,
-            suggested_area=self.area_name,
-            identifiers={(DOMAIN, self.unique_id)},
-            **(asdict(self.device.device_info) if self.device.device_info else {}),  # type: ignore[typeddict-item]
-        )
-        return device_info  # type: ignore[no-any-return]
+def parse_device_info(
+    inv_device: inventory.Device, area: inventory.Area | None
+) -> DeviceInfo:
+    """Convert inventory device into into a home assistant device info."""
+    device_info: DeviceInfo = DeviceInfo(
+        name=inv_device.name,
+        identifiers={(DOMAIN, inv_device.id)},
+        **(asdict(inv_device.info) if inv_device.info else {}),  # type: ignore[typeddict-item]
+    )
+    if area:
+        device_info["suggested_area"] = area.name
+    return device_info
+
+
+@dataclass
+class ParsedEntity:
+    """Data about an entity used in the integration."""
+
+    platform: str
+    entity_id: str
+    name: str
+    device_info: DeviceInfo
+    state: Any
+    attributes: dict[str, str | list[str]]
+
+
+def parse_entity(inv_entity: inventory.Entity, device_info: DeviceInfo) -> ParsedEntity:
+    """Prepare an inventory entity for the synthetic home assistant model."""
+    if inv_entity.id is None:
+        raise ValueError("Inventory entity was missing an id")
+    if inv_entity.name is None:
+        raise ValueError("Inventory entity was missing a name")
+    (platform, entity_slug) = inv_entity.id.split(".", maxsplit=1)
+    return ParsedEntity(
+        platform=platform,
+        entity_id=inv_entity.id,
+        name=inv_entity.name,
+        state=inv_entity.state,
+        attributes=parse_attributes(inv_entity.attributes or {}),
+        device_info=device_info,
+    )
 
 
 @dataclass
@@ -66,15 +79,8 @@ class ParsedHome:
 
     areas: list[str] = field(default_factory=list)
     devices: list[ParsedDevice] = field(default_factory=list)
-
-
-def generate_device_id(device_name: str, area_name: str | None) -> str:
-    """Generate a device id from the hash of device name and area name."""
-    hash = hashlib.sha256()
-    hash.update(device_name.encode())
-    if area_name:
-        hash.update(area_name.encode())
-    return hash.hexdigest()
+    parsed_inventory: inventory.Inventory | None = None
+    entities: list[ParsedEntity] = field(default_factory=list)
 
 
 @cache
@@ -107,7 +113,9 @@ def _validate_supported_feature(supported_feature: str) -> Any:
         raise ValueError(f"Unknown supported feature '{supported_feature}'") from exc
 
 
-def parse_attributes(values: dict[str, str | list[str]]) -> dict[str, Any]:
+def parse_attributes(
+    values: dict[str, str | int | float | bool | list[str]]
+) -> dict[str, Any]:
     """Parse special string attributes as constants."""
     result = {}
     for key, value in values.items():
@@ -127,65 +135,43 @@ def parse_attributes(values: dict[str, str | list[str]]) -> dict[str, Any]:
     return result
 
 
-def parse_home_config(
-    config_file: pathlib.Path,
-    device_states: dict[tuple[str | None, str], str] | None,
-) -> ParsedHome:
+def parse_home_config(config_file: pathlib.Path) -> ParsedHome:
     """Load synthetic home configuration from disk."""
     synthetic_home = load_synthetic_home(config_file)
+    inventory = build_inventory(synthetic_home)
 
-    # Merge the default registry with any new devices specified in the home config
-    registry = load_device_type_registry()
-    if synthetic_home.device_type_registry:
-        registry.device_types.update(synthetic_home.device_type_registry.device_types)
-    synthetic_home.device_type_registry = registry
+    inv_area_dict = inventory.area_dict()
+    inv_device_dict = inventory.device_dict()
 
-    if device_states:
-        for (
-            area_name,
-            device_name,
-        ), device_state_key in device_states.items():
-            found_device = synthetic_home.find_devices_by_name(area_name, device_name)
-            assert found_device
-            _LOGGER.debug(
-                "Assigning device state for '%s': %s", device_name, device_state_key
+    parsed_devices = []
+    for inv_device in inv_device_dict.values():
+        if inv_device.id is None:
+            raise ValueError(f"Expected inventory device to have an id: {inv_device}")
+        if inv_device.area:
+            area_name = inv_area_dict[inv_device.area].name
+        else:
+            area_name = None
+        parsed_device = ParsedDevice(
+            unique_id=inv_device.id,
+            name=inv_device.name,
+            area_name=area_name,
+        )
+        parsed_devices.append(parsed_device)
+
+    parsed_entities = []
+    for inv_entity in inventory.entities:
+        if inv_entity.device is None:
+            raise ValueError(
+                f"Inventory entity did not specifyc a device: {inv_entity.device}"
             )
-            found_device.device_state = device_state_key
-
-    _LOGGER.debug(
-        "Loaded %s device types", len(synthetic_home.device_type_registry.device_types)
-    )
-    if not synthetic_home.device_type_registry.device_types:
-        raise SyntheticHomeError("No device types found in the synthetic home")
-    synthetic_home = synthetic_home.build()
-
-    parsed_devices: list[ParsedDevice] = []
-    pairs: list[tuple[str | None, list[Device]]] = [*synthetic_home.devices.items()]
-    if synthetic_home.services:
-        pairs.append((None, synthetic_home.services))
-    for area_name, devices_list in pairs:
-        for device in devices_list:
-            parsed_entities: list[ParsedEntity] = []
-            for platform, entity_entries in device.entity_entries.items():
-                for entity_entry in entity_entries:
-                    parsed_entities.append(
-                        ParsedEntity(
-                            platform=platform,
-                            entity_key=entity_entry.key,
-                            attributes=parse_attributes(entity_entry.attributes),
-                        )
-                    )
-
-            parsed_devices.append(
-                ParsedDevice(
-                    unique_id=generate_device_id(device.name, area_name),
-                    device=device,
-                    area_name=area_name,
-                    entities=parsed_entities,
-                )
-            )
+        inv_device = inv_device_dict[inv_entity.device]
+        device_info = parse_device_info(inv_device, inv_area_dict.get(inv_device.area or ""))
+        parsed_entity = parse_entity(inv_entity, device_info)
+        parsed_entities.append(parsed_entity)
 
     return ParsedHome(
         areas=list(synthetic_home.devices.keys()),
         devices=parsed_devices,
+        parsed_inventory=inventory,
+        entities=parsed_entities,
     )

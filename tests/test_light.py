@@ -16,7 +16,7 @@ from homeassistant.core import HomeAssistant
 
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
-from .conftest import FIXTURES, restore_state
+from .conftest import FIXTURES
 
 TEST_FIXTURE_FILE = f"{FIXTURES}/light-example.yaml"
 TEST_ENTITY = "light.family_room"
@@ -29,8 +29,8 @@ def mock_platforms() -> list[Platform]:
 
 
 @pytest.mark.parametrize(
-        "config_yaml_fixture",
-        [(f"{FIXTURES}/light-example.yaml")],
+    "config_yaml_fixture",
+    [(f"{FIXTURES}/light-example.yaml")],
 )
 async def test_light(hass: HomeAssistant, setup_integration: None) -> None:
     """Test light entity."""
@@ -69,14 +69,14 @@ async def test_light(hass: HomeAssistant, setup_integration: None) -> None:
     assert state.attributes == {
         "friendly_name": "Family Room",
         "color_mode": "onoff",
-        "supported_color_modes":  ["onoff"],
+        "supported_color_modes": ["onoff"],
         "supported_features": 0,
     }
 
 
 @pytest.mark.parametrize(
-        "config_yaml_fixture",
-        [(f"{FIXTURES}/light-dimmable.yaml")],
+    "config_yaml_fixture",
+    [(f"{FIXTURES}/light-dimmable.yaml")],
 )
 async def test_dimmable_light(hass: HomeAssistant, setup_integration: None) -> None:
     """Test a dimmable light entity."""
@@ -117,7 +117,7 @@ async def test_dimmable_light(hass: HomeAssistant, setup_integration: None) -> N
         "brightness": 30,
         "friendly_name": "Family Room",
         "color_mode": "brightness",
-        "supported_color_modes":  ["brightness"],
+        "supported_color_modes": ["brightness"],
         "supported_features": 0,
     }
 
@@ -136,15 +136,14 @@ async def test_dimmable_light(hass: HomeAssistant, setup_integration: None) -> N
         "brightness": 15,
         "friendly_name": "Family Room",
         "color_mode": "brightness",
-        "supported_color_modes":  ["brightness"],
+        "supported_color_modes": ["brightness"],
         "supported_features": 0,
     }
 
 
-
 @pytest.mark.parametrize(
-        "config_yaml_fixture",
-        [(f"{FIXTURES}/light-rgbw.yaml")],
+    "config_yaml_fixture",
+    [(f"{FIXTURES}/light-rgbw.yaml")],
 )
 async def test_rgbw_light(hass: HomeAssistant, setup_integration: None) -> None:
     """Test a light entity with rgbw color mode."""
@@ -192,7 +191,7 @@ async def test_rgbw_light(hass: HomeAssistant, setup_integration: None) -> None:
         "hs_color": (60, 49.804),
         "rgb_color": (255, 255, 128),
         "rgbw_color": (255, 255, 0, 255),
-        "supported_color_modes":  ["rgbw"],
+        "supported_color_modes": ["rgbw"],
         "supported_features": 0,
         "xy_color": (0.406, 0.458),
     }
@@ -215,15 +214,15 @@ async def test_rgbw_light(hass: HomeAssistant, setup_integration: None) -> None:
         "hs_color": (240.0, 49.804),
         "rgb_color": (128, 128, 255),
         "rgbw_color": (0, 0, 255, 255),
-        "supported_color_modes":  ["rgbw"],
+        "supported_color_modes": ["rgbw"],
         "supported_features": 0,
         "xy_color": (0.213, 0.159),
     }
 
 
 @pytest.mark.parametrize(
-        "config_yaml_fixture",
-        [(f"{FIXTURES}/garage-door-example.yaml")],
+    "config_yaml_fixture",
+    [(f"{FIXTURES}/garage-door-example.yaml")],
 )
 async def test_garage_door(hass: HomeAssistant, setup_integration: None) -> None:
     """Test light entity."""
@@ -240,13 +239,10 @@ async def test_garage_door(hass: HomeAssistant, setup_integration: None) -> None
 
 
 @pytest.mark.parametrize(
-    ("platforms", "config_yaml_fixture", "restorable_attributes_key"),
+    ("config_yaml_fixture", "expected_state"),
     [
-        ([Platform.LIGHT], f"{FIXTURES}/light-example.yaml", attribute_key)
-        for attribute_key in (
-            "on",
-            "off",
-        )
+        (f"{FIXTURES}/light-on.yaml", "on"),
+        (f"{FIXTURES}/light-off.yaml", "off"),
     ],
 )
 async def test_restorable_attributes(
@@ -254,14 +250,11 @@ async def test_restorable_attributes(
     setup_integration: None,
     config_entry: MockConfigEntry,
     config_yaml_fixture: str,
-    restorable_attributes_key: str,
+    expected_state: str,
     snapshot: SnapshotAssertion,
 ) -> None:
     """Test the loading evaluation states for a specific device."""
 
-    await restore_state(
-        hass, config_entry, "Family Room", "Family Room", restorable_attributes_key
-    )
     state = hass.states.get("light.family_room")
     assert state
-    assert state.state == restorable_attributes_key
+    assert state.state == expected_state

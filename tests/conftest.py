@@ -6,6 +6,7 @@ from unittest.mock import patch, mock_open
 
 import pytest
 from syrupy import SnapshotAssertion
+from aiohttp.test_utils import TestClient
 
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
@@ -16,13 +17,10 @@ from syrupy.location import PyTestLocation
 from custom_components.synthetic_home.const import (
     DOMAIN,
     CONF_FILENAME,
-    ATTR_AREA_NAME,
-    ATTR_DEVICE_STATE_KEY,
-    ATTR_DEVICE_NAME,
-    ATTR_CONFIG_ENTRY_ID,
 )
 
 from pytest_homeassistant_custom_component.common import MockConfigEntry
+from pytest_homeassistant_custom_component.typing import ClientSessionGenerator
 
 TEST_FILENAME = "example.yaml"
 FIXTURES = "tests/fixtures"
@@ -108,39 +106,10 @@ def mock_config_content(config_yaml: str) -> None:
         yield
 
 
-async def restore_state(
-    hass: HomeAssistant,
-    config_entry: MockConfigEntry,
-    area_name: str,
-    device_name: str,
-    device_state_key: str,
-) -> None:
-    """Restore the specified pre-canned state."""
-    await hass.services.async_call(
-        DOMAIN,
-        "set_synthetic_device_state",
-        service_data={
-            ATTR_CONFIG_ENTRY_ID: config_entry.entry_id,
-            ATTR_DEVICE_NAME: device_name,
-            ATTR_AREA_NAME: area_name,
-            ATTR_DEVICE_STATE_KEY: device_state_key,
-        },
-        blocking=True,
-    )
-    await hass.async_block_till_done()
-
-
-async def clear_restore_state(
-    hass: HomeAssistant,
-    config_entry: MockConfigEntry,
-) -> None:
-    """Clear any previous restore state."""
-    await hass.services.async_call(
-        DOMAIN,
-        "clear_synthetic_device_state",
-        service_data={
-            ATTR_CONFIG_ENTRY_ID: config_entry.entry_id,
-        },
-        blocking=True,
-    )
-    await hass.async_block_till_done()
+@pytest.fixture
+def mock_api_client(
+    hass: HomeAssistant, hass_client: ClientSessionGenerator
+) -> TestClient:
+    """Start the Home Assistant HTTP component and return admin API client."""
+    hass.loop.run_until_complete(async_setup_component(hass, "api", {}))
+    return hass.loop.run_until_complete(hass_client())

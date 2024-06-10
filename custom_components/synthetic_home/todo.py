@@ -14,8 +14,8 @@ from homeassistant.components.todo import (
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import DOMAIN
-from .entity import SyntheticDeviceEntity
-from .model import ParsedDevice
+from .entity import SyntheticEntity
+from .model import ParsedEntity
 
 
 async def async_setup_entry(
@@ -25,28 +25,26 @@ async def async_setup_entry(
     synthetic_home = hass.data[DOMAIN][entry.entry_id]
 
     async_add_devices(
-        SyntheticTodoEntity(device, entity.entity_key, **entity.attributes)
-        for device in synthetic_home.devices
-        for entity in device.entities
+        SyntheticTodoEntity(entity, **entity.attributes)
+        for entity in synthetic_home.entities
         if entity.platform == TODO_DOMAIN
     )
 
 
-class SyntheticTodoEntity(SyntheticDeviceEntity, TodoListEntity):
+class SyntheticTodoEntity(SyntheticEntity, TodoListEntity):
     """synthetic_home fan class."""
 
     _attr_reports_position = False
 
     def __init__(
         self,
-        device: ParsedDevice,
-        key: str,
+        entity: ParsedEntity,
         *,
         supported_features: TodoListEntityFeature | None = None,
         todo_items: list[dict[str, Any]] | None = None,
     ) -> None:
         """Initialize the SyntheticFan."""
-        super().__init__(device, key)
+        super().__init__(entity)
         if supported_features is not None:
             self._attr_supported_features = (
                 TodoListEntityFeature(0) | supported_features

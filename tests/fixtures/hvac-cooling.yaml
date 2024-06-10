@@ -1,0 +1,12 @@
+---
+name: Family Farmhouse
+devices:
+  Family room:
+    - name: Family room
+      device_type: hvac
+      unique_id: d4df546410f90f1c1d9be6a8443b8ec6
+      device_info:
+        model: Thermostat
+        manufacturer: Nest
+        sw_version: 1.0.0
+      device_state: cooling

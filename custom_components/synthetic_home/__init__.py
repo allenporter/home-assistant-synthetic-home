@@ -15,9 +15,8 @@ from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryError
 from homeassistant.helpers import area_registry as ar, device_registry as dr
 
-from .const import DOMAIN, CONF_FILENAME, DATA_DEVICE_STATES
+from .const import DOMAIN, CONF_FILENAME
 from .model import parse_home_config
-from .services import async_register_services
 
 from synthetic_home.exceptions import SyntheticHomeError
 
@@ -47,16 +46,14 @@ PLATFORMS: list[Platform] = [
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up this integration using UI."""
     hass.data.setdefault(DOMAIN, {})
-    hass.data[DOMAIN].setdefault(DATA_DEVICE_STATES, {})
 
     filename = entry.data[CONF_FILENAME]
     if filename.startswith("/"):
-        config_file = filename
+        config_file = pathlib.Path(filename)
     else:
         config_file = pathlib.Path(hass.config.path(filename))
-    states = hass.data[DOMAIN][DATA_DEVICE_STATES].get(entry.entry_id)
     try:
-        synthetic_home = parse_home_config(config_file, states)
+        synthetic_home = parse_home_config(config_file)
     except SyntheticHomeError as err:
         raise ConfigEntryError from err
 
@@ -64,26 +61,31 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     # Create all areas in the home and assign devices to them
     area_registry = ar.async_get(hass)
+    area_ids = {}
+    for area_name in synthetic_home.areas:
+        area_entry = area_registry.async_get_or_create(area_name)
+        area_ids[area_name] = area_entry.id
+        _LOGGER.debug("Created area %s (id=%s)", area_name, area_entry.id)
+
     device_registry = dr.async_get(hass)
     for device in synthetic_home.devices:
         _LOGGER.debug(
             "Creating device %s with unique_id %s",
-            device.friendly_name,
+            device.name,
             device.unique_id,
         )
         device_entry = device_registry.async_get_or_create(
             config_entry_id=entry.entry_id,
-            name=device.friendly_name,
+            name=device.name,
             identifiers={(DOMAIN, device.unique_id)},
         )
         if device.area_name:
-            area_entry = area_registry.async_get_or_create(device.area_name)
-            device_registry.async_update_device(device_entry.id, area_id=area_entry.id)
+            _LOGGER.debug("device.area_name=%s", device.area_name)
+            area_id = area_ids[device.area_name]
+            device_registry.async_update_device(device_entry.id, area_id=area_id)
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     entry.async_on_unload(entry.add_update_listener(async_reload_entry))
-
-    async_register_services(hass)
 
     return True
 

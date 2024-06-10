@@ -16,8 +16,8 @@ from homeassistant.const import STATE_OFF, STATE_PAUSED
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import DOMAIN
-from .entity import SyntheticDeviceEntity
-from .model import ParsedDevice
+from .entity import SyntheticEntity
+from .model import ParsedEntity
 
 
 async def async_setup_entry(
@@ -27,30 +27,28 @@ async def async_setup_entry(
     synthetic_home = hass.data[DOMAIN][entry.entry_id]
 
     async_add_devices(
-        SyntheticVacuum(device, entity.entity_key, **entity.attributes)
-        for device in synthetic_home.devices
-        for entity in device.entities
+        SyntheticVacuum(entity, state=entity.state, **entity.attributes)
+        for entity in synthetic_home.entities
         if entity.platform == VACUUM_DOMAIN
     )
 
 
-class SyntheticVacuum(SyntheticDeviceEntity, StateVacuumEntity):
+class SyntheticVacuum(SyntheticEntity, StateVacuumEntity):
     """synthetic_home vacuum class."""
 
     def __init__(
         self,
-        device: ParsedDevice,
-        key: str,
+        entity: ParsedEntity,
+        state: str | None = None,
         *,
         supported_features: VacuumEntityFeature | None = None,
-        state: str | None = None,
         fan_speed: str | None = None,
         fan_speed_list: list[str] | None = None,
         battery_icon: str | None = None,
         battery_level: int | None = None,
     ) -> None:
         """Initialize the SyntheticVacuum."""
-        super().__init__(device, key)
+        super().__init__(entity)
         if supported_features is not None:
             self._attr_supported_features = VacuumEntityFeature(0) | supported_features
         if state:

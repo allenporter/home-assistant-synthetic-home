@@ -15,7 +15,7 @@ from homeassistant.helpers import device_registry as dr
 
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
-from .conftest import FIXTURES, restore_state
+from .conftest import FIXTURES
 
 TEST_ENTITY = "climate.family_room"
 
@@ -115,22 +115,20 @@ async def test_heat_pump(
 
 
 @pytest.mark.parametrize(
-    ("config_yaml_fixture", "device_state"),
+    ("config_yaml_fixture"),
     [
-        (f"{FIXTURES}/hvac-example.yaml", device_state)
-        for device_state in ("cooling", "very-low", "off")
+        (f"{FIXTURES}/hvac-cooling.yaml"),
+        (f"{FIXTURES}/hvac-off.yaml"),
+        (f"{FIXTURES}/hvac-very-low.yaml"),
     ],
 )
 async def test_hvac_device_state(
     hass: HomeAssistant,
     setup_integration: None,
     config_entry: MockConfigEntry,
-    device_state: str,
     snapshot: SnapshotAssertion,
 ) -> None:
     """Test an HVAC device with restorable state."""
-
-    await restore_state(hass, config_entry, "Family room", "Family room", device_state)
     state = hass.states.get(TEST_ENTITY)
     assert state
     assert (state.state, state.attributes) == snapshot
