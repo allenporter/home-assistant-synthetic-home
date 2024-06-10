@@ -2,7 +2,8 @@
 name: Family Farmhouse
 devices:
   Family Room:
-    - name: Left Shade
-      device_type: smart-blinds
-    - name: Right Shade
-      device_type: smart-blinds
+  - name: Left Shade
+    device_type: smart-blinds
+    device_state: closed
+  - name: Right Shade
+    device_type: smart-blinds
