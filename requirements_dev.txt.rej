@@ -1,0 +1,13 @@
+diff a/requirements_dev.txt b/requirements_dev.txt	(rejected hunks)
+@@ -3,11 +3,9 @@ black==24.4.2
+ mypy==1.10.0
+ pip==23.0.1
+ pre-commit==3.6.0
+-pytest==8.2.0
+ ruff==0.4.4
+ 
+ # Home Assistant testing dependencies
+-pytest-asyncio==0.23.6
+ pytest-homeassistant-custom-component==0.13.123
+ syrupy==4.6.1
+ 
