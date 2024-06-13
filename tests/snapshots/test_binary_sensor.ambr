@@ -1,26 +1,26 @@
 # serializer version: 1
-# name: test_camera_device_states[tests/HOMES/camera-idle.yaml]
+# name: test_camera_device_states[tests/homes/camera-idle.yaml]
   dict({
     'binary_sensor.outdoor_camera_motion': 'off',
     'binary_sensor.outdoor_camera_person': 'off',
     'binary_sensor.outdoor_camera_sound': 'off',
   })
 # ---
-# name: test_camera_device_states[tests/HOMES/camera-motion-detected.yaml]
+# name: test_camera_device_states[tests/homes/camera-motion-detected.yaml]
   dict({
     'binary_sensor.outdoor_camera_motion': 'on',
     'binary_sensor.outdoor_camera_person': 'off',
     'binary_sensor.outdoor_camera_sound': 'off',
   })
 # ---
-# name: test_camera_device_states[tests/HOMES/camera-person-detected.yaml]
+# name: test_camera_device_states[tests/homes/camera-person-detected.yaml]
   dict({
     'binary_sensor.outdoor_camera_motion': 'off',
     'binary_sensor.outdoor_camera_person': 'on',
     'binary_sensor.outdoor_camera_sound': 'off',
   })
 # ---
-# name: test_camera_device_states[tests/HOMES/camera-sound-detected.yaml]
+# name: test_camera_device_states[tests/homes/camera-sound-detected.yaml]
   dict({
     'binary_sensor.outdoor_camera_motion': 'off',
     'binary_sensor.outdoor_camera_person': 'off',
