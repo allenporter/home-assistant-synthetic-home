@@ -33,7 +33,7 @@ async def async_setup_entry(
 
     async_add_devices(
         SyntheticTodoEntity(
-            entity, **filter_attributes(entity.attributes, SUPPORTED_ATTRIBUTES)
+            entity, **filter_attributes(entity, SUPPORTED_ATTRIBUTES)
         )
         for entity in synthetic_home.entities
         if entity.platform == TODO_DOMAIN

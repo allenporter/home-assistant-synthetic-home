@@ -31,16 +31,17 @@ SUPPORTED_ATTRIBUTES = set(
 )
 
 
-def map_attributes(attributes: dict[str, Any]) -> dict[str, Any]:
+def map_attributes(entity: ParsedEntity) -> dict[str, Any]:
     """Convert attributes from home assistant exports to the class here."""
     result = {}
-    for k, v in attributes.items():
+    for k, v in entity.attributes.items():
         if k == "unit_of_measurement":
             k = "native_unit_of_measurement"
         elif k == "native_value":
             k = "native_value"
         result[k] = v
-    return filter_attributes(result, SUPPORTED_ATTRIBUTES)
+    entity.attributes = result
+    return filter_attributes(entity, SUPPORTED_ATTRIBUTES)
 
 
 async def async_setup_entry(
@@ -51,7 +52,7 @@ async def async_setup_entry(
     synthetic_home: ParsedHome = hass.data[DOMAIN][entry.entry_id]
     async_add_devices(
         SyntheticHomeSensor(
-            entity, state=entity.state, **map_attributes(entity.attributes)
+            entity, state=entity.state, **map_attributes(entity)
         )
         for entity in synthetic_home.entities
         if entity.platform == SENSOR_DOMAIN

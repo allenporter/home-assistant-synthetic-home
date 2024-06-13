@@ -194,7 +194,13 @@ def parse_home_config(config_file: pathlib.Path) -> ParsedHome:
 
 
 def filter_attributes(
-    attributes: dict[str, Any], supported: set[str]
+    entity: ParsedEntity,
+    supported: set[str],
 ) -> dict[str, Any]:
     """Filter attributes to just the supported list."""
-    return {k: v for k, v in attributes.items() if k in supported}
+    attributes = entity.attributes
+    supported_attributes = {k: v for k, v in attributes.items() if k in supported}
+    unsupported_attributes = {k: v for k, v in attributes.items() if k not in supported}
+    if unsupported_attributes:
+        _LOGGER.info("Entity %s specified unsupported attributes %s", entity.entity_id, list(unsupported_attributes.keys()))
+    return supported_attributes

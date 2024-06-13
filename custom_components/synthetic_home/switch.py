@@ -34,7 +34,7 @@ async def async_setup_entry(
         SyntheticHomeBinarySwitch(
             entity,
             state=entity.state,
-            **filter_attributes(entity.attributes, SUPPORTED_ATTRIBUTES),
+            **filter_attributes(entity, SUPPORTED_ATTRIBUTES),
         )
         for entity in synthetic_home.entities
         if entity.platform == SWITCH_DOMAIN
