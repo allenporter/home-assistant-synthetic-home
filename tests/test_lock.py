@@ -14,7 +14,7 @@ from homeassistant.core import HomeAssistant
 
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
-from .conftest import FIXTURES
+from .conftest import HOMES
 
 
 @pytest.fixture(name="platforms")
@@ -25,7 +25,7 @@ def mock_platforms() -> list[Platform]:
 
 @pytest.mark.parametrize(
     ("config_yaml_fixture", "test_entity"),
-    [(f"{FIXTURES}/smart-lock-example.yaml", "lock.front_door_lock")],
+    [(f"{HOMES}/smart-lock-example.yaml", "lock.front_door_lock")],
 )
 async def test_smart_lock(
     hass: HomeAssistant, setup_integration: None, test_entity: str
@@ -66,8 +66,8 @@ async def test_smart_lock(
 @pytest.mark.parametrize(
     ("config_yaml_fixture"),
     [
-        (f"{FIXTURES}/smart-lock-locked.yaml"),
-        (f"{FIXTURES}/smart-lock-unlocked.yaml"),
+        (f"{HOMES}/smart-lock-locked.yaml"),
+        (f"{HOMES}/smart-lock-unlocked.yaml"),
     ],
 )
 async def test_hvac_device_state(

@@ -1,5 +1,5 @@
 # serializer version: 1
-# name: test_hvac_device_state[tests/fixtures/smart-lock-locked.yaml]
+# name: test_hvac_device_state[tests/HOMES/smart-lock-locked.yaml]
   tuple(
     'locked',
     ReadOnlyDict({
@@ -8,7 +8,7 @@
     }),
   )
 # ---
-# name: test_hvac_device_state[tests/fixtures/smart-lock-unlocked.yaml]
+# name: test_hvac_device_state[tests/HOMES/smart-lock-unlocked.yaml]
   tuple(
     'unlocked',
     ReadOnlyDict({

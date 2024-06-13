@@ -16,9 +16,9 @@ from homeassistant.core import HomeAssistant
 
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
-from .conftest import FIXTURES
+from .conftest import HOMES
 
-TEST_FIXTURE_FILE = f"{FIXTURES}/light-example.yaml"
+TEST_FIXTURE_FILE = f"{HOMES}/light-example.yaml"
 TEST_ENTITY = "light.family_room"
 
 
@@ -30,7 +30,7 @@ def mock_platforms() -> list[Platform]:
 
 @pytest.mark.parametrize(
     "config_yaml_fixture",
-    [(f"{FIXTURES}/light-example.yaml")],
+    [(f"{HOMES}/light-example.yaml")],
 )
 async def test_light(hass: HomeAssistant, setup_integration: None) -> None:
     """Test light entity."""
@@ -76,7 +76,7 @@ async def test_light(hass: HomeAssistant, setup_integration: None) -> None:
 
 @pytest.mark.parametrize(
     "config_yaml_fixture",
-    [(f"{FIXTURES}/light-dimmable.yaml")],
+    [(f"{HOMES}/light-dimmable.yaml")],
 )
 async def test_dimmable_light(hass: HomeAssistant, setup_integration: None) -> None:
     """Test a dimmable light entity."""
@@ -143,7 +143,7 @@ async def test_dimmable_light(hass: HomeAssistant, setup_integration: None) -> N
 
 @pytest.mark.parametrize(
     "config_yaml_fixture",
-    [(f"{FIXTURES}/light-rgbw.yaml")],
+    [(f"{HOMES}/light-rgbw.yaml")],
 )
 async def test_rgbw_light(hass: HomeAssistant, setup_integration: None) -> None:
     """Test a light entity with rgbw color mode."""
@@ -222,7 +222,7 @@ async def test_rgbw_light(hass: HomeAssistant, setup_integration: None) -> None:
 
 @pytest.mark.parametrize(
     "config_yaml_fixture",
-    [(f"{FIXTURES}/garage-door-example.yaml")],
+    [(f"{HOMES}/garage-door-example.yaml")],
 )
 async def test_garage_door(hass: HomeAssistant, setup_integration: None) -> None:
     """Test light entity."""
@@ -241,8 +241,8 @@ async def test_garage_door(hass: HomeAssistant, setup_integration: None) -> None
 @pytest.mark.parametrize(
     ("config_yaml_fixture", "expected_state"),
     [
-        (f"{FIXTURES}/light-on.yaml", "on"),
-        (f"{FIXTURES}/light-off.yaml", "off"),
+        (f"{HOMES}/light-on.yaml", "on"),
+        (f"{HOMES}/light-off.yaml", "off"),
     ],
 )
 async def test_restorable_attributes(

@@ -1,4 +1,4 @@
-"""Global fixtures for Synthetic Home integration."""
+"""Global HOMES for Synthetic Home integration."""
 
 import pathlib
 from collections.abc import Generator
@@ -23,7 +23,7 @@ from pytest_homeassistant_custom_component.common import MockConfigEntry
 from pytest_homeassistant_custom_component.typing import ClientSessionGenerator
 
 TEST_FILENAME = "example.yaml"
-FIXTURES = "tests/fixtures"
+HOMES = "tests/homes"
 
 DIFFERENT_DIRECTORY = "snapshots"
 

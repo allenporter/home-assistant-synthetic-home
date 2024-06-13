@@ -14,7 +14,7 @@ from homeassistant.components.vacuum import (
 from homeassistant.const import ATTR_ENTITY_ID
 from homeassistant.core import HomeAssistant
 
-from .conftest import FIXTURES
+from .conftest import HOMES
 
 
 @pytest.fixture(name="platforms")
@@ -25,7 +25,7 @@ def mock_platforms() -> list[Platform]:
 
 @pytest.mark.parametrize(
     ("config_yaml_fixture", "test_entity"),
-    [(f"{FIXTURES}/vacuum-example.yaml", "vacuum.robot_vacuum")],
+    [(f"{HOMES}/vacuum-example.yaml", "vacuum.robot_vacuum")],
 )
 async def test_vacuum(
     hass: HomeAssistant, setup_integration: None, test_entity: str

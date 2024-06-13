@@ -2,5 +2,5 @@
 name: Family Farmhouse
 devices:
   Front Yard:
-  - name: Driveway Gate
-    device_type: gate
+    - name: Driveway Gate
+      device_type: gate

@@ -1,5 +1,5 @@
 # serializer version: 1
-# name: test_hvac_device_state[tests/fixtures/smart-blinds-closed.yaml]
+# name: test_hvac_device_state[tests/HOMES/smart-blinds-closed.yaml]
   tuple(
     'closed',
     ReadOnlyDict({
@@ -10,7 +10,7 @@
     }),
   )
 # ---
-# name: test_hvac_device_state[tests/fixtures/smart-blinds-open.yaml]
+# name: test_hvac_device_state[tests/HOMES/smart-blinds-open.yaml]
   tuple(
     'open',
     ReadOnlyDict({

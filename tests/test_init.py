@@ -21,10 +21,10 @@ from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 from custom_components.synthetic_home import PLATFORMS
 
-from .conftest import FIXTURES
+from .conftest import HOMES
 
 ORIG_PLATFORMS = [*PLATFORMS]
-CONFIG_GLOB = list(pathlib.Path(FIXTURES).glob("*.yaml"))
+CONFIG_GLOB = list(pathlib.Path(HOMES).glob("*.yaml"))
 
 
 @pytest.fixture(name="platforms")

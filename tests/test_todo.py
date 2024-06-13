@@ -10,7 +10,7 @@ from homeassistant.components.todo import (
 from homeassistant.const import ATTR_ENTITY_ID
 from homeassistant.core import HomeAssistant
 
-from .conftest import FIXTURES
+from .conftest import HOMES
 
 
 @pytest.fixture(name="platforms")
@@ -21,7 +21,7 @@ def mock_platforms() -> list[Platform]:
 
 @pytest.mark.parametrize(
     ("config_yaml_fixture", "test_entity"),
-    [(f"{FIXTURES}/todo-list-example.yaml", "todo.tasks")],
+    [(f"{HOMES}/todo-list-example.yaml", "todo.tasks")],
 )
 async def test_todo_list(
     hass: HomeAssistant, setup_integration: None, test_entity: str
