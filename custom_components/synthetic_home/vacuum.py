@@ -17,7 +17,18 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import DOMAIN
 from .entity import SyntheticEntity
-from .model import ParsedEntity
+from .model import ParsedEntity, filter_attributes
+
+
+SUPPORTED_ATTRIBUTES = set(
+    {
+        "supported_features",
+        "fan_speed",
+        "fan_speed_list",
+        "battery_icon",
+        "battery_level",
+    }
+)
 
 
 async def async_setup_entry(
@@ -27,7 +38,11 @@ async def async_setup_entry(
     synthetic_home = hass.data[DOMAIN][entry.entry_id]
 
     async_add_devices(
-        SyntheticVacuum(entity, state=entity.state, **entity.attributes)
+        SyntheticVacuum(
+            entity,
+            state=entity.state,
+            **filter_attributes(entity.attributes, SUPPORTED_ATTRIBUTES),
+        )
         for entity in synthetic_home.entities
         if entity.platform == VACUUM_DOMAIN
     )

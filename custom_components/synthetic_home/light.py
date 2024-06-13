@@ -16,9 +16,18 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import DOMAIN
 from .entity import SyntheticEntity
-from .model import ParsedEntity
+from .model import ParsedEntity, filter_attributes
 
 _LOGGER = logging.getLogger(__name__)
+
+SUPPORTED_ATTRIBUTES = set(
+    {
+        "supported_color_modes",
+        "color_mode",
+        "brightness",
+        "rgbw_color",
+    }
+)
 
 
 async def async_setup_entry(
@@ -28,7 +37,11 @@ async def async_setup_entry(
     synthetic_home = hass.data[DOMAIN][entry.entry_id]
 
     async_add_devices(
-        SyntheticHomeLight(entity, state=entity.state, **entity.attributes)
+        SyntheticHomeLight(
+            entity,
+            state=entity.state,
+            **filter_attributes(entity.attributes, SUPPORTED_ATTRIBUTES),
+        )
         for entity in synthetic_home.entities
         if entity.platform == LIGHT_DOMAIN
     )

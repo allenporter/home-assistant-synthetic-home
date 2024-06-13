@@ -17,10 +17,11 @@ from homeassistant.helpers.event import async_track_time_interval
 
 from .const import DOMAIN
 from .entity import SyntheticEntity
-from .model import ParsedEntity
+from .model import ParsedEntity, filter_attributes
 
 COVER_STEP = 10
 COVER_STEP_TIME = datetime.timedelta(seconds=1)
+SUPPORTED_ATTRIBUTES = set({"supported_features", "device_class"})
 
 
 async def async_setup_entry(
@@ -30,7 +31,11 @@ async def async_setup_entry(
     synthetic_home = hass.data[DOMAIN][entry.entry_id]
 
     async_add_devices(
-        SyntheticCover(entity, state=entity.state, **entity.attributes)
+        SyntheticCover(
+            entity,
+            state=entity.state,
+            **filter_attributes(entity.attributes, SUPPORTED_ATTRIBUTES),
+        )
         for entity in synthetic_home.entities
         if entity.platform == COVER_DOMAIN
     )

@@ -15,7 +15,20 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import DOMAIN
 from .entity import SyntheticEntity
-from .model import ParsedEntity
+from .model import ParsedEntity, filter_attributes
+
+SUPPORTED_ATTRIBUTES = set(
+    {
+        "supported_features",
+        "is_locked",
+        "is_locking",
+        "is_open",
+        "is_opening",
+        "is_jammed",
+        "code_format",
+        "code",
+    }
+)
 
 
 async def async_setup_entry(
@@ -25,7 +38,11 @@ async def async_setup_entry(
     synthetic_home = hass.data[DOMAIN][entry.entry_id]
 
     async_add_devices(
-        SyntheticHomeLock(entity, state=entity.state, **entity.attributes)
+        SyntheticHomeLock(
+            entity,
+            state=entity.state,
+            **filter_attributes(entity.attributes, SUPPORTED_ATTRIBUTES),
+        )
         for entity in synthetic_home.entities
         if entity.platform == LOCK_DOMAIN
     )

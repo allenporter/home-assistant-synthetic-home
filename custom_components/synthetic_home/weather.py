@@ -20,11 +20,26 @@ from homeassistant.util import dt as dt_util
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import DOMAIN
-from .model import ParsedHome, ParsedEntity
+from .model import ParsedHome, ParsedEntity, filter_attributes
 from .entity import SyntheticEntity
 
 
 _LOGGER = logging.getLogger(__name__)
+
+
+SUPPORTED_ATTRIBUTES = set(
+    {
+        "condition",
+        "native_temperature",
+        "native_temperature_unit",
+        "humidity",
+        "native_wind_speed",
+        "native_wind_speed_unit",
+        "daily_forecast",
+        "hourly_forecast",
+        "twice_daily_forecast",
+    }
+)
 
 
 @dataclass
@@ -82,7 +97,7 @@ def map_attributes(
                     )
                 conditions.append(WeatherCondition(**entity_state))
             attributes[forecast_key] = conditions
-    return attributes
+    return filter_attributes(attributes, SUPPORTED_ATTRIBUTES)
 
 
 async def async_setup_entry(

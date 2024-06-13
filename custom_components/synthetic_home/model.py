@@ -12,6 +12,7 @@ from synthetic_home.synthetic_home import (
     load_synthetic_home,
     build_inventory,
 )
+from synthetic_home.exceptions import SyntheticHomeError
 
 from homeassistant.helpers.device_registry import DeviceInfo
 
@@ -51,17 +52,19 @@ class ParsedEntity:
     platform: str
     entity_id: str
     name: str
-    device_info: DeviceInfo
+    device_info: DeviceInfo | None
     state: Any
     attributes: dict[str, str | list[str]]
 
 
-def parse_entity(inv_entity: inventory.Entity, device_info: DeviceInfo) -> ParsedEntity:
+def parse_entity(
+    inv_entity: inventory.Entity, device_info: DeviceInfo | None
+) -> ParsedEntity:
     """Prepare an inventory entity for the synthetic home assistant model."""
     if inv_entity.id is None:
         raise ValueError("Inventory entity was missing an id")
     if inv_entity.name is None:
-        raise ValueError("Inventory entity was missing a name")
+        raise ValueError(f"Inventory entity '{inv_entity.id}' was missing a name")
     (platform, entity_slug) = inv_entity.id.split(".", maxsplit=1)
     return ParsedEntity(
         platform=platform,
@@ -100,7 +103,7 @@ def _validate_supported_feature(supported_feature: str) -> Any:
     """Validate a supported feature and resolve an enum string to its value."""
 
     try:
-        domain, enum, feature = supported_feature.split(".", 2)
+        domain, enum, feature = supported_feature.split(".", maxsplit=2)
     except ValueError as exc:
         raise ValueError(
             f"Invalid supported feature '{supported_feature}', expected "
@@ -121,27 +124,40 @@ def parse_attributes(
     for key, value in values.items():
         new_value: str | int | None = None
         if key == "device_class" or key == "state_class":
-            new_value = _validate_supported_feature(str(value))
+            if isinstance(value, str) and "." in value:
+                new_value = _validate_supported_feature(str(value))
         if key == "supported_features":
-            if not isinstance(value, list):
+            _LOGGER.info("value=%s (type=%s)", value, type(value))
+            if isinstance(value, int):
+                # Do nothing
+                new_value = value
+                _LOGGER.info("doing nothing %s", new_value)
+            elif not isinstance(value, list):
                 raise ValueError(
                     f"Expected type 'list' for 'supported_features', got: '{value}'"
                 )
-            flag = 0
-            for subvalue in value:
-                flag |= cast(int, _validate_supported_feature(subvalue).value)
-            new_value = flag
+            else:
+                flag = 0
+                for subvalue in value:
+                    flag |= cast(int, _validate_supported_feature(subvalue).value)
+                new_value = flag
         result[key] = new_value or value
     return result
 
 
 def parse_home_config(config_file: pathlib.Path) -> ParsedHome:
     """Load synthetic home configuration from disk."""
-    synthetic_home = load_synthetic_home(config_file)
-    inventory = build_inventory(synthetic_home)
 
-    inv_area_dict = inventory.area_dict()
-    inv_device_dict = inventory.device_dict()
+    try:
+        synthetic_home = load_synthetic_home(config_file)
+    except SyntheticHomeError:
+        # Could be an inventory file
+        inv = inventory.load_inventory(config_file)
+    else:
+        inv = build_inventory(synthetic_home)
+
+    inv_area_dict = inv.area_dict()
+    inv_device_dict = inv.device_dict()
 
     parsed_devices = []
     for inv_device in inv_device_dict.values():
@@ -159,19 +175,26 @@ def parse_home_config(config_file: pathlib.Path) -> ParsedHome:
         parsed_devices.append(parsed_device)
 
     parsed_entities = []
-    for inv_entity in inventory.entities:
-        if inv_entity.device is None:
-            raise ValueError(
-                f"Inventory entity did not specifyc a device: {inv_entity.device}"
+    for inv_entity in inv.entities:
+        device_info: DeviceInfo | None = None
+        if inv_entity.device is not None:
+            inv_device = inv_device_dict[inv_entity.device]
+            device_info = parse_device_info(
+                inv_device, inv_area_dict.get(inv_device.area or "")
             )
-        inv_device = inv_device_dict[inv_entity.device]
-        device_info = parse_device_info(inv_device, inv_area_dict.get(inv_device.area or ""))
         parsed_entity = parse_entity(inv_entity, device_info)
         parsed_entities.append(parsed_entity)
 
     return ParsedHome(
-        areas=list(synthetic_home.devices.keys()),
+        areas=[area.name for area in inv.areas],
         devices=parsed_devices,
-        parsed_inventory=inventory,
+        parsed_inventory=inv,
         entities=parsed_entities,
     )
+
+
+def filter_attributes(
+    attributes: dict[str, Any], supported: set[str]
+) -> dict[str, Any]:
+    """Filter attributes to just the supported list."""
+    return {k: v for k, v in attributes.items() if k in supported}

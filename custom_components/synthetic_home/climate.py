@@ -21,11 +21,22 @@ from homeassistant.const import ATTR_TEMPERATURE
 
 from .const import DOMAIN
 from .entity import SyntheticEntity
-from .model import ParsedEntity
+from .model import ParsedEntity, filter_attributes
 
 _LOGGER = logging.getLogger(__name__)
 
 FAN_MODES = ["low", "high", "off"]
+SUPPORTED_ATTRIBUTES = set(
+    {
+        "hvac_modes",
+        "supported_features",
+        "unit_of_measurement",
+        "current_temperature",
+        "target_temperature",
+        "hvac_mode",
+        "hvac_action",
+    }
+)
 
 
 async def async_setup_entry(
@@ -38,7 +49,11 @@ async def async_setup_entry(
     _LOGGER.debug("hvac_mode=%s", synthetic_home.entities)
 
     async_add_devices(
-        SyntheticHomeClimate(entity, **entity.attributes)
+        SyntheticHomeClimate(
+            entity,
+            state=entity.state,
+            **filter_attributes(entity.attributes, SUPPORTED_ATTRIBUTES),
+        )
         for entity in synthetic_home.entities
         if entity.platform == CLIMATE_DOMAIN
     )
@@ -55,6 +70,7 @@ class SyntheticHomeClimate(SyntheticEntity, ClimateEntity):
     def __init__(
         self,
         entity: ParsedEntity,
+        state: HVACMode | None,
         hvac_modes: list[HVACMode],
         *,
         supported_features: ClimateEntityFeature | None = None,
@@ -63,6 +79,8 @@ class SyntheticHomeClimate(SyntheticEntity, ClimateEntity):
         target_temperature: float | None = None,
         hvac_mode: HVACMode | None = None,
         hvac_action: HVACAction | None = None,
+        preset_modes: list[str] | None = None,
+        preset_mode: str | None = None,
     ) -> None:
         """Initialize the climate device."""
         super().__init__(entity)
@@ -73,7 +91,9 @@ class SyntheticHomeClimate(SyntheticEntity, ClimateEntity):
         self._attr_target_temperature_low = None
         self._attr_current_temperature = current_temperature
         self._attr_hvac_action = hvac_action
-        self._attr_hvac_mode = hvac_mode
+        self._attr_hvac_mode = state or hvac_mode
+        self._attr_preset_mode = preset_mode
+        self._attr_preset_modes = preset_modes
         if hvac_modes is not None:
             self._attr_hvac_modes = hvac_modes
         if unit_of_measurement is not None:

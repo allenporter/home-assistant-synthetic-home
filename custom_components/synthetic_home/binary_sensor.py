@@ -13,10 +13,13 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.core import HomeAssistant
 
 from .const import DOMAIN
-from .model import ParsedEntity
+from .model import ParsedEntity, filter_attributes
 from .entity import SyntheticEntity
 
 _LOGGER = logging.getLogger(__name__)
+
+
+SUPPORTED_ATTRIBUTES = set({"device_class"})
 
 
 async def async_setup_entry(
@@ -27,7 +30,11 @@ async def async_setup_entry(
     synthetic_home = hass.data[DOMAIN][entry.entry_id]
 
     async_add_devices(
-        SyntheticHomeBinarySensor(entity, state=entity.state, **entity.attributes)
+        SyntheticHomeBinarySensor(
+            entity,
+            state=entity.state,
+            **filter_attributes(entity.attributes, SUPPORTED_ATTRIBUTES),
+        )
         for entity in synthetic_home.entities
         if entity.platform == BINARY_SENSOR_DOMAIN
     )
