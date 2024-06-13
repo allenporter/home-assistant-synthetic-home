@@ -80,7 +80,7 @@ def map_attributes(
     condition_map: dict[str, device_types.DeviceState],
 ) -> dict[str, Any]:
     """Override some specific weather forecast attributes."""
-    attributes = entity.attributes
+    attributes: dict[str, Any] = entity.attributes
     for forecast_key in FORECAST_TYPES:
         if daily_forecast := attributes.get(forecast_key):
             conditions = []
@@ -98,8 +98,10 @@ def map_attributes(
                     )
                 conditions.append(WeatherCondition(**entity_state))
             attributes[forecast_key] = conditions
-    entity.attributes = attributes
-    return filter_attributes(entity, SUPPORTED_ATTRIBUTES)
+    return {
+        **attributes,
+        **filter_attributes(entity, SUPPORTED_ATTRIBUTES)
+    }
 
 
 async def async_setup_entry(
