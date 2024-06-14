@@ -8,11 +8,6 @@ from typing import Any, cast
 from functools import cache
 
 from synthetic_home import inventory
-from synthetic_home.synthetic_home import (
-    load_synthetic_home,
-    build_inventory,
-)
-from synthetic_home.exceptions import SyntheticHomeError
 
 from homeassistant.helpers.device_registry import DeviceInfo
 
