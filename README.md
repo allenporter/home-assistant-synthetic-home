@@ -11,164 +11,340 @@ but allows you to name devices and stick them in areas using a configuration fil
 
 ## Synthetic Home Generation
 
-Given an example synthetic home configuration file `farmhouse.yaml`:
+The [synthetic-home](https://allenporter.github.io/synthetic-home) library allows
+you to create a home in terms of devices and then convert that into an inventory
+file that contains the actual underlying entities. You can also just create the
+inventory directly or generate it from an existing home-assistant instance also.
+
+Given an example synthetic home configuration file `inventory.yaml`:
 
 ```yaml
 ---
-name: Family Farmhouse
+areas:
+- name: Family Room
+  id: family_room
+- name: Entry
+  id: entry
+- name: Kitchen
+  id: kitchen
+- name: Master Bedroom
+  id: master_bedroom
+- name: Garage
+  id: garage
+- name: Front Yard
+  id: front_yard
 devices:
-  Family Room:
-    - name: Family Room Lamp
-      device_type: light
-      device_info:
-        manufacturer: Phillips
-        model: Hue
-    - name: Family Room
-      device_type: hvac
-      device_info:
-        manufacturer: Nest
-        sw_version: 1.0.0
-      attributes:
-        unit_of_measurement: °F
-        current_temperature: 60
-    - name: Left Window
-      device_type: window-sensor
-    - name: Right Window
-      device_type: window-sensor
-  Entry:
-    - name: Front Door
-      device_type: smart-lock
-  Kitchen:
-    - name: Light
-      device_type: light-dimmable
-    - name: Coffe Maker
-      device_type: smart-plug
-      device_info:
-        manufacturer: Shelly
-  Master Bedroom:
-    - name: Bedroom Light
-      device_type: light-dimmable
-    - name: Bedroom Blinds
-      device_type: smart-blinds
-      device_info:
-        model: RollerBlinds
-        manufacturer: Motion Blinds
-        sw_version: 1.1.0
-    - name: Bedroom Window
-      device_type: window-sensor
-  Garage:
-    - name: Garage Door
-      device_type: garage-door
-  Front Yard:
-    - name: Front motion
-      device_type: motion-sensor
+- name: Family Room Lamp
+  id: family_room_lamp
+  area: family_room
+  info:
+    model: Hue
+    manufacturer: Phillips
+- name: Family Room
+  id: family_room
+  area: family_room
+  info:
+    manufacturer: Nest
+    sw_version: 1.0.0
+- name: Left Window
+  id: left_window
+  area: family_room
+- name: Right Window
+  id: right_window
+  area: family_room
+- name: Front Door
+  id: front_door
+  area: entry
+- name: Light
+  id: light
+  area: kitchen
+- name: Coffe Maker
+  id: coffe_maker
+  area: kitchen
+  info:
+    manufacturer: Shelly
+- name: Bedroom Light
+  id: bedroom_light
+  area: master_bedroom
+- name: Bedroom Blinds
+  id: bedroom_blinds
+  area: master_bedroom
+  info:
+    model: RollerBlinds
+    manufacturer: Motion Blinds
+    sw_version: 1.1.0
+- name: Bedroom Window
+  id: bedroom_window
+  area: master_bedroom
+- name: Garage Door
+  id: garage_door
+  area: garage
+- name: Front Motion
+  id: front_motion
+  area: front_yard
+entities:
+- name: Family Room Lamp
+  id: light.family_room_lamp
+  area: family_room
+  device: family_room_lamp
+  state: 'off'
+  attributes:
+    supported_color_modes:
+    - onoff
+    color_mode: onoff
+- name: Family Room
+  id: climate.family_room
+  area: family_room
+  device: family_room
+  attributes:
+    unit_of_measurement: "\xB0C"
+    supported_features:
+    - climate.ClimateEntityFeature.FAN_MODE
+    - climate.ClimateEntityFeature.TURN_ON
+    - climate.ClimateEntityFeature.TURN_OFF
+    - climate.ClimateEntityFeature.TARGET_TEMPERATURE_RANGE
+    hvac_modes:
+    - 'off'
+    - cool
+    - heat
+    - auto
+    hvac_mode: 'off'
+    hvac_action: 'off'
+    current_temperature: 22
+    target_temperature: 22
+- name: Family Room Temperature
+  id: sensor.family_room_temperature
+  area: family_room
+  device: family_room
+  attributes:
+    native_unit_of_measurement: "\xB0C"
+    device_class: sensor.SensorDeviceClass.TEMPERATURE
+    state_class: sensor.SensorStateClass.MEASUREMENT
+    native_value: 22
+- name: Family Room Humidity
+  id: sensor.family_room_humidity
+  area: family_room
+  device: family_room
+  attributes:
+    native_unit_of_measurement: '%'
+    device_class: sensor.SensorDeviceClass.HUMIDITY
+    state_class: sensor.SensorStateClass.MEASUREMENT
+    native_value: 45
+- name: Left Window
+  id: binary_sensor.left_window
+  area: family_room
+  device: left_window
+  state: false
+  attributes:
+    device_class: binary_sensor.BinarySensorDeviceClass.WINDOW
+- name: Left Window Battery
+  id: binary_sensor.left_window_battery
+  area: family_room
+  device: left_window
+  attributes:
+    device_class: binary_sensor.BinarySensorDeviceClass.BATTERY
+- name: Left Window Battery
+  id: sensor.left_window_battery
+  area: family_room
+  device: left_window
+  state: '90'
+  attributes:
+    device_class: sensor.SensorDeviceClass.BATTERY
+    state_class: sensor.SensorStateClass.MEASUREMENT
+    native_unit_of_measurement: '%'
+- name: Right Window
+  id: binary_sensor.right_window
+  area: family_room
+  device: right_window
+  state: false
+  attributes:
+    device_class: binary_sensor.BinarySensorDeviceClass.WINDOW
+- name: Right Window Battery
+  id: binary_sensor.right_window_battery
+  area: family_room
+  device: right_window
+  attributes:
+    device_class: binary_sensor.BinarySensorDeviceClass.BATTERY
+- name: Right Window Battery
+  id: sensor.right_window_battery
+  area: family_room
+  device: right_window
+  state: '90'
+  attributes:
+    device_class: sensor.SensorDeviceClass.BATTERY
+    state_class: sensor.SensorStateClass.MEASUREMENT
+    native_unit_of_measurement: '%'
+- name: Front Door
+  id: lock.front_door
+  area: entry
+  device: front_door
+  state: locked
+- name: Front Door Lock
+  id: binary_sensor.front_door_lock
+  area: entry
+  device: front_door
+  state: false
+  attributes:
+    device_class: binary_sensor.BinarySensorDeviceClass.LOCK
+- name: Front Door Tamper
+  id: binary_sensor.front_door_tamper
+  area: entry
+  device: front_door
+  attributes:
+    device_class: binary_sensor.BinarySensorDeviceClass.TAMPER
+- name: Front Door Battery
+  id: binary_sensor.front_door_battery
+  area: entry
+  device: front_door
+  attributes:
+    device_class: binary_sensor.BinarySensorDeviceClass.BATTERY
+- name: Front Door Battery
+  id: sensor.front_door_battery
+  area: entry
+  device: front_door
+  state: '90'
+  attributes:
+    device_class: sensor.SensorDeviceClass.BATTERY
+    state_class: sensor.SensorStateClass.MEASUREMENT
+    native_unit_of_measurement: '%'
+- name: Light
+  id: light.light
+  area: kitchen
+  device: light
+  attributes:
+    supported_color_modes:
+    - brightness
+    color_mode: brightness
+    brightness: 100
+- name: Coffe Maker Energy
+  id: sensor.coffe_maker_energy
+  area: kitchen
+  device: coffe_maker
+  state: '1'
+  attributes:
+    device_class: sensor.SensorDeviceClass.ENERGY
+    state_class: sensor.SensorStateClass.TOTAL_INCREASING
+    native_unit_of_measurement: kWh
+- name: Coffe Maker
+  id: switch.coffe_maker
+  area: kitchen
+  device: coffe_maker
+  state: true
+  attributes:
+    device_class: switch.SwitchDeviceClass.OUTLET
+- name: Bedroom Light
+  id: light.bedroom_light
+  area: master_bedroom
+  device: bedroom_light
+  attributes:
+    supported_color_modes:
+    - brightness
+    color_mode: brightness
+    brightness: 100
+- name: Bedroom Blinds
+  id: cover.bedroom_blinds
+  area: master_bedroom
+  device: bedroom_blinds
+  state: false
+  attributes:
+    device_class: cover.CoverDeviceClass.BLIND
+    supported_features:
+    - cover.CoverEntityFeature.OPEN
+    - cover.CoverEntityFeature.CLOSE
+    - cover.CoverEntityFeature.SET_POSITION
+- name: Bedroom Blinds Battery
+  id: sensor.bedroom_blinds_battery
+  area: master_bedroom
+  device: bedroom_blinds
+  state: '90'
+  attributes:
+    device_class: sensor.SensorDeviceClass.BATTERY
+    state_class: sensor.SensorStateClass.MEASUREMENT
+    native_unit_of_measurement: '%'
+- name: Bedroom Window
+  id: binary_sensor.bedroom_window
+  area: master_bedroom
+  device: bedroom_window
+  state: false
+  attributes:
+    device_class: binary_sensor.BinarySensorDeviceClass.WINDOW
+- name: Bedroom Window Battery
+  id: binary_sensor.bedroom_window_battery
+  area: master_bedroom
+  device: bedroom_window
+  attributes:
+    device_class: binary_sensor.BinarySensorDeviceClass.BATTERY
+- name: Bedroom Window Battery
+  id: sensor.bedroom_window_battery
+  area: master_bedroom
+  device: bedroom_window
+  state: '90'
+  attributes:
+    device_class: sensor.SensorDeviceClass.BATTERY
+    state_class: sensor.SensorStateClass.MEASUREMENT
+    native_unit_of_measurement: '%'
+- name: Garage Door
+  id: cover.garage_door
+  area: garage
+  device: garage_door
+  state: false
+  attributes:
+    device_class: cover.CoverDeviceClass.GARAGE
+    supported_features:
+    - cover.CoverEntityFeature.OPEN
+    - cover.CoverEntityFeature.CLOSE
+- name: Garage Door
+  id: light.garage_door
+  area: garage
+  device: garage_door
+  state: false
+  attributes:
+    supported_color_modes:
+    - onoff
+    color_mode:
+    - onoff
+- name: Front Motion
+  id: binary_sensor.front_motion
+  area: front_yard
+  device: front_motion
+  state: true
+  attributes:
+    device_class: binary_sensor.BinarySensorDeviceClass.MOTION
+- name: Front Motion Battery
+  id: binary_sensor.front_motion_battery
+  area: front_yard
+  device: front_motion
+  attributes:
+    device_class: binary_sensor.BinarySensorDeviceClass.BATTERY
+- name: Front Motion Battery
+  id: sensor.front_motion_battery
+  area: front_yard
+  device: front_motion
+  state: '90'
+  attributes:
+    device_class: sensor.SensorDeviceClass.BATTERY
+    state_class: sensor.SensorStateClass.MEASUREMENT
+    native_unit_of_measurement: '%'
 ```
+## Integraton setup
 
 You can generate a Home Assistant `config/` directory that is setup with the
 synthetic home integration:
 
 ```bash
 $ export PYTHONPATH="${PYTHONPATH}:${PWD}/custom_components"
-$ python3 -m script.storage --config farmhouse.yaml --output_dir=config/
-```
-
-This creates the `config/` directory and you can then start up home assistant:
-
-```bash
 $ hass -c config/
 ```
+
+You can also add Synthetic Home like a normal integration. During the configuration
+flow you specify a yaml file like `inventory.yaml` and it expects to find it in your
+`config/` folder next to `configuration.yaml`.
 
 And it will create all the synthetic devices for you:
 
 ![Screenshot](synthetic_home.png)
 
-## Manual Creation
-
-You can also add Synthetic Home like a normal integration. During the configuration
-flow you specify a yaml file like `farmhouse.yaml` and it expects to find it in your
-`config/` folder next to `configuration.yaml`. (This is similar above, and the same
-step the storage generation tool is doing internally).
-
-## Device & Entity Attributes and State
-
-Synthetic Home is defined in terms of top level devices which are mapped into
-lower level Home Assistant entities (e.g. a thermostate has a climate entity
-and a temperature sensor entity). Each device has `attributes` which are mapped
-to entity level attributes by the device registry (e.g. `hvac_action` maps to
-a climate entity and `temperature` maps to a temperature sensor). See the
-[Device Registry documentation](https://allenporter.github.io/synthetic-home/synthetic_home.html)
-for more detail on how these mappings are configured.
-
-### Setting Attributes and State in yaml config
-
-The most basic way to set a devices attributes and state is in the main yaml
-config by setting the `attributes` on the device. This is an example pulled out
-from the example above:
-
-```yaml
-- name: Family Room
-  device_type: hvac
-  device_info:
-    manufacturer: Nest
-    sw_version: 1.0.0
-  attributes:
-    unit_of_measurement: °F
-    current_temperature: 60
-```
-
-### Restorable Attributes in yaml config
-
-The next way to set attributes is with `restorable_attribute_keys`
-which use pre-canned device states that mean you don't need to use the lower
-level values.
-
-```yaml
-- name: Family Room
-  device_type: hvac
-  device_info:
-    manufacturer: Nest
-    sw_version: 1.0.0
-  device_state: cooling
-```
-
-### Restorable Attributes using service calls
-
-You may also use a service call to set restorable attributes, similar to
-specifying in yaml but without overwriting the config file. The `set_synthetic_device_state`
-call can set a restorable attribute key and will reload the integration to pick
-up the new value. The `clear_synthetic_device_state` will restore the state back to normal.
-
 ## Testing
 
 See `tests/` for examples of how to create a synthetic devices in your tests
 using `pytest-homeassistant-custom-component`.
-
-## Device Registry
-
-The device types are defined in `https://github.com/allenporter/synthetic-home/tree/main/synthetic_home/registry`
-where each device type is defined in a separate file. See the [README](https://github.com/allenporter/synthetic-home/) for more details.
-
-You can interact with the device registry using the device registry tooling:
-
-```bash
-$ export PYTHONPATH="${PYTHONPATH}:${PWD}/custom_components"
-$ python3 -m script.device_registry --command=dump
-```
-
-This will output the available device types for use in other data generation tools:
-
-```
----
-- desc: A device attached to a door that can detect if it is opened or closed.
-  device_type: door-sensor
-- desc: A a garage door that can be controlled remotely.
-  device_type: garage-door
-- desc: An movable barrier that can be monitored and opened and closed remotely.
-  device_type: gate
-- desc: A climate devie that only supports heating.
-  supported_attributes:
-  - unit_of_measurement
-  - current_temperature
-  device_type: heat-pump
-...
-```
