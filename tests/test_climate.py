@@ -15,7 +15,7 @@ from homeassistant.helpers import device_registry as dr
 
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
-from .conftest import HOMES
+from .conftest import FIXTURES
 
 TEST_ENTITY = "climate.family_room"
 
@@ -28,7 +28,7 @@ def mock_platforms() -> list[Platform]:
 
 @pytest.mark.parametrize(
     ("config_yaml_fixture"),
-    [(f"{HOMES}/hvac-example.yaml")],
+    [(f"{FIXTURES}/hvac-example.yaml")],
 )
 async def test_climate_hvac_entity(
     hass: HomeAssistant, setup_integration: None
@@ -76,7 +76,7 @@ async def test_climate_hvac_entity(
 
 @pytest.mark.parametrize(
     ("config_yaml_fixture", "test_entity"),
-    [(f"{HOMES}/heat-pump-example.yaml", "climate.family_room")],
+    [(f"{FIXTURES}/heat-pump-example.yaml", "climate.family_room")],
 )
 async def test_heat_pump(
     hass: HomeAssistant,
@@ -117,9 +117,9 @@ async def test_heat_pump(
 @pytest.mark.parametrize(
     ("config_yaml_fixture"),
     [
-        (f"{HOMES}/hvac-cooling.yaml"),
-        (f"{HOMES}/hvac-off.yaml"),
-        (f"{HOMES}/hvac-very-low.yaml"),
+        (f"{FIXTURES}/hvac-cooling.yaml"),
+        (f"{FIXTURES}/hvac-off.yaml"),
+        (f"{FIXTURES}/hvac-very-low.yaml"),
     ],
 )
 async def test_hvac_device_state(

@@ -13,7 +13,7 @@ from homeassistant.components.valve import (
 from homeassistant.const import ATTR_ENTITY_ID
 from homeassistant.core import HomeAssistant
 
-from .conftest import HOMES
+from .conftest import FIXTURES
 
 
 @pytest.fixture(name="platforms")
@@ -24,7 +24,7 @@ def mock_platforms() -> list[Platform]:
 
 @pytest.mark.parametrize(
     ("config_yaml_fixture", "test_entity"),
-    [(f"{HOMES}/valve-example.yaml", "valve.back_yard_water_valve")],
+    [(f"{FIXTURES}/valve-example.yaml", "valve.back_yard_water_valve")],
 )
 async def test_water_valve(
     hass: HomeAssistant, setup_integration: None, test_entity: str

@@ -1,0 +1,23 @@
+---
+areas:
+- name: Family Room
+  id: family_room
+devices:
+- name: Family Room
+  id: family_room
+  area: family_room
+entities:
+- name: Family Room
+  id: light.family_room
+  area: family_room
+  device: family_room
+  attributes:
+    supported_color_modes:
+    - rgbw
+    color_mode: rgbw
+    rgbw_color:
+    - 255
+    - 255
+    - 0
+    - 255
+

@@ -1,0 +1,32 @@
+---
+areas:
+- name: Living Room
+  id: living_room
+devices:
+- name: Smart Speaker
+  id: smart_speaker
+  area: living_room
+  info:
+    model: Echo Dot (4th Gen)
+    manufacturer: Amazon
+    sw_version: 4.5.1
+entities:
+- name: Smart Speaker
+  id: media_player.smart_speaker
+  area: living_room
+  device: smart_speaker
+  state: playing
+  attributes:
+    device_class: media_player.MediaPlayerDeviceClass.SPEAKER
+    supported_features:
+    - media_player.MediaPlayerEntityFeature.PLAY
+    - media_player.MediaPlayerEntityFeature.PAUSE
+    - media_player.MediaPlayerEntityFeature.STOP
+    - media_player.MediaPlayerEntityFeature.VOLUME_STEP
+    - media_player.MediaPlayerEntityFeature.VOLUME_MUTE
+    - media_player.MediaPlayerEntityFeature.VOLUME_SET
+    - media_player.MediaPlayerEntityFeature.TURN_ON
+    - media_player.MediaPlayerEntityFeature.TURN_OFF
+    - media_player.MediaPlayerEntityFeature.NEXT_TRACK
+    - media_player.MediaPlayerEntityFeature.PREVIOUS_TRACK
+

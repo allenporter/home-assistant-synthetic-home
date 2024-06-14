@@ -14,7 +14,7 @@ from homeassistant.core import HomeAssistant
 
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
-from .conftest import HOMES
+from .conftest import FIXTURES
 
 
 @pytest.fixture(name="platforms")
@@ -25,7 +25,7 @@ def mock_platforms() -> list[Platform]:
 
 @pytest.mark.parametrize(
     ("config_yaml_fixture", "test_entity"),
-    [(f"{HOMES}/fan-example.yaml", "fan.counter_fan")],
+    [(f"{FIXTURES}/fan-example.yaml", "fan.counter_fan")],
 )
 async def test_fan(
     hass: HomeAssistant, setup_integration: None, test_entity: str
@@ -95,9 +95,9 @@ async def test_fan(
 @pytest.mark.parametrize(
     ("config_yaml_fixture"),
     [
-        (f"{HOMES}/fan-off.yaml"),
-        (f"{HOMES}/fan-on.yaml"),
-        (f"{HOMES}/fan-oscillating.yaml"),
+        (f"{FIXTURES}/fan-off.yaml"),
+        (f"{FIXTURES}/fan-on.yaml"),
+        (f"{FIXTURES}/fan-oscillating.yaml"),
     ],
 )
 async def test_fan_device_state(

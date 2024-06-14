@@ -1,0 +1,32 @@
+---
+areas: []
+devices:
+- name: Home
+  id: home
+  info:
+    manufacturer: AccuWeather
+entities:
+- name: Home
+  id: weather.home
+  device: home
+  attributes:
+    native_temperature_unit: "\xB0F"
+    native_wind_speed_unit: mph
+    condition: sunny
+    native_temperature: 72
+    humidity: 60
+    native_wind_speed: 5
+    daily_forecast:
+    - cloudy
+    - rainy
+    hourly_forecast:
+    - fair
+    - fair
+    - cloudy
+    - cloudy
+    twice_daily_forecast:
+    - fair
+    - cloudy
+    - rainy
+    - cloudy
+

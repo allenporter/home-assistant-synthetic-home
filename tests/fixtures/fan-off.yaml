@@ -1,0 +1,20 @@
+---
+areas:
+- name: Kitchen
+  id: kitchen
+devices:
+- name: Counter Fan
+  id: counter_fan
+  area: kitchen
+entities:
+- name: Counter Fan
+  id: fan.counter_fan
+  area: kitchen
+  device: counter_fan
+  attributes:
+    supported_features:
+    - fan.FanEntityFeature.OSCILLATE
+    - fan.FanEntityFeature.SET_SPEED
+    is_on: false
+    oscillating: false
+

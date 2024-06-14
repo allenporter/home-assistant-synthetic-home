@@ -1,4 +1,4 @@
-"""Global HOMES for Synthetic Home integration."""
+"""Global test fixtures for Synthetic Home integration."""
 
 import pathlib
 from collections.abc import Generator
@@ -23,7 +23,7 @@ from pytest_homeassistant_custom_component.common import MockConfigEntry
 from pytest_homeassistant_custom_component.typing import ClientSessionGenerator
 
 TEST_FILENAME = "example.yaml"
-HOMES = "tests/homes"
+FIXTURES = "tests/fixtures"
 
 DIFFERENT_DIRECTORY = "snapshots"
 
@@ -100,7 +100,7 @@ def mock_config_yaml(config_yaml_fixture: str | None) -> str:
 def mock_config_content(config_yaml: str) -> None:
     """Mock out the yaml config file contents."""
     with patch(
-        "synthetic_home.synthetic_home.read_config_content",
+        "synthetic_home.inventory.read_config_content",
         mock_open(read_data=config_yaml),
     ):
         yield

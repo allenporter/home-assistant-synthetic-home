@@ -1,0 +1,53 @@
+---
+areas:
+- name: Family Room
+  id: family_room
+devices:
+- name: Left Shade
+  id: left_shade
+  area: family_room
+- name: Right Shade
+  id: right_shade
+  area: family_room
+entities:
+- name: Left Shade
+  id: cover.left_shade
+  area: family_room
+  device: left_shade
+  state: false
+  attributes:
+    device_class: cover.CoverDeviceClass.BLIND
+    supported_features:
+    - cover.CoverEntityFeature.OPEN
+    - cover.CoverEntityFeature.CLOSE
+    - cover.CoverEntityFeature.SET_POSITION
+- name: Left Shade Battery
+  id: sensor.left_shade_battery
+  area: family_room
+  device: left_shade
+  state: '90'
+  attributes:
+    device_class: sensor.SensorDeviceClass.BATTERY
+    state_class: sensor.SensorStateClass.MEASUREMENT
+    native_unit_of_measurement: '%'
+- name: Right Shade
+  id: cover.right_shade
+  area: family_room
+  device: right_shade
+  state: false
+  attributes:
+    device_class: cover.CoverDeviceClass.BLIND
+    supported_features:
+    - cover.CoverEntityFeature.OPEN
+    - cover.CoverEntityFeature.CLOSE
+    - cover.CoverEntityFeature.SET_POSITION
+- name: Right Shade Battery
+  id: sensor.right_shade_battery
+  area: family_room
+  device: right_shade
+  state: '90'
+  attributes:
+    device_class: sensor.SensorDeviceClass.BATTERY
+    state_class: sensor.SensorStateClass.MEASUREMENT
+    native_unit_of_measurement: '%'
+

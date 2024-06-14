@@ -1,0 +1,19 @@
+---
+areas:
+- name: Family Room
+  id: family_room
+devices:
+- name: Family Room
+  id: family_room
+  area: family_room
+entities:
+- name: Family Room
+  id: light.family_room
+  area: family_room
+  device: family_room
+  attributes:
+    supported_color_modes:
+    - brightness
+    color_mode: brightness
+    brightness: 30
+

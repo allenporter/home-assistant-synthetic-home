@@ -1,0 +1,17 @@
+---
+areas:
+- name: Chicken Coop
+  id: chicken_coop
+devices:
+- name: Smart Feeder
+  id: smart_feeder
+  area: chicken_coop
+entities:
+- name: Smart Feeder
+  id: switch.smart_feeder
+  area: chicken_coop
+  device: smart_feeder
+  state: true
+  attributes:
+    device_class: switch.SwitchDeviceClass.SWITCH
+

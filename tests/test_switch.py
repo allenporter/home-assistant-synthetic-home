@@ -11,7 +11,7 @@ from homeassistant.components.switch import (
 from homeassistant.const import ATTR_ENTITY_ID
 from homeassistant.core import HomeAssistant
 
-from .conftest import HOMES
+from .conftest import FIXTURES
 
 TEST_ENTITY = "switch.smart_feeder"
 
@@ -24,7 +24,7 @@ def mock_platforms() -> list[Platform]:
 
 @pytest.mark.parametrize(
     ("config_yaml_fixture", "test_entity"),
-    [(f"{HOMES}/switch-example.yaml", "switch.smart_feeder")],
+    [(f"{FIXTURES}/switch-example.yaml", "switch.smart_feeder")],
 )
 async def test_switch_services(
     hass: HomeAssistant, setup_integration: None, test_entity: str
@@ -64,7 +64,7 @@ async def test_switch_services(
 
 @pytest.mark.parametrize(
     ("config_yaml_fixture", "test_entity"),
-    [(f"{HOMES}/smart-plug-example.yaml", "switch.floor_lamp")],
+    [(f"{FIXTURES}/smart-plug-example.yaml", "switch.floor_lamp")],
 )
 async def test_smart_plug(
     hass: HomeAssistant, setup_integration: None, test_entity: str

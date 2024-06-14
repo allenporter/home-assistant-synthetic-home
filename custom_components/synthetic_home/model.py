@@ -148,13 +148,7 @@ def parse_attributes(
 def parse_home_config(config_file: pathlib.Path) -> ParsedHome:
     """Load synthetic home configuration from disk."""
 
-    try:
-        synthetic_home = load_synthetic_home(config_file)
-    except SyntheticHomeError:
-        # Could be an inventory file
-        inv = inventory.load_inventory(config_file)
-    else:
-        inv = build_inventory(synthetic_home)
+    inv = inventory.load_inventory(config_file)
 
     inv_area_dict = inv.area_dict()
     inv_device_dict = inv.device_dict()

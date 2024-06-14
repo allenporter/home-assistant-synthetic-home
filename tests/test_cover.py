@@ -20,7 +20,7 @@ from pytest_homeassistant_custom_component.common import async_fire_time_changed
 
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
-from .conftest import HOMES
+from .conftest import FIXTURES
 
 
 @pytest.fixture(name="platforms")
@@ -31,7 +31,7 @@ def mock_platforms() -> list[Platform]:
 
 @pytest.mark.parametrize(
     ("config_yaml_fixture", "test_entity"),
-    [(f"{HOMES}/smart-blinds-example.yaml", "cover.left_shade")],
+    [(f"{FIXTURES}/smart-blinds-example.yaml", "cover.left_shade")],
 )
 async def test_smart_blinds(
     hass: HomeAssistant, setup_integration: None, test_entity: str
@@ -103,7 +103,7 @@ async def test_smart_blinds(
 
 @pytest.mark.parametrize(
     ("config_yaml_fixture", "test_entity"),
-    [(f"{HOMES}/garage-door-example.yaml", "cover.garage_door")],
+    [(f"{FIXTURES}/garage-door-example.yaml", "cover.garage_door")],
 )
 async def test_garage_door(
     hass: HomeAssistant, setup_integration: None, test_entity: str
@@ -175,7 +175,7 @@ async def test_garage_door(
 
 @pytest.mark.parametrize(
     ("config_yaml_fixture", "test_entity"),
-    [(f"{HOMES}/gate-example.yaml", "cover.driveway_gate")],
+    [(f"{FIXTURES}/gate-example.yaml", "cover.driveway_gate")],
 )
 async def test_gate(
     hass: HomeAssistant, setup_integration: None, test_entity: str
@@ -196,8 +196,8 @@ async def test_gate(
 @pytest.mark.parametrize(
     ("config_yaml_fixture"),
     [
-        (f"{HOMES}/smart-blinds-open.yaml"),
-        (f"{HOMES}/smart-blinds-closed.yaml"),
+        (f"{FIXTURES}/smart-blinds-open.yaml"),
+        (f"{FIXTURES}/smart-blinds-closed.yaml"),
     ],
 )
 async def test_hvac_device_state(

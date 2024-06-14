@@ -17,7 +17,7 @@ from homeassistant.components.media_player import (
 from homeassistant.const import ATTR_ENTITY_ID
 from homeassistant.core import HomeAssistant
 
-from .conftest import HOMES
+from .conftest import FIXTURES
 
 
 @pytest.fixture(name="platforms")
@@ -28,7 +28,7 @@ def mock_platforms() -> list[Platform]:
 
 @pytest.mark.parametrize(
     ("config_yaml_fixture", "test_entity"),
-    [(f"{HOMES}/smart-speaker-example.yaml", "media_player.smart_speaker")],
+    [(f"{FIXTURES}/smart-speaker-example.yaml", "media_player.smart_speaker")],
 )
 async def test_smart_speaker(
     hass: HomeAssistant, setup_integration: None, test_entity: str

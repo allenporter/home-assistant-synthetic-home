@@ -1,5 +1,5 @@
 # serializer version: 1
-# name: test_fan_device_state[tests/homes/fan-off.yaml]
+# name: test_fan_device_state[tests/fixtures/fan-off.yaml]
   tuple(
     'off',
     ReadOnlyDict({
@@ -13,7 +13,7 @@
     }),
   )
 # ---
-# name: test_fan_device_state[tests/homes/fan-on.yaml]
+# name: test_fan_device_state[tests/fixtures/fan-on.yaml]
   tuple(
     'on',
     ReadOnlyDict({
@@ -27,7 +27,7 @@
     }),
   )
 # ---
-# name: test_fan_device_state[tests/homes/fan-oscillating.yaml]
+# name: test_fan_device_state[tests/fixtures/fan-oscillating.yaml]
   tuple(
     'on',
     ReadOnlyDict({

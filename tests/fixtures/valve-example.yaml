@@ -1,0 +1,39 @@
+---
+areas:
+- name: Garden
+  id: garden
+devices:
+- name: Back Yard Water Valve
+  id: back_yard_water_valve
+  area: garden
+entities:
+- name: Back Yard Water Valve
+  id: valve.back_yard_water_valve
+  area: garden
+  device: back_yard_water_valve
+  attributes:
+    reports_position: true
+    supported_features:
+    - valve.ValveEntityFeature.OPEN
+    - valve.ValveEntityFeature.CLOSE
+    - valve.ValveEntityFeature.SET_POSITION
+    current_valve_position: 0
+- name: Back Yard Water Valve Meter-reading
+  id: sensor.back_yard_water_valve_meter_reading
+  area: garden
+  device: back_yard_water_valve
+  state: '2000'
+  attributes:
+    native_unit_of_measurement: "m\xB3"
+    device_class: sensor.SensorDeviceClass.WATER
+    state_class: sensor.SensorStateClass.TOTAL_INCREASING
+- name: Back Yard Water Valve Battery
+  id: sensor.back_yard_water_valve_battery
+  area: garden
+  device: back_yard_water_valve
+  state: '75'
+  attributes:
+    device_class: sensor.SensorDeviceClass.BATTERY
+    state_class: sensor.SensorStateClass.MEASUREMENT
+    native_unit_of_measurement: '%'
+

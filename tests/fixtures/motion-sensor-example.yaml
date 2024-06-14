@@ -1,0 +1,32 @@
+---
+areas:
+- name: Front Yard
+  id: front_yard
+devices:
+- name: Front Yard Motion
+  id: front_yard_motion
+  area: front_yard
+entities:
+- name: Front Yard Motion
+  id: binary_sensor.front_yard_motion
+  area: front_yard
+  device: front_yard_motion
+  state: true
+  attributes:
+    device_class: binary_sensor.BinarySensorDeviceClass.MOTION
+- name: Front Yard Motion Battery
+  id: binary_sensor.front_yard_motion_battery
+  area: front_yard
+  device: front_yard_motion
+  attributes:
+    device_class: binary_sensor.BinarySensorDeviceClass.BATTERY
+- name: Front Yard Motion Battery
+  id: sensor.front_yard_motion_battery
+  area: front_yard
+  device: front_yard_motion
+  state: '90'
+  attributes:
+    device_class: sensor.SensorDeviceClass.BATTERY
+    state_class: sensor.SensorStateClass.MEASUREMENT
+    native_unit_of_measurement: '%'
+

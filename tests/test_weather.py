@@ -9,7 +9,7 @@ from homeassistant.components.weather import (
 from homeassistant.const import ATTR_ENTITY_ID
 from homeassistant.core import HomeAssistant
 
-from .conftest import HOMES
+from .conftest import FIXTURES
 
 TEST_ENTITY = "weather.home"
 
@@ -22,7 +22,7 @@ def mock_platforms() -> list[Platform]:
 
 @pytest.mark.parametrize(
     ("config_yaml_fixture", "test_entity"),
-    [(f"{HOMES}/weather-example.yaml", TEST_ENTITY)],
+    [(f"{FIXTURES}/weather-example.yaml", TEST_ENTITY)],
 )
 async def test_weather_entity(
     hass: HomeAssistant, setup_integration: None, test_entity: str

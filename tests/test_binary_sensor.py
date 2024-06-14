@@ -9,7 +9,7 @@ from homeassistant.core import HomeAssistant
 
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
-from .conftest import HOMES
+from .conftest import FIXTURES
 
 
 @pytest.fixture(name="platforms")
@@ -19,7 +19,7 @@ def mock_platforms() -> list[Platform]:
 
 
 @pytest.mark.parametrize(
-    ("config_yaml_fixture"), [(f"{HOMES}/motion-sensor-example.yaml")]
+    ("config_yaml_fixture"), [(f"{FIXTURES}/motion-sensor-example.yaml")]
 )
 async def test_motion_sensor(hass: HomeAssistant, setup_integration: None) -> None:
     """Test a binary sensor that detects motion."""
@@ -42,7 +42,7 @@ async def test_motion_sensor(hass: HomeAssistant, setup_integration: None) -> No
 
 
 @pytest.mark.parametrize(
-    ("config_yaml_fixture"), [(f"{HOMES}/smart-lock-example.yaml")]
+    ("config_yaml_fixture"), [(f"{FIXTURES}/smart-lock-example.yaml")]
 )
 async def test_smart_lock(hass: HomeAssistant, setup_integration: None) -> None:
     """Test a binary sensors for a smart lock."""
@@ -57,7 +57,7 @@ async def test_smart_lock(hass: HomeAssistant, setup_integration: None) -> None:
 
 
 @pytest.mark.parametrize(
-    ("config_yaml_fixture"), [(f"{HOMES}/door-sensor-example.yaml")]
+    ("config_yaml_fixture"), [(f"{FIXTURES}/door-sensor-example.yaml")]
 )
 async def test_door_sensor(hass: HomeAssistant, setup_integration: None) -> None:
     """Test a binary sensors for a smart lock."""
@@ -80,7 +80,7 @@ async def test_door_sensor(hass: HomeAssistant, setup_integration: None) -> None
 
 
 @pytest.mark.parametrize(
-    ("config_yaml_fixture"), [(f"{HOMES}/window-sensor-example.yaml")]
+    ("config_yaml_fixture"), [(f"{FIXTURES}/window-sensor-example.yaml")]
 )
 async def test_window_sensor(hass: HomeAssistant, setup_integration: None) -> None:
     """Test a binary sensors for a smart lock."""
@@ -105,10 +105,10 @@ async def test_window_sensor(hass: HomeAssistant, setup_integration: None) -> No
 @pytest.mark.parametrize(
     "config_yaml_fixture",
     [
-        (f"{HOMES}/camera-idle.yaml"),
-        (f"{HOMES}/camera-person-detected.yaml"),
-        (f"{HOMES}/camera-sound-detected.yaml"),
-        (f"{HOMES}/camera-motion-detected.yaml"),
+        (f"{FIXTURES}/camera-idle.yaml"),
+        (f"{FIXTURES}/camera-person-detected.yaml"),
+        (f"{FIXTURES}/camera-sound-detected.yaml"),
+        (f"{FIXTURES}/camera-motion-detected.yaml"),
     ],
 )
 async def test_camera_device_states(

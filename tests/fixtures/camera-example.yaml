@@ -1,0 +1,35 @@
+---
+areas:
+- name: Backyard
+  id: backyard
+devices:
+- name: Outdoor Camera
+  id: outdoor_camera
+  area: backyard
+  info:
+    model: Spotlight Cam Battery
+    manufacturer: Ring
+    sw_version: 2.4.1
+entities:
+- name: Outdoor Camera Motion
+  id: binary_sensor.outdoor_camera_motion
+  area: backyard
+  device: outdoor_camera
+  state: false
+  attributes:
+    device_class: binary_sensor.BinarySensorDeviceClass.MOTION
+- name: Outdoor Camera Person
+  id: binary_sensor.outdoor_camera_person
+  area: backyard
+  device: outdoor_camera
+  state: false
+  attributes:
+    device_class: binary_sensor.BinarySensorDeviceClass.OCCUPANCY
+- name: Outdoor Camera Sound
+  id: binary_sensor.outdoor_camera_sound
+  area: backyard
+  device: outdoor_camera
+  state: false
+  attributes:
+    device_class: binary_sensor.BinarySensorDeviceClass.SOUND
+

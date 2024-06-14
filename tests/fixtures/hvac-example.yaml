@@ -1,0 +1,52 @@
+---
+areas:
+- name: Family room
+  id: family_room
+devices:
+- name: Family Room
+  id: family_room
+  area: family_room
+  info:
+    model: Thermostat
+    manufacturer: Nest
+    sw_version: 1.0.0
+entities:
+- name: Family Room
+  id: climate.family_room
+  area: family_room
+  device: family_room
+  attributes:
+    unit_of_measurement: "\xB0F"
+    supported_features:
+    - climate.ClimateEntityFeature.FAN_MODE
+    - climate.ClimateEntityFeature.TURN_ON
+    - climate.ClimateEntityFeature.TURN_OFF
+    - climate.ClimateEntityFeature.TARGET_TEMPERATURE_RANGE
+    hvac_modes:
+    - 'off'
+    - cool
+    - heat
+    - auto
+    hvac_mode: 'off'
+    hvac_action: 'off'
+    current_temperature: 62
+    target_temperature: 22
+- name: Family Room Temperature
+  id: sensor.family_room_temperature
+  area: family_room
+  device: family_room
+  attributes:
+    native_unit_of_measurement: "\xB0F"
+    device_class: sensor.SensorDeviceClass.TEMPERATURE
+    state_class: sensor.SensorStateClass.MEASUREMENT
+    native_value: 62
+- name: Family Room Humidity
+  id: sensor.family_room_humidity
+  area: family_room
+  device: family_room
+  attributes:
+    native_unit_of_measurement: '%'
+    device_class: sensor.SensorDeviceClass.HUMIDITY
+    state_class: sensor.SensorStateClass.MEASUREMENT
+    native_value: 45
+

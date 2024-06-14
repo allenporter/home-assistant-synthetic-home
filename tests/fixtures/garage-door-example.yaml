@@ -1,0 +1,30 @@
+---
+areas:
+- name: Front Yard
+  id: front_yard
+devices:
+- name: Garage Door
+  id: garage_door
+  area: front_yard
+entities:
+- name: Garage Door
+  id: cover.garage_door
+  area: front_yard
+  device: garage_door
+  state: false
+  attributes:
+    device_class: cover.CoverDeviceClass.GARAGE
+    supported_features:
+    - cover.CoverEntityFeature.OPEN
+    - cover.CoverEntityFeature.CLOSE
+- name: Garage Door
+  id: light.garage_door
+  area: front_yard
+  device: garage_door
+  state: false
+  attributes:
+    supported_color_modes:
+    - onoff
+    color_mode:
+    - onoff
+
