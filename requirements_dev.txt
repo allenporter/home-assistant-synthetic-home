@@ -14,5 +14,5 @@ hassil>=1.7.0
 home-assistant-intents>=2024.4.3
 voluptuous-stubs==0.1.1
 
-mashumaro==3.13
+mashumaro==3.13.1
 synthetic-home==4.0.0
