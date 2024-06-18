@@ -30,6 +30,7 @@ SUPPORTED_ATTRIBUTES = set(
     {
         "hvac_modes",
         "supported_features",
+        "temperature_unit",
         "unit_of_measurement",
         "current_temperature",
         "target_temperature",
@@ -37,6 +38,18 @@ SUPPORTED_ATTRIBUTES = set(
         "hvac_action",
     }
 )
+DEFAULT_TEMPERATURE_UNIT = "\xB0F"
+
+
+def map_attributes(entity: ParsedEntity) -> dict[str, Any]:
+    """Convert attributes from home assistant exports to the class here."""
+    result = {}
+    for k, v in entity.attributes.items():
+        if k == "temperature":
+            k = "current_temperature"
+        result[k] = v
+    entity.attributes = result
+    return filter_attributes(entity, SUPPORTED_ATTRIBUTES)
 
 
 async def async_setup_entry(
@@ -52,7 +65,7 @@ async def async_setup_entry(
         SyntheticHomeClimate(
             entity,
             state=entity.state,
-            **filter_attributes(entity, SUPPORTED_ATTRIBUTES),
+            **map_attributes(entity),
         )
         for entity in synthetic_home.entities
         if entity.platform == CLIMATE_DOMAIN
@@ -71,9 +84,10 @@ class SyntheticHomeClimate(SyntheticEntity, ClimateEntity):
         self,
         entity: ParsedEntity,
         state: HVACMode | None,
-        hvac_modes: list[HVACMode],
         *,
+        hvac_modes: list[HVACMode] | None = None,
         supported_features: ClimateEntityFeature | None = None,
+        temperature_unit: str | None = DEFAULT_TEMPERATURE_UNIT,
         unit_of_measurement: str | None = None,
         current_temperature: float | None = None,
         target_temperature: float | None = None,
@@ -96,8 +110,9 @@ class SyntheticHomeClimate(SyntheticEntity, ClimateEntity):
         self._attr_preset_modes = preset_modes
         if hvac_modes is not None:
             self._attr_hvac_modes = hvac_modes
-        if unit_of_measurement is not None:
-            self._attr_temperature_unit = unit_of_measurement
+        else:
+            self._attr_hvac_modes = [HVACMode.AUTO, HVACMode.OFF]
+        self._attr_temperature_unit = temperature_unit or unit_of_measurement
 
     async def async_set_temperature(self, **kwargs: Any) -> None:
         """Set new target temperatures."""

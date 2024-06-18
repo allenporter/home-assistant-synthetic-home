@@ -2,6 +2,7 @@
 
 import logging
 from typing import Any
+import datetime
 
 from homeassistant.components.sensor import (
     SensorEntity,
@@ -76,6 +77,8 @@ class SyntheticHomeSensor(SyntheticEntity, SensorEntity):
         super().__init__(entity)
         if device_class:
             self._attr_device_class = device_class
+            if device_class == "date" and state is not None and isinstance(state, str):
+                state = datetime.date.fromisoformat(state)
         if state_class:
             self._attr_state_class = state_class
         if native_value or state:
