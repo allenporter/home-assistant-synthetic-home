@@ -48,12 +48,15 @@ class ParsedEntity:
     entity_id: str
     name: str
     device_info: DeviceInfo | None
+    area_name: str | None
     state: Any
     attributes: dict[str, str | list[str]]
 
 
 def parse_entity(
-    inv_entity: inventory.Entity, device_info: DeviceInfo | None
+    inv_entity: inventory.Entity,
+    device_info: DeviceInfo | None,
+    area_name: str | None = None,
 ) -> ParsedEntity:
     """Prepare an inventory entity for the synthetic home assistant model."""
     if inv_entity.id is None:
@@ -65,6 +68,7 @@ def parse_entity(
         platform=platform,
         entity_id=inv_entity.id,
         name=inv_entity.name,
+        area_name=area_name,
         state=inv_entity.state,
         attributes=parse_attributes(inv_entity.attributes or {}),
         device_info=device_info,
@@ -156,6 +160,7 @@ def parse_home_config(config_file: pathlib.Path) -> ParsedHome:
 
     inv_area_dict = inv.area_dict()
     inv_device_dict = inv.device_dict()
+    _LOGGER.info("inv_device_dict=%s", inv_device_dict)
 
     parsed_devices = []
     for inv_device in inv_device_dict.values():
@@ -180,7 +185,10 @@ def parse_home_config(config_file: pathlib.Path) -> ParsedHome:
             device_info = parse_device_info(
                 inv_device, inv_area_dict.get(inv_device.area or "")
             )
-        parsed_entity = parse_entity(inv_entity, device_info)
+        area_name: str | None = None
+        if inv_entity.area is not None:
+            area_name = inv_area_dict[inv_entity.area].name
+        parsed_entity = parse_entity(inv_entity, device_info, area_name)
         parsed_entities.append(parsed_entity)
 
     return ParsedHome(
