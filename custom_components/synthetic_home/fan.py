@@ -71,8 +71,6 @@ class SyntheticFan(SyntheticEntity, FanEntity):
         speed_count: int | None = None,
     ) -> None:
         """Initialize the SyntheticFan."""
-        _LOGGER.debug("Fan %s %s %s", state, is_on, percentage)
-        _LOGGER.debug("Entity=%s", entity)
         super().__init__(entity)
         if supported_features is not None:
             self._attr_supported_features = FanEntityFeature(0) | supported_features
