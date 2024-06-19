@@ -72,10 +72,19 @@ def parse_entity(
 
 
 @dataclass
+class ParsedArea:
+    """Data about an area."""
+
+    name: str
+    floor_name: str | None = None
+
+
+@dataclass
 class ParsedHome:
     """Data about the synthetic home as used in the integration."""
 
-    areas: list[str] = field(default_factory=list)
+    floors: list[str] = field(default_factory=list)
+    areas: list[ParsedArea] = field(default_factory=list)
     devices: list[ParsedDevice] = field(default_factory=list)
     parsed_inventory: inventory.Inventory | None = None
     entities: list[ParsedEntity] = field(default_factory=list)
@@ -175,7 +184,8 @@ def parse_home_config(config_file: pathlib.Path) -> ParsedHome:
         parsed_entities.append(parsed_entity)
 
     return ParsedHome(
-        areas=[area.name for area in inv.areas],
+        floors=inv.floors,
+        areas=[ParsedArea(area.name, area.floor) for area in inv.areas],
         devices=parsed_devices,
         parsed_inventory=inv,
         entities=parsed_entities,

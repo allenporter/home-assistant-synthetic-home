@@ -13,7 +13,7 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryError
-from homeassistant.helpers import area_registry as ar, device_registry as dr
+from homeassistant.helpers import area_registry as ar, device_registry as dr, floor_registry as fr
 
 from .const import DOMAIN, CONF_FILENAME
 from .model import parse_home_config
@@ -59,13 +59,25 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     hass.data[DOMAIN][entry.entry_id] = synthetic_home
 
+
+    # Create all floors
+    floor_registry = fr.async_get(hass)
+    floor_ids = {}
+    for floor_name in synthetic_home.floors:
+        floor_entry = floor_registry.async_create(floor_name)
+        floor_ids[floor_name] = floor_entry.floor_id
+        _LOGGER.debug("Created floor %s (id=%s)", floor_name, floor_entry.floor_id)
+
+
     # Create all areas in the home and assign devices to them
     area_registry = ar.async_get(hass)
     area_ids = {}
-    for area_name in synthetic_home.areas:
-        area_entry = area_registry.async_get_or_create(area_name)
-        area_ids[area_name] = area_entry.id
-        _LOGGER.debug("Created area %s (id=%s)", area_name, area_entry.id)
+    for area in synthetic_home.areas:
+        area_entry = area_registry.async_get_or_create(area.name)
+        if floor_id := floor_ids.get(area.floor_name):
+            area_registry.async_update(area_entry.id, floor_id=floor_id)
+        area_ids[area.name] = area_entry.id
+        _LOGGER.debug("Created area %s (id=%s)", area.name, area_entry.id)
 
     device_registry = dr.async_get(hass)
     for device in synthetic_home.devices:
