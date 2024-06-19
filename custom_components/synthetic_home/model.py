@@ -184,7 +184,7 @@ def parse_home_config(config_file: pathlib.Path) -> ParsedHome:
         parsed_entities.append(parsed_entity)
 
     return ParsedHome(
-        floors=inv.floors,
+        floors=list(inv.floors),
         areas=[ParsedArea(area.name, area.floor) for area in inv.areas],
         devices=parsed_devices,
         parsed_inventory=inv,
@@ -201,5 +201,9 @@ def filter_attributes(
     supported_attributes = {k: v for k, v in attributes.items() if k in supported}
     unsupported_attributes = {k: v for k, v in attributes.items() if k not in supported}
     if unsupported_attributes:
-        _LOGGER.info("Entity %s specified unsupported attributes %s", entity.entity_id, list(unsupported_attributes.keys()))
+        _LOGGER.info(
+            "Entity %s specified unsupported attributes %s",
+            entity.entity_id,
+            list(unsupported_attributes.keys()),
+        )
     return supported_attributes

@@ -59,8 +59,6 @@ async def async_setup_entry(
 
     synthetic_home = hass.data[DOMAIN][entry.entry_id]
 
-    _LOGGER.debug("hvac_mode=%s", synthetic_home.entities)
-
     async_add_devices(
         SyntheticHomeClimate(
             entity,
@@ -87,7 +85,7 @@ class SyntheticHomeClimate(SyntheticEntity, ClimateEntity):
         *,
         hvac_modes: list[HVACMode] | None = None,
         supported_features: ClimateEntityFeature | None = None,
-        temperature_unit: str | None = DEFAULT_TEMPERATURE_UNIT,
+        temperature_unit: str | None = None,
         unit_of_measurement: str | None = None,
         current_temperature: float | None = None,
         target_temperature: float | None = None,
@@ -112,7 +110,9 @@ class SyntheticHomeClimate(SyntheticEntity, ClimateEntity):
             self._attr_hvac_modes = hvac_modes
         else:
             self._attr_hvac_modes = [HVACMode.AUTO, HVACMode.OFF]
-        self._attr_temperature_unit = temperature_unit or unit_of_measurement
+        self._attr_temperature_unit = (
+            temperature_unit or unit_of_measurement or DEFAULT_TEMPERATURE_UNIT
+        )
 
     async def async_set_temperature(self, **kwargs: Any) -> None:
         """Set new target temperatures."""

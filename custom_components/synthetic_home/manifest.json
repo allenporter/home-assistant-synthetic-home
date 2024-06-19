@@ -7,6 +7,6 @@
   "documentation": "https://github.com/allenporter/home-assistant-synthetic-home",
   "iot_class": "cloud_polling",
   "issue_tracker": "https://github.com/allenporter/home-assistant-synthetic-home/issues",
-  "requirements": ["synthetic-home==4.0.0"],
+  "requirements": ["synthetic-home==4.1.0"],
   "version": "3.0.0"
 }
