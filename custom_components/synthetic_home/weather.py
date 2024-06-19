@@ -74,12 +74,13 @@ FORECAST_TYPES = [
     "twice_daily_forecast",
 ]
 
+
 def map_attributes(
     entity: ParsedEntity,
     condition_map: dict[str, device_types.DeviceState],
 ) -> dict[str, Any]:
     """Override some specific weather forecast attributes."""
-    result = {}
+    result: dict[str, Any] = {}
     for k, v in entity.attributes.items():
         if k == "temperature":
             k = "current_temperature"
@@ -87,7 +88,7 @@ def map_attributes(
 
     for forecast_key in FORECAST_TYPES:
         if daily_forecast := result.get(forecast_key):
-            conditions = []
+            conditions: list[WeatherCondition] = []
             for key in daily_forecast:
                 if not (condition := condition_map.get(key)):
                     raise ValueError(f"Could not find weather condition '{key}'")
@@ -123,8 +124,6 @@ async def async_setup_entry(
         for entity in synthetic_home.entities
         if entity.platform == WEATHER_DOMAIN
     )
-
-
 
 
 class SyntheticHomeWeather(SyntheticEntity, WeatherEntity):
