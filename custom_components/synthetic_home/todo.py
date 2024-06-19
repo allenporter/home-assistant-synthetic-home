@@ -61,5 +61,7 @@ class SyntheticTodoEntity(SyntheticEntity, TodoListEntity):
 
     async def async_create_todo_item(self, item: TodoItem) -> None:
         """Add an item to the To-do list."""
+        if self._attr_todo_items is None:
+            self._attr_todo_items = []
         self._attr_todo_items.append(item)
         self.async_write_ha_state()
