@@ -32,9 +32,7 @@ async def async_setup_entry(
     synthetic_home = hass.data[DOMAIN][entry.entry_id]
 
     async_add_devices(
-        SyntheticTodoEntity(
-            entity, **filter_attributes(entity, SUPPORTED_ATTRIBUTES)
-        )
+        SyntheticTodoEntity(entity, **filter_attributes(entity, SUPPORTED_ATTRIBUTES))
         for entity in synthetic_home.entities
         if entity.platform == TODO_DOMAIN
     )
@@ -63,7 +61,5 @@ class SyntheticTodoEntity(SyntheticEntity, TodoListEntity):
 
     async def async_create_todo_item(self, item: TodoItem) -> None:
         """Add an item to the To-do list."""
-        if self._attr_todo_items is None:
-            self._attr_todo_items = []
         self._attr_todo_items.append(item)
         self.async_write_ha_state()

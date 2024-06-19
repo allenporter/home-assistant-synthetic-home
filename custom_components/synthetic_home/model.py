@@ -168,13 +168,13 @@ def parse_home_config(config_file: pathlib.Path) -> ParsedHome:
         if inv_device.id is None:
             raise ValueError(f"Expected inventory device to have an id: {inv_device}")
         if inv_device.area:
-            area_name = inv_area_dict[inv_device.area].name
+            device_area_name = inv_area_dict[inv_device.area].name
         else:
-            area_name = None
+            device_area_name = None
         parsed_device = ParsedDevice(
             unique_id=inv_device.id,
             name=inv_device.name,
-            area_name=area_name,
+            area_name=device_area_name,
         )
         parsed_devices.append(parsed_device)
 
@@ -186,10 +186,10 @@ def parse_home_config(config_file: pathlib.Path) -> ParsedHome:
             device_info = parse_device_info(
                 inv_device, inv_area_dict.get(inv_device.area or "")
             )
-        area_name: str | None = None
+        entity_area_name: str | None = None
         if inv_entity.area is not None:
-            area_name = inv_area_dict[inv_entity.area].name
-        parsed_entity = parse_entity(inv_entity, device_info, area_name)
+            entity_area_name = inv_area_dict[inv_entity.area].name
+        parsed_entity = parse_entity(inv_entity, device_info, entity_area_name)
         parsed_entities.append(parsed_entity)
 
     return ParsedHome(
@@ -216,5 +216,7 @@ def filter_attributes(
             list(unsupported_attributes.keys()),
             supported,
         )
-        raise ValueError(f"Entity {entity.entity_id} specified unsupported attributes {list(unsupported_attributes.keys())}")
+        raise ValueError(
+            f"Entity {entity.entity_id} specified unsupported attributes {list(unsupported_attributes.keys())}"
+        )
     return supported_attributes
