@@ -21,7 +21,7 @@ from .model import ParsedEntity, filter_attributes
 
 COVER_STEP = 10
 COVER_STEP_TIME = datetime.timedelta(seconds=1)
-SUPPORTED_ATTRIBUTES = set({"supported_features", "device_class"})
+SUPPORTED_ATTRIBUTES = {"supported_features", "device_class", "current_position"}
 
 
 async def async_setup_entry(
@@ -61,6 +61,7 @@ class SyntheticCover(SyntheticEntity, CoverEntity):
         *,
         supported_features: CoverEntityFeature | None = None,
         device_class: CoverDeviceClass | None = None,
+        current_position: int | None = None,
     ) -> None:
         """Initialize the SyntheticCover."""
         super().__init__(entity)
@@ -68,8 +69,10 @@ class SyntheticCover(SyntheticEntity, CoverEntity):
             self._attr_supported_features = CoverEntityFeature(0) | supported_features
         if device_class:
             self._attr_device_class = device_class
+        if current_position is not None:
+            self._attr_current_cover_position = current_position
         if state:
-            self._attr_current_cover_position = 100
+            self._attr_current_cover_position = current_position if current_position is not None else 100
             self._attr_is_closed = False
 
     async def async_will_remove_from_hass(self) -> None:

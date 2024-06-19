@@ -11,10 +11,9 @@ entities:
   id: fan.counter_fan
   area: kitchen
   device: counter_fan
+  state: "on"
   attributes:
     supported_features:
     - fan.FanEntityFeature.OSCILLATE
     - fan.FanEntityFeature.SET_SPEED
-    is_on: true
     oscillating: true
-

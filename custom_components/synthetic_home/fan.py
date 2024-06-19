@@ -1,5 +1,6 @@
 """Fan platform for Synthetic Home."""
 
+import logging
 from typing import Any
 
 from homeassistant.config_entries import ConfigEntry
@@ -15,6 +16,8 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from .const import DOMAIN
 from .entity import SyntheticEntity
 from .model import ParsedEntity, filter_attributes
+
+_LOGGER = logging.getLogger(__name__)
 
 SUPPORTED_ATTRIBUTES = set(
     {
@@ -56,7 +59,7 @@ class SyntheticFan(SyntheticEntity, FanEntity):
     def __init__(
         self,
         entity: ParsedEntity,
-        state: str | None = None,
+        state: str | None,
         *,
         supported_features: FanEntityFeature | None = None,
         is_on: bool | None = None,
@@ -68,25 +71,32 @@ class SyntheticFan(SyntheticEntity, FanEntity):
         speed_count: int | None = None,
     ) -> None:
         """Initialize the SyntheticFan."""
+        _LOGGER.debug("Fan %s %s %s", state, is_on, percentage)
+        _LOGGER.debug("Entity=%s", entity)
         super().__init__(entity)
         if supported_features is not None:
             self._attr_supported_features = FanEntityFeature(0) | supported_features
-        if state:
+        if state is not None:
+            _LOGGER.debug("State?=%s", state)
             self._attr_percentage = 100 if (state == "on") else 0
-        if is_on is not None:
+            _LOGGER.debug("State?=%s", self._attr_percentage)
+        elif is_on is not None:
+            _LOGGER.debug("is on?")
             self._attr_percentage = 100 if is_on else 0
+        if percentage is not None:
+            _LOGGER.debug("percentage=%s", percentage)
+            self._attr_percentage = percentage
         if oscillating is not None:
             self._attr_oscillating = oscillating
         if current_direction is not None:
             self._attr_current_direction = current_direction
-        if percentage is not None:
-            self._attr_percentage = percentage
         if preset_mode is not None:
             self._attr_preset_mode = preset_mode
         if preset_modes is not None:
             self._preset_modes = preset_modes
         if speed_count is not None:
             self._attr_speed_count = speed_count
+        _LOGGER.debug("self._attr_percentage=%s", self._attr_percentage)
 
     async def async_set_direction(self, direction: str) -> None:
         """Set the direction of the fan."""

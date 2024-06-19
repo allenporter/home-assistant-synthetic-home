@@ -64,6 +64,8 @@ def parse_entity(
     if inv_entity.name is None:
         raise ValueError(f"Inventory entity '{inv_entity.id}' was missing a name")
     (platform, entity_slug) = inv_entity.id.split(".", maxsplit=1)
+    if platform == "fan":
+        _LOGGER.debug("FAN inv_entity = %s", inv_entity)
     return ParsedEntity(
         platform=platform,
         entity_id=inv_entity.id,
@@ -160,7 +162,6 @@ def parse_home_config(config_file: pathlib.Path) -> ParsedHome:
 
     inv_area_dict = inv.area_dict()
     inv_device_dict = inv.device_dict()
-    _LOGGER.info("inv_device_dict=%s", inv_device_dict)
 
     parsed_devices = []
     for inv_device in inv_device_dict.values():
@@ -210,8 +211,10 @@ def filter_attributes(
     unsupported_attributes = {k: v for k, v in attributes.items() if k not in supported}
     if unsupported_attributes:
         _LOGGER.info(
-            "Entity %s specified unsupported attributes %s",
+            "Entity %s specified unsupported attributes %s (supported=%s)",
             entity.entity_id,
             list(unsupported_attributes.keys()),
+            supported,
         )
+        raise ValueError(f"Entity {entity.entity_id} specified unsupported attributes {list(unsupported_attributes.keys())}")
     return supported_attributes

@@ -83,7 +83,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     device_registry = dr.async_get(hass)
     for device in synthetic_home.devices:
-        _LOGGER.info(
+        _LOGGER.debug(
             "Creating device %s with unique_id %s",
             device.name,
             device.unique_id,

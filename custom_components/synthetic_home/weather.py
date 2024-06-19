@@ -83,8 +83,12 @@ def map_attributes(
     result: dict[str, Any] = {}
     for k, v in entity.attributes.items():
         if k == "temperature":
-            k = "current_temperature"
+            k = "native_temperature"
+        if k == "temperature_unit":
+            k = "native_temperature_unit"
         result[k] = v
+    if entity.state is not None:
+        result["condition"] = entity.state,
 
     for forecast_key in FORECAST_TYPES:
         if daily_forecast := result.get(forecast_key):
@@ -135,7 +139,7 @@ class SyntheticHomeWeather(SyntheticEntity, WeatherEntity):
         self,
         entity: ParsedEntity,
         *,
-        condition: str | None = None,
+        condition: str | None,
         native_temperature: float | None = None,
         native_temperature_unit: str | None = None,
         humidity: float | None = None,

@@ -41,7 +41,7 @@ async def test_smart_speaker(
     assert state.attributes == {
         "friendly_name": "Smart Speaker",
         "device_class": "speaker",
-        "volume_level": 1.0,
+        "volume_level": 0.5,
         "supported_features": 21949,
         "media_track": 0,
     }

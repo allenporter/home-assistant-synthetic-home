@@ -1,5 +1,7 @@
 """Valve platform for Synthetic Home."""
 
+import logging
+
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.components.valve import (
@@ -14,10 +16,13 @@ from .const import DOMAIN
 from .entity import SyntheticEntity
 from .model import ParsedEntity, filter_attributes
 
+_LOGGER = logging.getLogger(__name__)
+
 SUPPORTED_ATTRIBUTES = set(
     {
         "supported_features",
         "current_valve_position",
+        "current_position",
         "is_closed",
         "is_closing",
         "is_opening",
@@ -54,6 +59,7 @@ class SyntheticValve(SyntheticEntity, ValveEntity):
         state: str | None = None,
         *,
         supported_features: ValveEntityFeature | None = None,
+        current_position: int | None = None,
         current_valve_position: int | None = None,
         is_closed: bool | None = None,
         is_closing: bool | None = None,
@@ -64,10 +70,13 @@ class SyntheticValve(SyntheticEntity, ValveEntity):
         super().__init__(entity)
         if supported_features is not None:
             self._attr_supported_features = ValveEntityFeature(0) | supported_features
-        if state:
-            self._attr_is_closed = state == "closed"
+        self._attr_is_closed = (state == "closed" or state is None)
         if current_valve_position is not None:
             self._attr_current_valve_position = current_valve_position
+        elif current_position is not None:
+            self._attr_current_valve_position = current_position
+        if self._attr_current_valve_position is not None:
+            self._attr_is_closed = (self._attr_current_valve_position == 0)
         if is_closed is not None:
             self._attr_is_closed = is_closed
         if is_closing is not None:

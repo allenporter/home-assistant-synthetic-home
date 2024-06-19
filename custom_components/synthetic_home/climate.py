@@ -26,18 +26,16 @@ from .model import ParsedEntity, filter_attributes
 _LOGGER = logging.getLogger(__name__)
 
 FAN_MODES = ["low", "high", "off"]
-SUPPORTED_ATTRIBUTES = set(
-    {
-        "hvac_modes",
-        "supported_features",
-        "temperature_unit",
-        "unit_of_measurement",
-        "current_temperature",
-        "target_temperature",
-        "hvac_mode",
-        "hvac_action",
-    }
-)
+SUPPORTED_ATTRIBUTES = {
+    "hvac_modes",
+    "supported_features",
+    "temperature_unit",
+    "unit_of_measurement",
+    "current_temperature",
+    "target_temperature",
+    "hvac_mode",
+    "hvac_action",
+}
 DEFAULT_TEMPERATURE_UNIT = "\xB0F"
 
 

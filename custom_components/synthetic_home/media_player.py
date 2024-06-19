@@ -25,6 +25,8 @@ SUPPORTED_ATTRIBUTES = set(
     {
         "device_class",
         "supported_features",
+        "media_track",
+        "volume_level",
     }
 )
 
@@ -56,6 +58,8 @@ class SyntheticMediaPlayer(SyntheticEntity, MediaPlayerEntity):
         *,
         device_class: MediaPlayerDeviceClass | None = None,
         supported_features: MediaPlayerEntityFeature | None = None,
+        media_track: int = 0,
+        volume_level: float = 0.5,
     ) -> None:
         """Initialize the SyntheticMediaPlayer."""
         super().__init__(entity)
@@ -64,12 +68,12 @@ class SyntheticMediaPlayer(SyntheticEntity, MediaPlayerEntity):
             self._attr_supported_features = (
                 MediaPlayerEntityFeature(0) | supported_features
             )
-        self._track = 0
+        self._track = media_track
         if state:
             self._attr_state = state
             self._update_track()
 
-        self._attr_volume_level = 1.0
+        self._attr_volume_level = volume_level
 
     def _update_track(self) -> None:
         if (

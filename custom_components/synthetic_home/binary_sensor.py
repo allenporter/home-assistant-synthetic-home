@@ -19,7 +19,7 @@ from .entity import SyntheticEntity
 _LOGGER = logging.getLogger(__name__)
 
 
-SUPPORTED_ATTRIBUTES = set({"device_class"})
+SUPPORTED_ATTRIBUTES = {"device_class"}
 
 
 async def async_setup_entry(
