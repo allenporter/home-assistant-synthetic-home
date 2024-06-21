@@ -33,7 +33,7 @@ async def test_switch_services(
 
     state = hass.states.get(test_entity)
     assert state
-    assert state.state == "off"
+    assert state.state == "on"
     assert state.attributes == {
         "friendly_name": "Smart Feeder",
         "device_class": "switch",

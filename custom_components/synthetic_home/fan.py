@@ -75,14 +75,10 @@ class SyntheticFan(SyntheticEntity, FanEntity):
         if supported_features is not None:
             self._attr_supported_features = FanEntityFeature(0) | supported_features
         if state is not None:
-            _LOGGER.debug("State?=%s", state)
             self._attr_percentage = 100 if (state == "on") else 0
-            _LOGGER.debug("State?=%s", self._attr_percentage)
         elif is_on is not None:
-            _LOGGER.debug("is on?")
             self._attr_percentage = 100 if is_on else 0
         if percentage is not None:
-            _LOGGER.debug("percentage=%s", percentage)
             self._attr_percentage = percentage
         if oscillating is not None:
             self._attr_oscillating = oscillating

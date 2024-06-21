@@ -10,6 +10,7 @@ from homeassistant.components.light import (
     ColorMode,
     ATTR_BRIGHTNESS,
     ATTR_RGBW_COLOR,
+    ATTR_RGB_COLOR,
     DOMAIN as LIGHT_DOMAIN,
 )
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
@@ -26,6 +27,7 @@ SUPPORTED_ATTRIBUTES = set(
         "color_mode",
         "brightness",
         "rgbw_color",
+        "rgb_color",
     }
 )
 
@@ -58,6 +60,7 @@ class SyntheticHomeLight(SyntheticEntity, LightEntity):
         color_mode: ColorMode | None = None,
         *,
         brightness: int | None = None,
+        rgb_color: tuple[int, int, int] | None = None,
         rgbw_color: tuple[int, int, int, int] | None = None,
     ) -> None:
         """Initialize the device."""
@@ -68,6 +71,7 @@ class SyntheticHomeLight(SyntheticEntity, LightEntity):
             self._attr_is_on = True
         self._attr_color_mode = color_mode
         self._attr_brightness = brightness
+        self._attr_rgb_color = rgb_color
         self._attr_rgbw_color = rgbw_color
 
     async def async_turn_on(
@@ -76,6 +80,8 @@ class SyntheticHomeLight(SyntheticEntity, LightEntity):
         """Turn on the light."""
         if brightness := kwargs.get(ATTR_BRIGHTNESS):
             self._attr_brightness = brightness
+        if rgb_color := kwargs.get(ATTR_RGB_COLOR):
+            self._attr_rgb_color = rgb_color
         if rgbw_color := kwargs.get(ATTR_RGBW_COLOR):
             self._attr_rgbw_color = rgbw_color
         self._attr_is_on = True

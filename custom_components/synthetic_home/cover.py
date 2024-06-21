@@ -2,9 +2,10 @@
 
 import datetime
 from typing import Any
+import logging
 
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.core import HomeAssistant, callback, CALLBACK_TYPE
+from homeassistant.core import HomeAssistant, CALLBACK_TYPE
 from homeassistant.components.cover import (
     CoverEntity,
     CoverDeviceClass,
@@ -19,6 +20,10 @@ from .const import DOMAIN
 from .entity import SyntheticEntity
 from .model import ParsedEntity, filter_attributes
 
+_LOGGER = logging.getLogger(__name__)
+
+# Used for eval to override behavior
+COVER_INSTANT = False
 COVER_STEP = 10
 COVER_STEP_TIME = datetime.timedelta(seconds=1)
 SUPPORTED_ATTRIBUTES = {"supported_features", "device_class", "current_position"}
@@ -57,7 +62,7 @@ class SyntheticCover(SyntheticEntity, CoverEntity):
     def __init__(
         self,
         entity: ParsedEntity,
-        state: bool | None = None,
+        state: str | None = None,
         *,
         supported_features: CoverEntityFeature | None = None,
         device_class: CoverDeviceClass | None = None,
@@ -71,9 +76,9 @@ class SyntheticCover(SyntheticEntity, CoverEntity):
             self._attr_device_class = device_class
         if current_position is not None:
             self._attr_current_cover_position = current_position
-        if state:
-            self._attr_current_cover_position = current_position if current_position is not None else 100
-            self._attr_is_closed = False
+        elif state is not None:
+            self._attr_current_cover_position = 100 if (state == "open") else 0
+        self._attr_is_closed = self._attr_current_cover_position == 0
 
     async def async_will_remove_from_hass(self) -> None:
         """When entity will be removed from Home Assistant."""
@@ -89,13 +94,13 @@ class SyntheticCover(SyntheticEntity, CoverEntity):
         self._attr_is_closing = True
         self._attr_is_opening = False
         self._target_cover_position = 0
-        self._start_moving()
+        await self._start_moving()
         self.async_write_ha_state()
 
     async def async_open_cover(self, **kwargs: Any) -> None:
         """Open the cover."""
 
-        if self._attr_current_cover_position == 1000:
+        if self._attr_current_cover_position == 100:
             # Already open
             return
 
@@ -103,7 +108,7 @@ class SyntheticCover(SyntheticEntity, CoverEntity):
         self._attr_is_closing = False
         self._attr_is_opening = True
         self._target_cover_position = 100
-        self._start_moving()
+        await self._start_moving()
         self.async_write_ha_state()
 
     async def async_set_cover_position(self, **kwargs: Any) -> None:
@@ -119,7 +124,7 @@ class SyntheticCover(SyntheticEntity, CoverEntity):
         self._attr_is_opening = (
             self._target_cover_position > self._attr_current_cover_position
         )
-        self._start_moving()
+        await self._start_moving()
         self.async_write_ha_state()
 
     async def async_stop_cover(self, **kwargs: Any) -> None:
@@ -131,10 +136,11 @@ class SyntheticCover(SyntheticEntity, CoverEntity):
             self._timer_unsub = None
             self._target_cover_position = None
 
-    @callback
-    def _start_moving(self) -> None:
+    async def _start_moving(self) -> None:
         """Start moving the cover."""
-        if self._timer_unsub is None:
+        if COVER_INSTANT:
+            await self._move_cover(datetime.datetime.now())
+        elif self._timer_unsub is None:
             self._timer_unsub = async_track_time_interval(
                 self.hass,
                 action=self._move_cover,
@@ -143,10 +149,14 @@ class SyntheticCover(SyntheticEntity, CoverEntity):
 
     async def _move_cover(self, now: datetime.datetime) -> None:
         """Track time changes."""
+        if COVER_INSTANT:
+            # Jump to destination
+            self._attr_current_cover_position = self._target_cover_position
         if (
             self._target_cover_position is not None
             and self._attr_current_cover_position > self._target_cover_position
         ):
+            _LOGGER.debug("Cover moving down")
             self._attr_current_cover_position -= COVER_STEP
             self._attr_current_cover_position = max(
                 self._attr_current_cover_position, self._target_cover_position
@@ -155,12 +165,14 @@ class SyntheticCover(SyntheticEntity, CoverEntity):
             self._target_cover_position is not None
             and self._attr_current_cover_position < self._target_cover_position
         ):
+            _LOGGER.debug("Cover moving up")
             self._attr_current_cover_position += COVER_STEP
             self._attr_current_cover_position = min(
                 self._attr_current_cover_position, self._target_cover_position
             )
         else:
             # Reached target
+            _LOGGER.debug("Cover reached target")
             self._attr_is_closing = False
             self._attr_is_opening = False
             self._attr_is_closed = self._attr_current_cover_position == 0

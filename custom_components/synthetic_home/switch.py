@@ -1,6 +1,7 @@
 """Switch platform for Synthetic Home."""
 
 from typing import Any
+import logging
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
@@ -15,6 +16,7 @@ from .const import DOMAIN
 from .entity import SyntheticEntity
 from .model import ParsedEntity, filter_attributes
 
+_LOGGER = logging.getLogger(__name__)
 
 SUPPORTED_ATTRIBUTES = set(
     {
@@ -54,6 +56,7 @@ class SyntheticHomeBinarySwitch(SyntheticEntity, SwitchEntity):
     ) -> None:
         """Initialize SyntheticHomeBinarySwitch."""
         super().__init__(entity)
+        _LOGGER.debug("state=%s", state)
         if state is not None:
             self._attr_is_on = state == "on"
         if is_on is not None:

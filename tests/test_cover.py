@@ -200,7 +200,7 @@ async def test_gate(
         (f"{FIXTURES}/smart-blinds-closed.yaml"),
     ],
 )
-async def test_hvac_device_state(
+async def test_smart_blinds_states(
     hass: HomeAssistant,
     setup_integration: None,
     config_entry: MockConfigEntry,
