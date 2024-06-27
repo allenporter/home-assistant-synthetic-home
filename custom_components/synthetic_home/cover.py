@@ -149,7 +149,7 @@ class SyntheticCover(SyntheticEntity, CoverEntity):
 
     async def _move_cover(self, now: datetime.datetime) -> None:
         """Track time changes."""
-        if COVER_INSTANT:
+        if COVER_INSTANT and self._target_cover_position is not None:
             # Jump to destination
             self._attr_current_cover_position = self._target_cover_position
         if (
