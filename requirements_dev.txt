@@ -1,5 +1,5 @@
 # Generic python dependencies
-black==24.4.2
+black==24.8.0
 mypy==1.11.1
 pip==24.2
 pre-commit==3.8.0
