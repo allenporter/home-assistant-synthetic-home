@@ -37,7 +37,7 @@ async def test_fan(
     assert state.state == "off"
     assert state.attributes == {
         "friendly_name": "Counter Fan",
-        "supported_features": 3,
+        "supported_features": 51,
         "oscillating": False,
         "percentage": 0,
         "percentage_step": 1.0,

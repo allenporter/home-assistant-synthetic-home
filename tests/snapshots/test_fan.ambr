@@ -9,7 +9,7 @@
       'percentage_step': 1.0,
       'preset_mode': None,
       'preset_modes': None,
-      'supported_features': <FanEntityFeature.SET_SPEED|OSCILLATE: 3>,
+      'supported_features': <FanEntityFeature.SET_SPEED|OSCILLATE|TURN_OFF|TURN_ON: 51>,
     }),
   )
 # ---
@@ -23,7 +23,7 @@
       'percentage_step': 1.0,
       'preset_mode': None,
       'preset_modes': None,
-      'supported_features': <FanEntityFeature.SET_SPEED|OSCILLATE: 3>,
+      'supported_features': <FanEntityFeature.SET_SPEED|OSCILLATE|TURN_OFF|TURN_ON: 51>,
     }),
   )
 # ---
@@ -37,7 +37,7 @@
       'percentage_step': 1.0,
       'preset_mode': None,
       'preset_modes': None,
-      'supported_features': <FanEntityFeature.SET_SPEED|OSCILLATE: 3>,
+      'supported_features': <FanEntityFeature.SET_SPEED|OSCILLATE|TURN_OFF|TURN_ON: 51>,
     }),
   )
 # ---
