@@ -79,7 +79,9 @@ class SyntheticHomeSensor(SyntheticEntity, SensorEntity):
                 state = datetime.date.fromisoformat(state)
         if state_class:
             self._attr_state_class = state_class
-        if native_value or state:
-            self._attr_native_value = native_value or state
+        if native_value is not None:
+            self._attr_native_value = native_value
+        elif state is not None:
+            self._attr_native_value = state
         if native_unit_of_measurement:
             self._attr_native_unit_of_measurement = native_unit_of_measurement
