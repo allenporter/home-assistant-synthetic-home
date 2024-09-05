@@ -3,7 +3,7 @@ black==24.8.0
 mypy==1.11.2
 pip==24.2
 pre-commit==3.8.0
-ruff==0.6.3
+ruff==0.6.4
 
 # Home Assistant testing dependencies
 pytest-homeassistant-custom-component==0.13.161
