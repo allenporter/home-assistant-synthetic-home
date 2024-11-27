@@ -48,10 +48,16 @@ class SyntheticHomeBinarySensor(SyntheticEntity, BinarySensorEntity):
         entity: ParsedEntity,
         *,
         device_class: BinarySensorDeviceClass | None = None,
-        state: bool | None = None,
+        state: bool | str | None = None,
     ) -> None:
         """Initialize SyntheticHomeSensor."""
         super().__init__(entity)
         if device_class is not None:
             self._attr_device_class = device_class
-        self._attr_is_on = state if state is not None else False
+        if state is not None:
+            if isinstance(state, str):
+                self._attr_is_on = (state == "True" or state == "on")
+            else:
+                self._attr_is_on = state
+        else:
+            self._attr_is_on = False
