@@ -72,9 +72,18 @@ class SyntheticHomeLight(SyntheticEntity, LightEntity):
         self._attr_color_mode = color_mode
         self._attr_brightness = brightness
         if rgb_color is not None:
-            self._attr_rgb_color = tuple(map(int, (rgb_color)))
+            self._attr_rgb_color = (
+                int(rgb_color[0]),
+                int(rgb_color[1]),
+                int(rgb_color[2]),
+            )
         if rgbw_color is not None:
-            self._attr_rgbw_color = tuple(map(int, (rgbw_color)))
+            self._attr_rgbw_color = (
+                int(rgbw_color[0]),
+                int(rgbw_color[1]),
+                int(rgbw_color[2]),
+                int(rgbw_color[3]),
+            )
 
     async def async_turn_on(
         self, **kwargs: Any
