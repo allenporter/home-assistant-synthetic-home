@@ -73,7 +73,12 @@ class SyntheticFan(SyntheticEntity, FanEntity):
         """Initialize the SyntheticFan."""
         super().__init__(entity)
         if supported_features is not None:
-            self._attr_supported_features = FanEntityFeature(0) | supported_features
+            self._attr_supported_features = (
+                FanEntityFeature(0)
+                | FanEntityFeature.TURN_ON
+                | FanEntityFeature.TURN_OFF
+                | supported_features
+            )
         if state is not None:
             self._attr_percentage = 100 if (state == "on") else 0
         elif is_on is not None:
