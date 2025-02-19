@@ -127,7 +127,7 @@ def _validate_supported_feature(supported_feature: str) -> Any:
 
 
 def parse_attributes(
-    values: dict[str, str | int | float | bool | list[str]]
+    values: dict[str, str | int | float | bool | list[str]],
 ) -> dict[str, Any]:
     """Parse special string attributes as constants."""
     result = {}
@@ -151,6 +151,7 @@ def parse_attributes(
                 for subvalue in value:
                     flag |= cast(int, _validate_supported_feature(subvalue).value)
                 new_value = flag
+                _LOGGER.info("new_value=%s", new_value)
         result[key] = new_value or value
     return result
 

@@ -1,6 +1,8 @@
 """Media platform for Synthetic Home."""
 
 from typing import Any
+import logging
+
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.components.media_player import (
@@ -16,6 +18,8 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from .const import DOMAIN
 from .entity import SyntheticEntity
 from .model import ParsedEntity, filter_attributes
+
+_LOGGER = logging.getLogger(__name__)
 
 VOLUME_STEP = 1
 
@@ -86,7 +90,7 @@ class SyntheticMediaPlayer(SyntheticEntity, MediaPlayerEntity):
 
     async def async_turn_on(self) -> None:
         """Turn the media player on."""
-        self._attr_state = MediaPlayerState.PLAYING
+        self._attr_state = MediaPlayerState.IDLE
         self._track = 0
         self._update_track()
         self.async_write_ha_state()
@@ -120,21 +124,6 @@ class SyntheticMediaPlayer(SyntheticEntity, MediaPlayerEntity):
         self._attr_volume_level = volume
         self.async_write_ha_state()
 
-    async def async_media_play(self) -> None:
-        """Send play command."""
-        self._attr_state = MediaPlayerState.PLAYING
-        self.async_write_ha_state()
-
-    async def async_media_pause(self) -> None:
-        """Send pause command."""
-        self._attr_state = MediaPlayerState.PAUSED
-        self.async_write_ha_state()
-
-    async def async_media_stop(self) -> None:
-        """Send stop command."""
-        self._attr_state = MediaPlayerState.OFF
-        self.async_write_ha_state()
-
     async def async_play_media(
         self,
         media_type: str,
@@ -148,6 +137,16 @@ class SyntheticMediaPlayer(SyntheticEntity, MediaPlayerEntity):
         Currently does not yet track the actual media being played.
         """
         self._attr_state = MediaPlayerState.PLAYING
+        self.async_write_ha_state()
+
+    async def async_media_play(self) -> None:
+        """Stop the media from playing."""
+        self._attr_state = MediaPlayerState.PLAYING
+        self.async_write_ha_state()
+
+    async def async_media_stop(self) -> None:
+        """Stop the media from playing."""
+        self._attr_state = MediaPlayerState.IDLE
         self.async_write_ha_state()
 
     async def async_media_next_track(self) -> None:
