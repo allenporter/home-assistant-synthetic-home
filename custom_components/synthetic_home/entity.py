@@ -24,6 +24,8 @@ class SyntheticEntity(Entity):
         self._attr_name = entity.name
         self._attr_device_info = entity.device_info
         self._entity = entity
+        # Allow state changes to "stick"
+        self._attr_should_poll = False
 
     async def async_added_to_hass(self) -> None:
         """When entity is added to Home Assistant."""
