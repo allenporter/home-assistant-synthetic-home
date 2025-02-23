@@ -137,11 +137,9 @@ def parse_attributes(
             if isinstance(value, str) and "." in value:
                 new_value = _validate_supported_feature(str(value))
         if key == "supported_features":
-            _LOGGER.info("value=%s (type=%s)", value, type(value))
             if isinstance(value, int):
                 # Do nothing
                 new_value = value
-                _LOGGER.info("doing nothing %s", new_value)
             elif not isinstance(value, list):
                 raise ValueError(
                     f"Expected type 'list' for 'supported_features', got: '{value}'"
@@ -151,7 +149,6 @@ def parse_attributes(
                 for subvalue in value:
                     flag |= cast(int, _validate_supported_feature(subvalue).value)
                 new_value = flag
-                _LOGGER.info("new_value=%s", new_value)
         result[key] = new_value or value
     return result
 
