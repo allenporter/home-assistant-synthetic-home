@@ -1,0 +1,8 @@
+---
+name: Family Farmhouse
+devices:
+  Entryway:
+    - name: Alarm
+      device_type: alarm-system
+      device_info:
+        manufacturer: Ring
