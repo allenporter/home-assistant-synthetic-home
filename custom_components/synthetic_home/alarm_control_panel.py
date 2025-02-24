@@ -57,7 +57,6 @@ class SyntheticHomeAlarmControlPanel(SyntheticEntity, AlarmControlPanelEntity):
     ) -> None:
         """Initialize SyntheticHomeBinarySwitch."""
         super().__init__(entity)
-        _LOGGER.info("state=%s", state)
         if state is not None:
             self._attr_alarm_state = state
         if code_format is not None:
