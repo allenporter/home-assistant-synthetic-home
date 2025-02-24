@@ -214,7 +214,4 @@ def filter_attributes(
             list(unsupported_attributes.keys()),
             supported,
         )
-        raise ValueError(
-            f"Entity {entity.entity_id} specified unsupported attributes {list(unsupported_attributes.keys())}"
-        )
     return supported_attributes
