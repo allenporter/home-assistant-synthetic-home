@@ -1,35 +1,42 @@
 ---
 areas:
-- name: Backyard
-  id: backyard
+  - name: Backyard
+    id: backyard
 devices:
-- name: Outdoor Camera
-  id: outdoor_camera
-  area: backyard
-  info:
-    model: Spotlight Cam Battery
-    manufacturer: Ring
-    sw_version: 2.4.1
+  - name: Outdoor Camera
+    id: outdoor_camera
+    area: backyard
+    info:
+      model: Spotlight Cam Battery
+      manufacturer: Ring
+      sw_version: 2.4.1
 entities:
-- name: Outdoor Camera Motion
-  id: binary_sensor.outdoor_camera_motion
-  area: backyard
-  device: outdoor_camera
-  state: false
-  attributes:
-    device_class: binary_sensor.BinarySensorDeviceClass.MOTION
-- name: Outdoor Camera Person
-  id: binary_sensor.outdoor_camera_person
-  area: backyard
-  device: outdoor_camera
-  state: false
-  attributes:
-    device_class: binary_sensor.BinarySensorDeviceClass.OCCUPANCY
-- name: Outdoor Camera Sound
-  id: binary_sensor.outdoor_camera_sound
-  area: backyard
-  device: outdoor_camera
-  state: false
-  attributes:
-    device_class: binary_sensor.BinarySensorDeviceClass.SOUND
-
+  - name: Outdoor Camera
+    id: camera.outdoor_camera
+    area: backyard
+    device: outdoor_camera
+    attributes:
+      supported_features:
+        - camera.CameraEntityFeature.ON_OFF
+        - camera.CameraEntityFeature.STREAM
+  - name: Outdoor Camera Motion
+    id: binary_sensor.outdoor_camera_motion
+    area: backyard
+    device: outdoor_camera
+    state: false
+    attributes:
+      device_class: binary_sensor.BinarySensorDeviceClass.MOTION
+  - name: Outdoor Camera Person
+    id: binary_sensor.outdoor_camera_person
+    area: backyard
+    device: outdoor_camera
+    state: false
+    attributes:
+      device_class: binary_sensor.BinarySensorDeviceClass.OCCUPANCY
+  - name: Outdoor Camera Sound
+    id: binary_sensor.outdoor_camera_sound
+    area: backyard
+    device: outdoor_camera
+    state: false
+    attributes:
+      device_class: binary_sensor.BinarySensorDeviceClass.SOUND

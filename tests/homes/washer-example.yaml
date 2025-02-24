@@ -1,0 +1,6 @@
+---
+name: Family Farmhouse
+devices:
+  Kitchen:
+    - name: LG Washer
+      device_type: washer
