@@ -45,7 +45,7 @@ async def async_setup_entry(
 
 
 class SyntheticHomeAlarmControlPanel(SyntheticEntity, AlarmControlPanelEntity):
-    """synthetic_home switch class."""
+    """synthetic_home alarm control panel class."""
 
     def __init__(
         self,
@@ -55,7 +55,7 @@ class SyntheticHomeAlarmControlPanel(SyntheticEntity, AlarmControlPanelEntity):
         code_format: CodeFormat | None = None,
         supported_features: AlarmControlPanelEntityFeature | None = None,
     ) -> None:
-        """Initialize SyntheticHomeBinarySwitch."""
+        """Initialize SyntheticHomeAlarmControlPanel."""
         super().__init__(entity)
         if state is not None:
             self._attr_alarm_state = state

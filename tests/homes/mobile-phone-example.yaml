@@ -1,0 +1,9 @@
+---
+name: Home1
+country_code: US
+location: Suburban neighborhood in Texas
+services:
+  - name: Android
+    device_type: mobile-phone
+  - name: iPhone
+    device_type: mobile-phone
