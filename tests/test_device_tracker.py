@@ -22,7 +22,7 @@ def mock_platforms() -> list[Platform]:
 async def test_device_tracker(
     hass: HomeAssistant, setup_integration: None, test_entity: str
 ) -> None:
-    """Test an alarm control panel device."""
+    """Test a device tracker entity."""
 
     state = hass.states.get(test_entity)
     assert state
