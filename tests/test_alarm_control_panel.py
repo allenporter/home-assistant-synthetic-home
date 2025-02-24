@@ -26,7 +26,7 @@ def mock_platforms() -> list[Platform]:
     ("config_yaml_fixture", "test_entity"),
     [(f"{FIXTURES}/alarm-system-example.yaml", "alarm_control_panel.alarm")],
 )
-async def test_alarm_control_nale(
+async def test_alarm_control_panel(
     hass: HomeAssistant, setup_integration: None, test_entity: str
 ) -> None:
     """Test an alarm control panel device."""

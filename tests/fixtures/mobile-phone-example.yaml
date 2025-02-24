@@ -1,0 +1,38 @@
+---
+areas: []
+devices:
+  - name: Android
+    id: android
+  - name: Iphone
+    id: iphone
+entities:
+  - name: Android
+    id: notify.android
+    device: android
+  - name: Android
+    id: device_tracker.android
+    device: android
+    state: home
+  - name: Android Battery
+    id: sensor.android_battery
+    device: android
+    state: "70"
+    attributes:
+      device_class: sensor.SensorDeviceClass.BATTERY
+      state_class: sensor.SensorStateClass.MEASUREMENT
+      native_unit_of_measurement: "%"
+  - name: Iphone
+    id: notify.iphone
+    device: iphone
+  - name: Iphone
+    id: device_tracker.iphone
+    device: iphone
+    state: home
+  - name: Iphone Battery
+    id: sensor.iphone_battery
+    device: iphone
+    state: "70"
+    attributes:
+      device_class: sensor.SensorDeviceClass.BATTERY
+      state_class: sensor.SensorStateClass.MEASUREMENT
+      native_unit_of_measurement: "%"
