@@ -1,0 +1,30 @@
+---
+areas:
+  - name: Kitchen
+    id: kitchen
+devices:
+  - name: Lg Washer
+    id: lg_washer
+    area: kitchen
+entities:
+  - name: Lg Washer Status
+    id: sensor.lg_washer_status
+    area: kitchen
+    device: lg_washer
+    state: idle
+  - name: Lg Washer Remaining_time
+    id: sensor.lg_washer_remaining_time
+    area: kitchen
+    device: lg_washer
+    state: "0"
+    attributes:
+      device_class: sensor.SensorDeviceClass.DURATION
+  - name: Lg Washer
+    id: event.lg_washer
+    area: kitchen
+    device: lg_washer
+    attributes:
+      event_types:
+        - started
+        - finished
+        - error
