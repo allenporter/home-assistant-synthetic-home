@@ -6,7 +6,7 @@ pre-commit==4.1.0
 ruff==0.9.9
 
 # Home Assistant testing dependencies
-pytest-homeassistant-custom-component==0.13.219
+pytest-homeassistant-custom-component==0.13.220
 syrupy>=4.6.1
 
 # Component dependencies
