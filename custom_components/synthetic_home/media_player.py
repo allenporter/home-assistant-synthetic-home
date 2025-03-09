@@ -144,6 +144,11 @@ class SyntheticMediaPlayer(SyntheticEntity, MediaPlayerEntity):
         self._attr_state = MediaPlayerState.PLAYING
         self.async_write_ha_state()
 
+    async def async_media_pause(self) -> None:
+        """Stop the media from playing."""
+        self._attr_state = MediaPlayerState.PAUSED
+        self.async_write_ha_state()
+
     async def async_media_stop(self) -> None:
         """Stop the media from playing."""
         self._attr_state = MediaPlayerState.IDLE
