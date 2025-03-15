@@ -10,6 +10,7 @@ from homeassistant.components.media_player import (
     SERVICE_TURN_ON,
     SERVICE_TURN_OFF,
     SERVICE_VOLUME_SET,
+    SERVICE_MEDIA_PAUSE,
     SERVICE_MEDIA_NEXT_TRACK,
     SERVICE_MEDIA_PREVIOUS_TRACK,
     ATTR_MEDIA_VOLUME_LEVEL,
@@ -227,3 +228,35 @@ async def test_smart_speaker_play_media(
         "supported_features": 22461,
         "media_track": 0,
     }
+
+
+@pytest.mark.parametrize(
+    ("config_yaml_fixture", "test_entity"),
+    [(f"{FIXTURES}/smart-speaker-example.yaml", "media_player.smart_speaker")],
+)
+async def test_pause_media_player(
+    hass: HomeAssistant, setup_integration: None, test_entity: str
+) -> None:
+    """Test smart speaker as a media player."""
+
+    state = hass.states.get(test_entity)
+    assert state
+    assert state.state == "playing"
+    assert state.attributes == {
+        "friendly_name": "Smart Speaker",
+        "device_class": "speaker",
+        "volume_level": 0.5,
+        "supported_features": 22461,
+        "media_track": 0,
+    }
+
+    await hass.services.async_call(
+        MEDIA_PLAYER_DOMAIN,
+        SERVICE_MEDIA_PAUSE,
+        service_data={ATTR_ENTITY_ID: test_entity},
+        blocking=True,
+    )
+    await hass.async_block_till_done()
+    state = hass.states.get(test_entity)
+    assert state
+    assert state.state == "paused"
