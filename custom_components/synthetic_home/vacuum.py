@@ -7,11 +7,9 @@ from homeassistant.core import HomeAssistant
 from homeassistant.components.vacuum import (
     StateVacuumEntity,
     VacuumEntityFeature,
-    STATE_CLEANING,
-    STATE_RETURNING,
+    VacuumActivity,
     DOMAIN as VACUUM_DOMAIN,
 )
-from homeassistant.const import STATE_OFF, STATE_PAUSED
 
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
@@ -54,7 +52,7 @@ class SyntheticVacuum(SyntheticEntity, StateVacuumEntity):
     def __init__(
         self,
         entity: ParsedEntity,
-        state: str | None = None,
+        state: VacuumActivity | None = None,
         *,
         supported_features: VacuumEntityFeature | None = None,
         fan_speed: str | None = None,
@@ -67,7 +65,7 @@ class SyntheticVacuum(SyntheticEntity, StateVacuumEntity):
         if supported_features is not None:
             self._attr_supported_features = VacuumEntityFeature(0) | supported_features
         if state:
-            self._attr_state = state
+            self._attr_activity = state
         if fan_speed is not None:
             self._attr_fan_speed = fan_speed
         if fan_speed_list is not None:
@@ -82,7 +80,7 @@ class SyntheticVacuum(SyntheticEntity, StateVacuumEntity):
 
         This method must be run in the event loop.
         """
-        self._attr_state = STATE_OFF
+        self._attr_activity = VacuumActivity.IDLE
         self.async_write_ha_state()
 
     async def async_return_to_base(self, **kwargs: Any) -> None:
@@ -90,12 +88,12 @@ class SyntheticVacuum(SyntheticEntity, StateVacuumEntity):
 
         This method must be run in the event loop.
         """
-        self._attr_state = STATE_RETURNING
+        self._attr_activity = VacuumActivity.RETURNING
         self.async_write_ha_state()
 
     async def async_clean_spot(self, **kwargs: Any) -> None:
         """Perform a spot clean-up."""
-        self._attr_state = STATE_CLEANING
+        self._attr_activity = VacuumActivity.CLEANING
         self.async_write_ha_state()
 
     async def async_start(self) -> None:
@@ -103,7 +101,7 @@ class SyntheticVacuum(SyntheticEntity, StateVacuumEntity):
 
         This method must be run in the event loop.
         """
-        self._attr_state = STATE_CLEANING
+        self._attr_activity = VacuumActivity.CLEANING
         self.async_write_ha_state()
 
     async def async_pause(self) -> None:
@@ -111,7 +109,7 @@ class SyntheticVacuum(SyntheticEntity, StateVacuumEntity):
 
         This method must be run in the event loop.
         """
-        self._attr_state = STATE_PAUSED
+        self._attr_activity = VacuumActivity.PAUSED
         self.async_write_ha_state()
 
     async def async_set_fan_speed(self, fan_speed: str, **kwargs: Any) -> None:

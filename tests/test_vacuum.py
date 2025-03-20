@@ -71,7 +71,7 @@ async def test_vacuum(
     await hass.async_block_till_done()
     state = hass.states.get(test_entity)
     assert state
-    assert state.state == "off"
+    assert state.state == "idle"
 
     await hass.services.async_call(
         VACUUM_DOMAIN,
