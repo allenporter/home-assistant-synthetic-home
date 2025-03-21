@@ -8,5 +8,5 @@
   "iot_class": "cloud_polling",
   "issue_tracker": "https://github.com/allenporter/home-assistant-synthetic-home/issues",
   "requirements": ["synthetic-home==4.5.0"],
-  "version": "4.0.2"
+  "version": "4.0.3"
 }
