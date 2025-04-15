@@ -8,6 +8,7 @@ from typing import Any, cast
 from functools import cache
 
 from synthetic_home import inventory
+from synthetic_home.common import StateValue, NamedAttributes
 
 from homeassistant.helpers.device_registry import DeviceInfo
 
@@ -49,8 +50,8 @@ class ParsedEntity:
     name: str
     device_info: DeviceInfo | None
     area_name: str | None
-    state: Any
-    attributes: dict[str, str | list[str]]
+    state: StateValue | None
+    attributes: NamedAttributes
 
 
 def parse_entity(
@@ -64,8 +65,6 @@ def parse_entity(
     if inv_entity.name is None:
         raise ValueError(f"Inventory entity '{inv_entity.id}' was missing a name")
     (platform, entity_slug) = inv_entity.id.split(".", maxsplit=1)
-    if platform == "fan":
-        _LOGGER.debug("FAN inv_entity = %s", inv_entity)
     return ParsedEntity(
         platform=platform,
         entity_id=inv_entity.id,
@@ -126,12 +125,12 @@ def _validate_supported_feature(supported_feature: str) -> Any:
         raise ValueError(f"Unknown supported feature '{supported_feature}'") from exc
 
 
-def parse_attributes(
-    values: dict[str, str | int | float | bool | list[str]],
-) -> dict[str, Any]:
+def parse_attributes(values: NamedAttributes) -> NamedAttributes:
     """Parse special string attributes as constants."""
     result = {}
     for key, value in values.items():
+        _LOGGER.debug("key=%s", key)
+        _LOGGER.debug("value=%s", value)
         new_value: str | int | None = None
         if key == "device_class" or key == "state_class":
             if isinstance(value, str) and "." in value:
@@ -141,12 +140,16 @@ def parse_attributes(
                 # Do nothing
                 new_value = value
             elif not isinstance(value, list):
-                raise ValueError(
+                raise TypeError(
                     f"Expected type 'list' for 'supported_features', got: '{value}'"
                 )
             else:
                 flag = 0
                 for subvalue in value:
+                    if not isinstance(subvalue, str):
+                        raise TypeError(
+                            f"Expected str for 'supported_features', got '{subvalue}'"
+                        )
                     flag |= cast(int, _validate_supported_feature(subvalue).value)
                 new_value = flag
         result[key] = new_value or value
@@ -178,6 +181,7 @@ def parse_home_config(config_file: pathlib.Path) -> ParsedHome:
 
     parsed_entities = []
     for inv_entity in inv.entities:
+        _LOGGER.debug("inv.entities=%s", inv.entities)
         device_info: DeviceInfo | None = None
         if inv_entity.device is not None:
             inv_device = inv_device_dict[inv_entity.device]

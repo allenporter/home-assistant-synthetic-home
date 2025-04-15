@@ -88,10 +88,14 @@ def map_attributes(
             k = "native_temperature_unit"
         result[k] = v
     if entity.state is not None:
-        result["condition"] = entity.state,
+        result["condition"] = entity.state
 
     for forecast_key in FORECAST_TYPES:
         if daily_forecast := result.get(forecast_key):
+            if not isinstance(daily_forecast, list):
+                raise TypeError(
+                    f"Expected daily_forecast type list, got '{daily_forecast}'"
+                )
             conditions: list[WeatherCondition] = []
             for key in daily_forecast:
                 if not (condition := condition_map.get(key)):
@@ -105,7 +109,7 @@ def map_attributes(
                     raise TypeError(
                         f"Could not load entity state for '{key}', required dict for entity_state condition"
                     )
-                conditions.append(WeatherCondition(**entity_state))
+                conditions.append(WeatherCondition(**entity_state))  # type: ignore[arg-type]
             result[forecast_key] = conditions
     entity.attributes = result
     return filter_attributes(entity, SUPPORTED_ATTRIBUTES)
