@@ -1,5 +1,6 @@
 """Todo platform for Synthetic Home."""
 
+import logging
 from typing import Any
 
 from homeassistant.config_entries import ConfigEntry
@@ -8,6 +9,7 @@ from homeassistant.components.todo import (
     TodoListEntity,
     TodoListEntityFeature,
     TodoItem,
+    TodoItemStatus,
     DOMAIN as TODO_DOMAIN,
 )
 
@@ -16,6 +18,8 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from .const import DOMAIN
 from .entity import SyntheticEntity
 from .model import ParsedEntity, filter_attributes
+
+_LOGGER = logging.getLogger(__name__)
 
 SUPPORTED_ATTRIBUTES = set(
     {
@@ -38,6 +42,21 @@ async def async_setup_entry(
     )
 
 
+def create_todo_item(attributes: str | dict[str, Any]) -> TodoItem:
+    """Create a todo item from the specified attributes."""
+    if isinstance(attributes, str):
+        attributes = {"summary": attributes}
+    if (status_str := attributes.get("status")) and status_str == "completed":
+        status = TodoItemStatus.COMPLETED
+    else:
+        status = TodoItemStatus.NEEDS_ACTION
+    attributes.pop("status", None)
+    return TodoItem(
+        **attributes,
+        status=status,
+    )
+
+
 class SyntheticTodoEntity(SyntheticEntity, TodoListEntity):
     """synthetic_home fan class."""
 
@@ -48,7 +67,7 @@ class SyntheticTodoEntity(SyntheticEntity, TodoListEntity):
         entity: ParsedEntity,
         *,
         supported_features: TodoListEntityFeature | None = None,
-        todo_items: list[dict[str, Any]] | None = None,
+        todo_items: list[dict[str, Any] | str] | None = None,
     ) -> None:
         """Initialize the SyntheticFan."""
         super().__init__(entity)
@@ -57,7 +76,7 @@ class SyntheticTodoEntity(SyntheticEntity, TodoListEntity):
                 TodoListEntityFeature(0) | supported_features
             )
         if todo_items is not None:
-            self._attr_todo_items = [TodoItem(**item) for item in todo_items]
+            self._attr_todo_items = [create_todo_item(item) for item in todo_items]
 
     async def async_create_todo_item(self, item: TodoItem) -> None:
         """Add an item to the To-do list."""
