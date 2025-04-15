@@ -129,8 +129,6 @@ def parse_attributes(values: NamedAttributes) -> NamedAttributes:
     """Parse special string attributes as constants."""
     result = {}
     for key, value in values.items():
-        _LOGGER.debug("key=%s", key)
-        _LOGGER.debug("value=%s", value)
         new_value: str | int | None = None
         if key == "device_class" or key == "state_class":
             if isinstance(value, str) and "." in value:
@@ -181,7 +179,6 @@ def parse_home_config(config_file: pathlib.Path) -> ParsedHome:
 
     parsed_entities = []
     for inv_entity in inv.entities:
-        _LOGGER.debug("inv.entities=%s", inv.entities)
         device_info: DeviceInfo | None = None
         if inv_entity.device is not None:
             inv_device = inv_device_dict[inv_entity.device]

@@ -58,7 +58,7 @@ def create_todo_item(attributes: str | dict[str, Any]) -> TodoItem:
 
 
 class SyntheticTodoEntity(SyntheticEntity, TodoListEntity):
-    """synthetic_home fan class."""
+    """synthetic_home todo class."""
 
     _attr_reports_position = False
 
@@ -67,9 +67,9 @@ class SyntheticTodoEntity(SyntheticEntity, TodoListEntity):
         entity: ParsedEntity,
         *,
         supported_features: TodoListEntityFeature | None = None,
-        todo_items: list[dict[str, Any] | str] | None = None,
+        todo_items: list[dict[str, Any]] | None = None,
     ) -> None:
-        """Initialize the SyntheticFan."""
+        """Initialize the SyntheticTodoEntity."""
         super().__init__(entity)
         if supported_features is not None:
             self._attr_supported_features = (
