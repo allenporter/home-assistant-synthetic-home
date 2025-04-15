@@ -1,15 +1,20 @@
 ---
 areas: []
 devices:
-- name: Tasks
-  id: tasks
+  - name: Tasks
+    id: tasks
 entities:
-- name: Tasks
-  id: todo.tasks
-  device: tasks
-  attributes:
-    supported_features:
-    - todo.TodoListEntityFeature.CREATE_TODO_ITEM
-    - todo.TodoListEntityFeature.DELETE_TODO_ITEM
-    todo_items: []
-
+  - name: Tasks
+    id: todo.tasks
+    device: tasks
+    attributes:
+      supported_features:
+        - todo.TodoListEntityFeature.CREATE_TODO_ITEM
+        - todo.TodoListEntityFeature.DELETE_TODO_ITEM
+      todo_items:
+        - summary: Repair the garage door
+          status: needs_action
+        - summary: Homework
+          description: Chemistry and English assignments
+        - summary: Buy gift for Liza
+          status: completed

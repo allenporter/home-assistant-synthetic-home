@@ -1,7 +1,7 @@
 """Test Synthetic Home todo."""
 
 import pytest
-
+from typing import Any
 
 from homeassistant.const import Platform
 from homeassistant.components.todo import (
@@ -28,12 +28,45 @@ async def test_todo_list(
 ) -> None:
     """Test todo list."""
 
+    async def get_tasks() -> dict[str, Any]:
+        response = await hass.services.async_call(
+            TODO_DOMAIN,
+            "get_items",
+            service_data={
+                ATTR_ENTITY_ID: test_entity,
+            },
+            blocking=True,
+            return_response=True,
+        )
+        return response
+
     state = hass.states.get(test_entity)
     assert state
-    assert state.state == "0"
+    assert state.state == "2"
     assert state.attributes == {
         "friendly_name": "Tasks",
         "supported_features": 3,
+    }
+
+    response = await get_tasks()
+    assert response == {
+        "todo.tasks": {
+            "items": [
+                {
+                    "summary": "Repair the garage door",
+                    "status": "needs_action",
+                },
+                {
+                    "summary": "Homework",
+                    "description": "Chemistry and English assignments",
+                    "status": "needs_action",
+                },
+                {
+                    "summary": "Buy gift for Liza",
+                    "status": "completed",
+                },
+            ]
+        }
     }
 
     await hass.services.async_call(
@@ -49,4 +82,29 @@ async def test_todo_list(
 
     state = hass.states.get(test_entity)
     assert state
-    assert state.state == "1"
+    assert state.state == "3"
+
+    response = await get_tasks()
+    assert response == {
+        "todo.tasks": {
+            "items": [
+                {
+                    "summary": "Repair the garage door",
+                    "status": "needs_action",
+                },
+                {
+                    "summary": "Homework",
+                    "description": "Chemistry and English assignments",
+                    "status": "needs_action",
+                },
+                {
+                    "summary": "Buy gift for Liza",
+                    "status": "completed",
+                },
+                {
+                    "summary": "New item",
+                    "status": "needs_action",
+                },
+            ]
+        }
+    }
