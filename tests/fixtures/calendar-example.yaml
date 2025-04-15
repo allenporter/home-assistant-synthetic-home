@@ -1,0 +1,18 @@
+---
+areas: []
+devices:
+  - name: Calendar
+    id: calendar
+entities:
+  - name: Personal
+    id: calendar.personal
+    device: calendar
+    attributes:
+      supported_features:
+        - calendar.CalendarEntityFeature.CREATE_EVENT
+        - calendar.CalendarEntityFeature.DELETE_EVENT
+        - calendar.CalendarEntityFeature.UPDATE_EVENT
+      events:
+        - summary: Bastille Day
+          start: 1997-07-14T17:00:00Z
+          end: 1997-07-15T04:00:00Z
