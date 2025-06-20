@@ -31,7 +31,7 @@ async def test_hvac_sensors(hass: HomeAssistant, setup_integration: None) -> Non
 
     state = hass.states.get("sensor.family_room_temperature")
     assert state
-    assert state.state == "17"
+    assert round(float(state.state), 2) == pytest.approx(16.67)
     assert state.attributes == {
         "friendly_name": "Family Room Temperature",
         "device_class": "temperature",
