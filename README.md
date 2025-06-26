@@ -58,8 +58,8 @@ devices:
 - name: Light
   id: light
   area: kitchen
-- name: Coffe Maker
-  id: coffe_maker
+- name: coffee Maker
+  id: coffee_maker
   area: kitchen
   info:
     manufacturer: Shelly
@@ -216,19 +216,19 @@ entities:
     - brightness
     color_mode: brightness
     brightness: 100
-- name: Coffe Maker Energy
-  id: sensor.coffe_maker_energy
+- name: coffee Maker Energy
+  id: sensor.coffee_maker_energy
   area: kitchen
-  device: coffe_maker
+  device: coffee_maker
   state: '1'
   attributes:
     device_class: sensor.SensorDeviceClass.ENERGY
     state_class: sensor.SensorStateClass.TOTAL_INCREASING
     native_unit_of_measurement: kWh
-- name: Coffe Maker
-  id: switch.coffe_maker
+- name: coffee Maker
+  id: switch.coffee_maker
   area: kitchen
-  device: coffe_maker
+  device: coffee_maker
   state: true
   attributes:
     device_class: switch.SwitchDeviceClass.OUTLET
