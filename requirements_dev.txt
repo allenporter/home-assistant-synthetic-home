@@ -1,7 +1,7 @@
 # Generic python dependencies
 black==25.9.0
 mypy==1.18.2
-pip==25.2
+pip==25.3
 pre-commit==4.3.0
 ruff==0.14.2
 
