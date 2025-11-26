@@ -10,8 +10,8 @@ pytest-homeassistant-custom-component==0.13.297
 syrupy>=4.6.1
 
 # Component dependencies
-hassil>=2.0.4
-home-assistant-intents>=2024.4.3
+hassil==3.4.0
+home-assistant-intents>=2025.11.24
 voluptuous-stubs==0.1.1
 pyspeex_noise>=1.0.2
 
