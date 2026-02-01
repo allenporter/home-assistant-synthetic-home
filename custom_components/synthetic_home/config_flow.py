@@ -9,6 +9,9 @@ from homeassistant import config_entries
 
 from .const import DOMAIN, CONF_FILENAME
 
+
+GITHUB_URL = "https://github.com/allenporter/home-assistant-synthetic-home"
+
 STEP_USER_DATA_SCHEMA = vol.Schema(
     {
         vol.Required(CONF_FILENAME): str,
@@ -45,5 +48,10 @@ class SyntheticHomeFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                 )
 
         return self.async_show_form(
-            step_id="user", data_schema=STEP_USER_DATA_SCHEMA, errors=errors
+            step_id="user",
+            data_schema=STEP_USER_DATA_SCHEMA,
+            errors=errors,
+            description_placeholders={
+                "url": GITHUB_URL,
+            },
         )
