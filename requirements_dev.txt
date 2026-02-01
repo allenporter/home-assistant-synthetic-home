@@ -14,5 +14,5 @@ home-assistant-intents>=2025.11.24
 voluptuous-stubs==0.1.1
 pyspeex_noise>=1.0.2
 
-mashumaro==3.17
+mashumaro==3.18
 synthetic-home==5.0.2
