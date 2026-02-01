@@ -3,16 +3,22 @@
 ## Virtual Environment
 
 ```bash
-$ uv venv
-$ source .venv/bin/activate
-$ uv pip install -r requirements_dev.txt
+$ script/bootstrap
+$ script/setup
 ```
+
 ## Run tests
 
 ```bash
-$ py.test
+$ script/setup
 ...
 
 Results (3.77s):
       46 passed
+```
+
+## Run Lint
+
+```bash
+$ script/lint
 ```

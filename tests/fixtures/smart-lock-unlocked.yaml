@@ -1,45 +1,44 @@
 ---
 areas:
-- name: Front door
-  id: front_door
+  - name: Front door
+    id: front_door
 devices:
-- name: Front Door Lock
-  id: front_door_lock
-  area: front_door
-  info:
-    manufacturer: Yale
+  - name: Front Door Lock
+    id: front_door_lock
+    area: front_door
+    info:
+      manufacturer: Yale
 entities:
-- name: Front Door Lock
-  id: lock.front_door_lock
-  area: front_door
-  device: front_door_lock
-  state: unlocked
-- name: Front Door Lock
-  id: binary_sensor.front_door_lock
-  area: front_door
-  device: front_door_lock
-  state: true
-  attributes:
-    device_class: binary_sensor.BinarySensorDeviceClass.LOCK
-- name: Front Door Lock Tamper
-  id: binary_sensor.front_door_lock_tamper
-  area: front_door
-  device: front_door_lock
-  attributes:
-    device_class: binary_sensor.BinarySensorDeviceClass.TAMPER
-- name: Front Door Lock Battery
-  id: binary_sensor.front_door_lock_battery
-  area: front_door
-  device: front_door_lock
-  attributes:
-    device_class: binary_sensor.BinarySensorDeviceClass.BATTERY
-- name: Front Door Lock Battery
-  id: sensor.front_door_lock_battery
-  area: front_door
-  device: front_door_lock
-  state: '90'
-  attributes:
-    device_class: sensor.SensorDeviceClass.BATTERY
-    state_class: sensor.SensorStateClass.MEASUREMENT
-    native_unit_of_measurement: '%'
-
+  - name: Front Door Lock
+    id: lock.front_door_lock
+    area: front_door
+    device: front_door_lock
+    state: unlocked
+  - name: Front Door Lock
+    id: binary_sensor.front_door_lock
+    area: front_door
+    device: front_door_lock
+    state: true
+    attributes:
+      device_class: binary_sensor.BinarySensorDeviceClass.LOCK
+  - name: Front Door Lock Tamper
+    id: binary_sensor.front_door_lock_tamper
+    area: front_door
+    device: front_door_lock
+    attributes:
+      device_class: binary_sensor.BinarySensorDeviceClass.TAMPER
+  - name: Front Door Lock Battery
+    id: binary_sensor.front_door_lock_battery
+    area: front_door
+    device: front_door_lock
+    attributes:
+      device_class: binary_sensor.BinarySensorDeviceClass.BATTERY
+  - name: Front Door Lock Battery
+    id: sensor.front_door_lock_battery
+    area: front_door
+    device: front_door_lock
+    state: "90"
+    attributes:
+      device_class: sensor.SensorDeviceClass.BATTERY
+      state_class: sensor.SensorStateClass.MEASUREMENT
+      native_unit_of_measurement: "%"

@@ -1,28 +1,27 @@
 ---
 areas:
-- name: Family room
-  id: family_room
+  - name: Family room
+    id: family_room
 devices:
-- name: Floor Lamp
-  id: floor_lamp
-  area: family_room
-  info:
-    manufacturer: Wyze
+  - name: Floor Lamp
+    id: floor_lamp
+    area: family_room
+    info:
+      manufacturer: Wyze
 entities:
-- name: Floor Lamp Energy
-  id: sensor.floor_lamp_energy
-  area: family_room
-  device: floor_lamp
-  state: '1'
-  attributes:
-    device_class: sensor.SensorDeviceClass.ENERGY
-    state_class: sensor.SensorStateClass.TOTAL_INCREASING
-    native_unit_of_measurement: kWh
-- name: Floor Lamp
-  id: switch.floor_lamp
-  area: family_room
-  device: floor_lamp
-  state: true
-  attributes:
-    device_class: switch.SwitchDeviceClass.OUTLET
-
+  - name: Floor Lamp Energy
+    id: sensor.floor_lamp_energy
+    area: family_room
+    device: floor_lamp
+    state: "1"
+    attributes:
+      device_class: sensor.SensorDeviceClass.ENERGY
+      state_class: sensor.SensorStateClass.TOTAL_INCREASING
+      native_unit_of_measurement: kWh
+  - name: Floor Lamp
+    id: switch.floor_lamp
+    area: family_room
+    device: floor_lamp
+    state: true
+    attributes:
+      device_class: switch.SwitchDeviceClass.OUTLET

@@ -25,7 +25,7 @@ def mock_set_units(hass: HomeAssistant) -> None:
     hass.config.units = US_CUSTOMARY_SYSTEM
 
 
-@pytest.mark.parametrize(("config_yaml_fixture"), [(f"{FIXTURES}/hvac-example.yaml")])
+@pytest.mark.parametrize(("config_yaml_fixture"), [f"{FIXTURES}/hvac-example.yaml"])
 async def test_hvac_sensors(hass: HomeAssistant, setup_integration: None) -> None:
     """Test the sensors created for an HVAC device."""
 
@@ -50,7 +50,7 @@ async def test_hvac_sensors(hass: HomeAssistant, setup_integration: None) -> Non
     }
 
 
-@pytest.mark.parametrize(("config_yaml_fixture"), [(f"{FIXTURES}/hvac-example.yaml")])
+@pytest.mark.parametrize(("config_yaml_fixture"), [f"{FIXTURES}/hvac-example.yaml"])
 async def test_hvac_us_units(
     hass: HomeAssistant, us_units: None, setup_integration: None
 ) -> None:
@@ -78,7 +78,7 @@ async def test_hvac_us_units(
 
 
 @pytest.mark.parametrize(
-    ("config_yaml_fixture"), [(f"{FIXTURES}/smart-plug-example.yaml")]
+    ("config_yaml_fixture"), [f"{FIXTURES}/smart-plug-example.yaml"]
 )
 async def test_smart_plug(hass: HomeAssistant, setup_integration: None) -> None:
     """Test the sensors created for a smart plug."""
@@ -95,7 +95,7 @@ async def test_smart_plug(hass: HomeAssistant, setup_integration: None) -> None:
 
 
 @pytest.mark.parametrize(
-    ("config_yaml_fixture"), [(f"{FIXTURES}/smart-lock-example.yaml")]
+    ("config_yaml_fixture"), [f"{FIXTURES}/smart-lock-example.yaml"]
 )
 async def test_smart_lock(hass: HomeAssistant, setup_integration: None) -> None:
     """Test the sensors created for a smart lock."""

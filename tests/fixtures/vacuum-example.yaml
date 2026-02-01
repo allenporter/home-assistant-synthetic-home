@@ -1,22 +1,21 @@
 ---
 areas:
-- name: Kitchen
-  id: kitchen
+  - name: Kitchen
+    id: kitchen
 devices:
-- name: Robot Vacuum
-  id: robot_vacuum
-  area: kitchen
+  - name: Robot Vacuum
+    id: robot_vacuum
+    area: kitchen
 entities:
-- name: Robot Vacuum
-  id: vacuum.robot_vacuum
-  area: kitchen
-  device: robot_vacuum
-  state: docked
-  attributes:
-    supported_features:
-    - vacuum.VacuumEntityFeature.START
-    - vacuum.VacuumEntityFeature.STOP
-    - vacuum.VacuumEntityFeature.STATE
-    - vacuum.VacuumEntityFeature.PAUSE
-    - vacuum.VacuumEntityFeature.RETURN_HOME
-
+  - name: Robot Vacuum
+    id: vacuum.robot_vacuum
+    area: kitchen
+    device: robot_vacuum
+    state: docked
+    attributes:
+      supported_features:
+        - vacuum.VacuumEntityFeature.START
+        - vacuum.VacuumEntityFeature.STOP
+        - vacuum.VacuumEntityFeature.STATE
+        - vacuum.VacuumEntityFeature.PAUSE
+        - vacuum.VacuumEntityFeature.RETURN_HOME

@@ -1,7 +1,7 @@
 """Global test fixtures for Synthetic Home integration."""
 
 import pathlib
-from collections.abc import Generator
+from collections.abc import Generator, AsyncGenerator
 from unittest.mock import patch, mock_open
 
 import pytest
@@ -71,7 +71,7 @@ async def mock_setup_integration(
     hass: HomeAssistant,
     config_entry: MockConfigEntry,
     platforms: list[Platform],
-) -> None:
+) -> AsyncGenerator[None, None]:
     """Set up the integration."""
     config_entry.add_to_hass(hass)
     with patch("custom_components.synthetic_home.PLATFORMS", platforms):
@@ -97,7 +97,7 @@ def mock_config_yaml(config_yaml_fixture: str | None) -> str:
 
 
 @pytest.fixture(autouse=True)
-def mock_config_content(config_yaml: str) -> None:
+def mock_config_content(config_yaml: str) -> Generator[None, None, None]:
     """Mock out the yaml config file contents."""
     with patch(
         "synthetic_home.inventory.read_config_content",

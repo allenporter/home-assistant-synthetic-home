@@ -64,16 +64,12 @@ class SyntheticHomeBinarySwitch(SyntheticEntity, SwitchEntity):
         if device_class is not None:
             self._attr_device_class = device_class
 
-    async def async_turn_on(
-        self, **kwargs: Any
-    ) -> None:  # pylint: disable=unused-argument
+    async def async_turn_on(self, **kwargs: Any) -> None:  # pylint: disable=unused-argument
         """Turn on the switch."""
         self._attr_is_on = True
         self.async_write_ha_state()
 
-    async def async_turn_off(
-        self, **kwargs: Any
-    ) -> None:  # pylint: disable=unused-argument
+    async def async_turn_off(self, **kwargs: Any) -> None:  # pylint: disable=unused-argument
         """Turn off the switch."""
         self._attr_is_on = False
         self.async_write_ha_state()

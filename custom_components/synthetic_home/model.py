@@ -14,7 +14,6 @@ from homeassistant.helpers.device_registry import DeviceInfo
 
 from .const import DOMAIN
 
-
 _LOGGER = logging.getLogger(__name__)
 
 
@@ -34,7 +33,7 @@ def parse_device_info(
     device_info: DeviceInfo = DeviceInfo(
         name=inv_device.name,
         identifiers={(DOMAIN, inv_device.id)},
-        **(asdict(inv_device.info) if inv_device.info else {}),  # type: ignore[typeddict-item]
+        **(asdict(inv_device.info) if inv_device.info else {}),
     )
     if area:
         device_info["suggested_area"] = area.name
@@ -64,7 +63,7 @@ def parse_entity(
         raise ValueError("Inventory entity was missing an id")
     if inv_entity.name is None:
         raise ValueError(f"Inventory entity '{inv_entity.id}' was missing a name")
-    (platform, entity_slug) = inv_entity.id.split(".", maxsplit=1)
+    platform, entity_slug = inv_entity.id.split(".", maxsplit=1)
     return ParsedEntity(
         platform=platform,
         entity_id=inv_entity.id,

@@ -45,7 +45,7 @@ def main():
         with (output_dir / home_config_path.name).open("w") as out:
             out.write(content)
 
-    driver.Driver(home_config_path.name, output_dir).run_until_complete()
+    driver.Driver(home_config_path, output_dir).run_until_complete()
 
     return 0
 

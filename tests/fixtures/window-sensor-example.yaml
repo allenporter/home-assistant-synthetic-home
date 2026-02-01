@@ -1,34 +1,33 @@
 ---
 areas:
-- name: Family Room
-  id: family_room
+  - name: Family Room
+    id: family_room
 devices:
-- name: Left Window Sensor
-  id: left_window_sensor
-  area: family_room
-  info:
-    manufacturer: Aqara
+  - name: Left Window Sensor
+    id: left_window_sensor
+    area: family_room
+    info:
+      manufacturer: Aqara
 entities:
-- name: Left Window Sensor
-  id: binary_sensor.left_window_sensor
-  area: family_room
-  device: left_window_sensor
-  state: false
-  attributes:
-    device_class: binary_sensor.BinarySensorDeviceClass.WINDOW
-- name: Left Window Sensor Battery
-  id: binary_sensor.left_window_sensor_battery
-  area: family_room
-  device: left_window_sensor
-  attributes:
-    device_class: binary_sensor.BinarySensorDeviceClass.BATTERY
-- name: Left Window Sensor Battery
-  id: sensor.left_window_sensor_battery
-  area: family_room
-  device: left_window_sensor
-  state: '90'
-  attributes:
-    device_class: sensor.SensorDeviceClass.BATTERY
-    state_class: sensor.SensorStateClass.MEASUREMENT
-    native_unit_of_measurement: '%'
-
+  - name: Left Window Sensor
+    id: binary_sensor.left_window_sensor
+    area: family_room
+    device: left_window_sensor
+    state: false
+    attributes:
+      device_class: binary_sensor.BinarySensorDeviceClass.WINDOW
+  - name: Left Window Sensor Battery
+    id: binary_sensor.left_window_sensor_battery
+    area: family_room
+    device: left_window_sensor
+    attributes:
+      device_class: binary_sensor.BinarySensorDeviceClass.BATTERY
+  - name: Left Window Sensor Battery
+    id: sensor.left_window_sensor_battery
+    area: family_room
+    device: left_window_sensor
+    state: "90"
+    attributes:
+      device_class: sensor.SensorDeviceClass.BATTERY
+      state_class: sensor.SensorStateClass.MEASUREMENT
+      native_unit_of_measurement: "%"

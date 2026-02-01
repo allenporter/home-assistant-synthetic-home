@@ -69,7 +69,7 @@ class SyntheticHomeSensor(SyntheticEntity, SensorEntity):
         device_class: SensorDeviceClass | None = None,
         state_class: SensorStateClass | None = None,
         native_value: StateType | None = None,
-        native_unit_of_measurement: str | None = None
+        native_unit_of_measurement: str | None = None,
     ) -> None:
         """Initialize SyntheticHomeSensor."""
         super().__init__(entity)

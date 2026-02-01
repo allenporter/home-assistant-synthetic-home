@@ -70,13 +70,13 @@ class SyntheticValve(SyntheticEntity, ValveEntity):
         super().__init__(entity)
         if supported_features is not None:
             self._attr_supported_features = ValveEntityFeature(0) | supported_features
-        self._attr_is_closed = (state == "closed" or state is None)
+        self._attr_is_closed = state == "closed" or state is None
         if current_valve_position is not None:
             self._attr_current_valve_position = current_valve_position
         elif current_position is not None:
             self._attr_current_valve_position = current_position
         if self._attr_current_valve_position is not None:
-            self._attr_is_closed = (self._attr_current_valve_position == 0)
+            self._attr_is_closed = self._attr_current_valve_position == 0
         if is_closed is not None:
             self._attr_is_closed = is_closed
         if is_closing is not None:

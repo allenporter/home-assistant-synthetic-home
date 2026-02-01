@@ -36,7 +36,7 @@ SUPPORTED_ATTRIBUTES = {
     "hvac_mode",
     "hvac_action",
 }
-DEFAULT_TEMPERATURE_UNIT = "\xB0F"
+DEFAULT_TEMPERATURE_UNIT = "\xb0F"
 
 
 def map_attributes(entity: ParsedEntity) -> dict[str, Any]:

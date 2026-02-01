@@ -23,7 +23,6 @@ from .const import DOMAIN
 from .model import ParsedHome, ParsedEntity, filter_attributes
 from .entity import SyntheticEntity
 
-
 _LOGGER = logging.getLogger(__name__)
 
 
@@ -109,7 +108,7 @@ def map_attributes(
                     raise TypeError(
                         f"Could not load entity state for '{key}', required dict for entity_state condition"
                     )
-                conditions.append(WeatherCondition(**entity_state))  # type: ignore[arg-type]
+                conditions.append(WeatherCondition(**entity_state))
             result[forecast_key] = conditions
     entity.attributes = result
     return filter_attributes(entity, SUPPORTED_ATTRIBUTES)

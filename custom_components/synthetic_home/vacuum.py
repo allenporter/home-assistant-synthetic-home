@@ -17,7 +17,6 @@ from .const import DOMAIN
 from .entity import SyntheticEntity
 from .model import ParsedEntity, filter_attributes
 
-
 SUPPORTED_ATTRIBUTES = set(
     {
         "supported_features",

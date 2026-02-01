@@ -10,7 +10,6 @@ from homeassistant.helpers import (
 )
 from homeassistant.const import Platform
 
-
 INVENTORY = """
 ---
 areas:
@@ -41,7 +40,7 @@ entities:
 """
 
 
-@pytest.mark.parametrize(("config_yaml"), [(INVENTORY)], ids=["yaml"])
+@pytest.mark.parametrize(("config_yaml"), [INVENTORY], ids=["yaml"])
 async def test_areas(
     hass: HomeAssistant, setup_integration: None, area_registry: ar.AreaRegistry
 ) -> None:
@@ -57,7 +56,7 @@ async def test_areas(
     }
 
 
-@pytest.mark.parametrize(("config_yaml"), [(INVENTORY)], ids=["yaml"])
+@pytest.mark.parametrize(("config_yaml"), [INVENTORY], ids=["yaml"])
 async def test_floors(
     hass: HomeAssistant, setup_integration: None, floor_registry: fr.FloorRegistry
 ) -> None:
@@ -67,8 +66,8 @@ async def test_floors(
     assert {entry.name for entry in floor_entries} == {"Ground", "Upstairs"}
 
 
-@pytest.mark.parametrize(("config_yaml"), [(INVENTORY)], ids=["yaml"])
-@pytest.mark.parametrize(("platforms"), [([Platform.LIGHT])])
+@pytest.mark.parametrize(("config_yaml"), [INVENTORY], ids=["yaml"])
+@pytest.mark.parametrize(("platforms"), [[Platform.LIGHT]])
 async def test_entities(
     hass: HomeAssistant,
     setup_integration: None,

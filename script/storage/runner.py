@@ -29,7 +29,6 @@ from homeassistant.helpers import (
 from homeassistant.util import dt as dt_util
 from homeassistant.util.unit_system import METRIC_SYSTEM
 
-
 _LOGGER = logging.getLogger(__name__)
 
 
@@ -111,7 +110,7 @@ class Runner:
 
         def run_loop() -> None:
             """Run event loop."""
-            loop._thread_ident = threading.get_ident()
+            loop._thread_ident = threading.get_ident()  # type: ignore[unresolved-attribute]
             loop.run_forever()
             loop_stop_event.set()
 

@@ -85,9 +85,7 @@ class SyntheticHomeLight(SyntheticEntity, LightEntity):
                 int(rgbw_color[3]),
             )
 
-    async def async_turn_on(
-        self, **kwargs: Any
-    ) -> None:  # pylint: disable=unused-argument
+    async def async_turn_on(self, **kwargs: Any) -> None:  # pylint: disable=unused-argument
         """Turn on the light."""
         if brightness := kwargs.get(ATTR_BRIGHTNESS):
             self._attr_brightness = brightness
@@ -98,9 +96,7 @@ class SyntheticHomeLight(SyntheticEntity, LightEntity):
         self._attr_is_on = True
         self.async_write_ha_state()
 
-    async def async_turn_off(
-        self, **kwargs: Any
-    ) -> None:  # pylint: disable=unused-argument
+    async def async_turn_off(self, **kwargs: Any) -> None:  # pylint: disable=unused-argument
         """Turn off the light."""
         self._attr_is_on = False
         self.async_write_ha_state()

@@ -8,9 +8,7 @@ from homeassistant import config_entries
 from homeassistant.data_entry_flow import FlowResultType
 
 
-from custom_components.synthetic_home.const import (
-    DOMAIN, CONF_FILENAME
-)
+from custom_components.synthetic_home.const import DOMAIN, CONF_FILENAME
 
 
 @pytest.fixture(autouse=True)
@@ -21,7 +19,6 @@ def bypass_setup_fixture():
         return_value=True,
     ):
         yield
-
 
 
 async def test_successful_config_flow(hass):

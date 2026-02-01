@@ -28,7 +28,7 @@ def mock_platforms() -> list[Platform]:
 
 @pytest.mark.parametrize(
     ("config_yaml_fixture"),
-    [(f"{FIXTURES}/hvac-example.yaml")],
+    [f"{FIXTURES}/hvac-example.yaml"],
 )
 async def test_climate_hvac_entity(
     hass: HomeAssistant, setup_integration: None

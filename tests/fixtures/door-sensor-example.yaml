@@ -1,34 +1,33 @@
 ---
 areas:
-- name: Front door
-  id: front_door
+  - name: Front door
+    id: front_door
 devices:
-- name: Front Door Sensor
-  id: front_door_sensor
-  area: front_door
-  info:
-    manufacturer: Aqara
+  - name: Front Door Sensor
+    id: front_door_sensor
+    area: front_door
+    info:
+      manufacturer: Aqara
 entities:
-- name: Front Door Sensor
-  id: binary_sensor.front_door_sensor
-  area: front_door
-  device: front_door_sensor
-  state: false
-  attributes:
-    device_class: binary_sensor.BinarySensorDeviceClass.DOOR
-- name: Front Door Sensor Battery
-  id: binary_sensor.front_door_sensor_battery
-  area: front_door
-  device: front_door_sensor
-  attributes:
-    device_class: binary_sensor.BinarySensorDeviceClass.BATTERY
-- name: Front Door Sensor Battery
-  id: sensor.front_door_sensor_battery
-  area: front_door
-  device: front_door_sensor
-  state: '90'
-  attributes:
-    device_class: sensor.SensorDeviceClass.BATTERY
-    state_class: sensor.SensorStateClass.MEASUREMENT
-    native_unit_of_measurement: '%'
-
+  - name: Front Door Sensor
+    id: binary_sensor.front_door_sensor
+    area: front_door
+    device: front_door_sensor
+    state: false
+    attributes:
+      device_class: binary_sensor.BinarySensorDeviceClass.DOOR
+  - name: Front Door Sensor Battery
+    id: binary_sensor.front_door_sensor_battery
+    area: front_door
+    device: front_door_sensor
+    attributes:
+      device_class: binary_sensor.BinarySensorDeviceClass.BATTERY
+  - name: Front Door Sensor Battery
+    id: sensor.front_door_sensor_battery
+    area: front_door
+    device: front_door_sensor
+    state: "90"
+    attributes:
+      device_class: sensor.SensorDeviceClass.BATTERY
+      state_class: sensor.SensorStateClass.MEASUREMENT
+      native_unit_of_measurement: "%"

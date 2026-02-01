@@ -33,6 +33,14 @@ jobs:
         run: |
           uv pip install -r requirements_dev.txt --prerelease=allow
 
-      - name: Static typing with mypy
+      - name: Run Ruff Check
         run: |
-          mypy --install-types --non-interactive --no-warn-unused-ignores custom_components
+          ruff check --output-format=github .
+
+      - name: Run Ruff Format
+        run: |
+          ruff format .
+
+      - name: Static typing with ty
+        run: |
+          uvx ty check . --ignore unresolved-import
