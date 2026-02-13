@@ -1,7 +1,7 @@
 # Generic python dependencies
 pip==26.0.1
 pre-commit==4.5.1
-ruff==0.15.0
+ruff==0.15.1
 ty==0.0.16
 
 # Home Assistant testing dependencies
