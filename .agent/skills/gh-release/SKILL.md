@@ -31,11 +31,13 @@ To use this skill, execute the `create-release.sh` script from the root of your 
 
 This will perform the following actions:
 
-1. Find the `manifest.json` file in the current directory and its subdirectories.
-2. Update the `version` field in the found `manifest.json` to `0.9.1`.
-3. Stage the `manifest.json` file.
-4. Commit the change with the message `chore(release): 0.9.1`.
-5. Create a GitHub release named `0.9.1` with auto-generated release notes using `gh release create "0.9.1" --generate-notes`.
+1. Ensure the working directory is clean and in the `main` branch.
+2. Find the `manifest.json` file in the current directory and its subdirectories.
+3. Update the `version` field in the found `manifest.json` to `0.9.1`.
+4. Stage the `manifest.json` file.
+5. Commit the change with the message `chore(release): 0.9.1`.
+6. Push the changes to the `main` branch.
+7. Create a GitHub release named `0.9.1` with auto-generated release notes using `gh release create "0.9.1" --generate-notes`.
 
 ## Requirements
 
