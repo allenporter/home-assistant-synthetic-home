@@ -2,7 +2,7 @@
 pip==26.0.1
 pre-commit==4.5.1
 ruff==0.15.14
-ty==0.0.18
+ty==0.0.39
 
 # Home Assistant testing dependencies
 pytest-homeassistant-custom-component==0.13.316
