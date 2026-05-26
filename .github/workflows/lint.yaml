@@ -43,4 +43,4 @@ jobs:
 
       - name: Static typing with ty
         run: |
-          uvx ty check . --ignore unresolved-import
+          ty check . --ignore unresolved-import
