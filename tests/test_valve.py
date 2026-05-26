@@ -38,6 +38,7 @@ async def test_water_valve(
         "friendly_name": "Back Yard Water Valve",
         "supported_features": 7,
         "current_position": 0,
+        "is_closed": True,
     }
 
     await hass.services.async_call(
@@ -54,6 +55,7 @@ async def test_water_valve(
         "friendly_name": "Back Yard Water Valve",
         "supported_features": 7,
         "current_position": 100,
+        "is_closed": False,
     }
 
     await hass.services.async_call(
@@ -70,6 +72,7 @@ async def test_water_valve(
         "friendly_name": "Back Yard Water Valve",
         "supported_features": 7,
         "current_position": 0,
+        "is_closed": True,
     }
 
     await hass.services.async_call(
@@ -89,4 +92,5 @@ async def test_water_valve(
         "friendly_name": "Back Yard Water Valve",
         "supported_features": 7,
         "current_position": 50,
+        "is_closed": False,
     }

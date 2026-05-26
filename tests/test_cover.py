@@ -46,6 +46,7 @@ async def test_smart_blinds(
         "device_class": "blind",
         "current_position": 0,
         "supported_features": 7,
+        "is_closed": True,
     }
 
     await hass.services.async_call(
@@ -72,6 +73,7 @@ async def test_smart_blinds(
         "device_class": "blind",
         "current_position": 54,
         "supported_features": 7,
+        "is_closed": False,
     }
 
     await hass.services.async_call(
@@ -98,6 +100,7 @@ async def test_smart_blinds(
         "device_class": "blind",
         "current_position": 22,
         "supported_features": 7,
+        "is_closed": False,
     }
 
 
@@ -118,6 +121,7 @@ async def test_garage_door(
         "device_class": "garage",
         "current_position": 0,
         "supported_features": 3,
+        "is_closed": True,
     }
 
     await hass.services.async_call(
@@ -144,6 +148,7 @@ async def test_garage_door(
         "device_class": "garage",
         "current_position": 100,
         "supported_features": 3,
+        "is_closed": False,
     }
 
     await hass.services.async_call(
@@ -170,6 +175,7 @@ async def test_garage_door(
         "device_class": "garage",
         "current_position": 0,
         "supported_features": 3,
+        "is_closed": True,
     }
 
 
@@ -190,6 +196,7 @@ async def test_gate(
         "device_class": "gate",
         "current_position": 0,
         "supported_features": 3,
+        "is_closed": True,
     }
 
 

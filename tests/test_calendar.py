@@ -46,7 +46,7 @@ async def test_calendar(
     assert state
     assert state.state == "off"
     assert state.attributes == {
-        "friendly_name": "Personal",
+        "friendly_name": "Calendar Personal",
         "all_day": False,
         "description": "",
         "message": "Bastille Day",

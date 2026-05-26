@@ -30,4 +30,5 @@ async def test_device_tracker(
     assert state.attributes == {
         "friendly_name": "Android",
         "source_type": "gps",
+        "in_zones": [],
     }

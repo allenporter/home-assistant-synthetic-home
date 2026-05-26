@@ -6,6 +6,7 @@
       'current_position': 0,
       'device_class': 'blind',
       'friendly_name': 'Left Shade',
+      'is_closed': True,
       'supported_features': <CoverEntityFeature.OPEN|CLOSE|SET_POSITION: 7>,
     }),
   )
@@ -17,6 +18,7 @@
       'current_position': 100,
       'device_class': 'blind',
       'friendly_name': 'Left Shade',
+      'is_closed': False,
       'supported_features': <CoverEntityFeature.OPEN|CLOSE|SET_POSITION: 7>,
     }),
   )
