@@ -1,5 +1,5 @@
 # Generic python dependencies
-pip==26.1.1
+pip==26.1.2
 pre-commit==4.6.0
 ruff==0.15.15
 ty==0.0.40
