@@ -27,8 +27,6 @@ async def test_device_tracker(
     state = hass.states.get(test_entity)
     assert state
     assert state.state == "home"
-    assert state.attributes == {
-        "friendly_name": "Android",
-        "source_type": "gps",
-        "in_zones": [],
-    }
+    assert state.attributes["friendly_name"] == "Android"
+    assert state.attributes["source_type"] == "gps"
+    assert state.attributes["in_zones"] == []

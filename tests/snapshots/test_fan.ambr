@@ -3,13 +3,13 @@
   tuple(
     'off',
     ReadOnlyDict({
-      'friendly_name': 'Counter Fan',
-      'oscillating': False,
-      'percentage': 0,
-      'percentage_step': 1.0,
-      'preset_mode': None,
-      'preset_modes': None,
-      'supported_features': <FanEntityFeature.SET_SPEED|OSCILLATE|TURN_OFF|TURN_ON: 51>,
+      <EntityStateAttribute.FRIENDLY_NAME: 'friendly_name'>: 'Counter Fan',
+      <FanEntityStateAttribute.OSCILLATING: 'oscillating'>: False,
+      <FanEntityStateAttribute.PERCENTAGE: 'percentage'>: 0,
+      <FanEntityStateAttribute.PERCENTAGE_STEP: 'percentage_step'>: 1.0,
+      <FanEntityStateAttribute.PRESET_MODE: 'preset_mode'>: None,
+      <FanEntityCapabilityAttribute.PRESET_MODES: 'preset_modes'>: None,
+      <EntityStateAttribute.SUPPORTED_FEATURES: 'supported_features'>: <FanEntityFeature.SET_SPEED|OSCILLATE|TURN_OFF|TURN_ON: 51>,
     }),
   )
 # ---
@@ -17,13 +17,13 @@
   tuple(
     'on',
     ReadOnlyDict({
-      'friendly_name': 'Counter Fan',
-      'oscillating': False,
-      'percentage': 100,
-      'percentage_step': 1.0,
-      'preset_mode': None,
-      'preset_modes': None,
-      'supported_features': <FanEntityFeature.SET_SPEED|OSCILLATE|TURN_OFF|TURN_ON: 51>,
+      <EntityStateAttribute.FRIENDLY_NAME: 'friendly_name'>: 'Counter Fan',
+      <FanEntityStateAttribute.OSCILLATING: 'oscillating'>: False,
+      <FanEntityStateAttribute.PERCENTAGE: 'percentage'>: 100,
+      <FanEntityStateAttribute.PERCENTAGE_STEP: 'percentage_step'>: 1.0,
+      <FanEntityStateAttribute.PRESET_MODE: 'preset_mode'>: None,
+      <FanEntityCapabilityAttribute.PRESET_MODES: 'preset_modes'>: None,
+      <EntityStateAttribute.SUPPORTED_FEATURES: 'supported_features'>: <FanEntityFeature.SET_SPEED|OSCILLATE|TURN_OFF|TURN_ON: 51>,
     }),
   )
 # ---
@@ -31,13 +31,13 @@
   tuple(
     'on',
     ReadOnlyDict({
-      'friendly_name': 'Counter Fan',
-      'oscillating': True,
-      'percentage': 100,
-      'percentage_step': 1.0,
-      'preset_mode': None,
-      'preset_modes': None,
-      'supported_features': <FanEntityFeature.SET_SPEED|OSCILLATE|TURN_OFF|TURN_ON: 51>,
+      <EntityStateAttribute.FRIENDLY_NAME: 'friendly_name'>: 'Counter Fan',
+      <FanEntityStateAttribute.OSCILLATING: 'oscillating'>: True,
+      <FanEntityStateAttribute.PERCENTAGE: 'percentage'>: 100,
+      <FanEntityStateAttribute.PERCENTAGE_STEP: 'percentage_step'>: 1.0,
+      <FanEntityStateAttribute.PRESET_MODE: 'preset_mode'>: None,
+      <FanEntityCapabilityAttribute.PRESET_MODES: 'preset_modes'>: None,
+      <EntityStateAttribute.SUPPORTED_FEATURES: 'supported_features'>: <FanEntityFeature.SET_SPEED|OSCILLATE|TURN_OFF|TURN_ON: 51>,
     }),
   )
 # ---
