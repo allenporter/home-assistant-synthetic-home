@@ -3,18 +3,23 @@
 
 set -e
 
+# Support compiling rust extension modules (like orjson) on python 3.14
+export PYO3_USE_ABI3_FORWARD_COMPATIBILITY=1
+
 cd "$(dirname "$0")/.."
 
 echo "==> Bootstrapping..."
 
 if command -v uv >/dev/null 2>&1; then
-  echo "==> Using uv for synchronization..."
-  uv sync --all-extras
-  uv pip install -r requirements_dev.txt
+  echo "==> Using uv for environment setup..."
+  if [ ! -d ".venv" ]; then
+    uv venv
+  fi
+  uv pip install -r requirements_dev.txt --prerelease=allow
 elif command -v python3 >/dev/null 2>&1; then
   echo "==> Using pip for installation..."
   python3 -m pip install --upgrade pip
-  python3 -m pip install -r requirements_dev.txt
+  python3 -m pip install -r requirements_dev.txt --pre
 else
   echo "Aborting: python3 not found."
   exit 1
@@ -22,7 +27,7 @@ fi
 
 echo "==> Installing pre-commit hooks..."
 if command -v uv >/dev/null 2>&1; then
-  uv run pre-commit install
+  uv run --no-project pre-commit install
 else
   pre-commit install
 fi
