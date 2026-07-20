@@ -1,6 +1,9 @@
 {
   $schema: "https://docs.renovatebot.com/renovate-schema.json",
-  extends: ["config:recommended"],
+  extends: [
+    "config:recommended",
+    "helpers:pinGitHubActionDigests",
+  ],
   assignees: ["allenporter"],
   packageRules: [
     {
@@ -8,6 +11,13 @@
       automerge: true,
       automergeType: "branch",
       matchUpdateTypes: ["minor", "patch"],
+    },
+    {
+      description: "Automerge major updates for dev-time tools (Actions, pre-commit, requirements_dev.txt)",
+      matchUpdateTypes: ["major"],
+      matchManagers: ["github-actions", "pre-commit", "pip_requirements"],
+      automerge: true,
+      automergeType: "branch",
     },
   ],
   pip_requirements: {
