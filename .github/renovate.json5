@@ -1,14 +1,13 @@
 {
   $schema: "https://docs.renovatebot.com/renovate-schema.json",
-  extends: [
-    "config:recommended",
-    "helpers:pinGitHubActionDigests",
-  ],
+  extends: ["config:recommended", "helpers:pinGitHubActionDigests"],
+  assignees: ["allenporter"],
   packageRules: [
     {
       description: "Silent automerge for minor, patch, pin, and digest updates",
       automerge: true,
       automergeType: "branch",
+      assignees: [],
       matchUpdateTypes: ["minor", "patch", "pin", "digest"],
     },
     {
@@ -17,16 +16,11 @@
       matchManagers: ["github-actions", "pre-commit", "pip_requirements"],
       automerge: true,
       automergeType: "branch",
-    },
-    {
-      description: "Assign allenporter to major dependency review PRs",
-      matchUpdateTypes: ["major"],
-      excludeManagers: ["github-actions", "pre-commit", "pip_requirements"],
-      assignees: ["allenporter"],
+      assignees: [],
     },
   ],
   pip_requirements: {
-    managerFilePatterns: ["/requirements_dev.txt/"],
+    fileMatch: ["^requirements_dev\\.txt$"],
   },
   "pre-commit": {
     enabled: true,
