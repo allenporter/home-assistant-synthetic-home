@@ -1,6 +1,6 @@
 {
   "template": "https://github.com/allenporter/cookiecutter-home-assistant-custom-component",
-  "commit": "4a99ae4e12565bc597ebab08a0a5978a4c049571",
+  "commit": "f36c3e8b0e97ea0f01e525e0607f8b4027196f1d",
   "checkout": null,
   "context": {
     "cookiecutter": {
@@ -12,7 +12,8 @@
       "name": "Synthetic Home",
       "description": "A Home Assistant custom component that generates a synthetic home from a configuration file.",
       "version": "1.0.0",
-      "_template": "https://github.com/allenporter/cookiecutter-home-assistant-custom-component"
+      "_template": "https://github.com/allenporter/cookiecutter-home-assistant-custom-component",
+      "_commit": "f36c3e8b0e97ea0f01e525e0607f8b4027196f1d"
     }
   },
   "directory": null
