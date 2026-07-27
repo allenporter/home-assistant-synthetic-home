@@ -15,7 +15,7 @@ from collections.abc import Generator, AsyncGenerator
 from contextlib import asynccontextmanager, contextmanager
 
 from homeassistant.core import HomeAssistant, CoreState, EVENT_HOMEASSISTANT_STOP
-from homeassistant import config_entries
+from homeassistant import config_entries, loader
 from homeassistant import auth
 from homeassistant.auth import auth_store
 from homeassistant.helpers import (
@@ -69,8 +69,6 @@ async def async_create_home_assistant(
 
     # Load the registries
     entity.async_setup(hass)
-
-    from homeassistant import loader
 
     loader.async_setup(hass)
 
