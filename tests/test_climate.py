@@ -67,7 +67,7 @@ async def test_climate_hvac_entity(
 
     device_registry = dr.async_get(hass)
     assert len(device_registry.devices) == 1
-    device = next(iter(device_registry.devices.values()))
+    device = next(iter(device_registry.devices))
     assert device.suggested_area == "Family room"
     assert device.name == "Family Room"
     assert device.manufacturer == "Nest"
