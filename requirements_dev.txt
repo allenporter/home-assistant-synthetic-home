@@ -5,7 +5,7 @@ ruff==0.16.5
 ty==0.0.78
 
 # Home Assistant testing dependencies
-pytest-homeassistant-custom-component==0.13.362
+pytest-homeassistant-custom-component==0.13.363
 syrupy>=4.6.1
 
 # Component dependencies
