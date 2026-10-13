@@ -1,6 +1,6 @@
 """Weather platform for Synthetic Home."""
 
-import datetime
+import datetime as dt
 from dataclasses import dataclass
 import logging
 from typing import Any
@@ -56,10 +56,10 @@ class WeatherCondition:
     native_wind_speed: float | None = None
     wind_speed_unit_of_measurement: str | None = None
 
-    def as_forecast(self, dt: datetime.datetime) -> Forecast:
+    def as_forecast(self, ref_dt: dt.datetime) -> Forecast:
         """Convert the WeatherCondition to a forecast."""
         return Forecast(
-            datetime=dt.isoformat(),
+            datetime=ref_dt.isoformat(),
             condition=self.condition,
             native_temperature=self.native_temperature,
             humidity=self.humidity,
@@ -179,7 +179,7 @@ class SyntheticHomeWeather(SyntheticEntity, WeatherEntity):
         forecast_data = []
         for condition in self._daily_forecast:
             data_dict = condition.as_forecast(reftime)
-            reftime = reftime + datetime.timedelta(hours=24)
+            reftime = reftime + dt.timedelta(hours=24)
             forecast_data.append(data_dict)
 
         return forecast_data
@@ -191,7 +191,7 @@ class SyntheticHomeWeather(SyntheticEntity, WeatherEntity):
         forecast_data = []
         for condition in self._hourly_forecast:
             data_dict = condition.as_forecast(reftime)
-            reftime = reftime + datetime.timedelta(hours=1)
+            reftime = reftime + dt.timedelta(hours=1)
             forecast_data.append(data_dict)
 
         return forecast_data
@@ -204,7 +204,7 @@ class SyntheticHomeWeather(SyntheticEntity, WeatherEntity):
         for condition in self._twice_daily_forecast:
             data_dict = condition.as_forecast(reftime)
             data_dict["is_daytime"] = 6 <= reftime.hour <= 20
-            reftime = reftime + datetime.timedelta(hours=12)
+            reftime = reftime + dt.timedelta(hours=12)
             forecast_data.append(data_dict)
 
         return forecast_data
