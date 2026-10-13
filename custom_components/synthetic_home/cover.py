@@ -1,6 +1,6 @@
 """Cover platform for Synthetic Home."""
 
-import datetime
+import datetime as dt
 from typing import Any
 import logging
 
@@ -25,7 +25,7 @@ _LOGGER = logging.getLogger(__name__)
 # Used for eval to override behavior
 COVER_INSTANT = False
 COVER_STEP = 10
-COVER_STEP_TIME = datetime.timedelta(seconds=1)
+COVER_STEP_TIME = dt.timedelta(seconds=1)
 SUPPORTED_ATTRIBUTES = {"supported_features", "device_class", "current_position"}
 
 
@@ -139,7 +139,7 @@ class SyntheticCover(SyntheticEntity, CoverEntity):
     async def _start_moving(self) -> None:
         """Start moving the cover."""
         if COVER_INSTANT:
-            await self._move_cover(datetime.datetime.now())
+            await self._move_cover(dt.datetime.now())
         elif self._timer_unsub is None:
             self._timer_unsub = async_track_time_interval(
                 self.hass,
@@ -147,7 +147,7 @@ class SyntheticCover(SyntheticEntity, CoverEntity):
                 interval=COVER_STEP_TIME,
             )
 
-    async def _move_cover(self, now: datetime.datetime) -> None:
+    async def _move_cover(self, now: dt.datetime) -> None:
         """Track time changes."""
         if COVER_INSTANT and self._target_cover_position is not None:
             # Jump to destination

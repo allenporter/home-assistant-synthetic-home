@@ -100,8 +100,3 @@ class SyntheticHomeLight(SyntheticEntity, LightEntity):
         """Turn off the light."""
         self._attr_is_on = False
         self.async_write_ha_state()
-
-    @property
-    def is_on(self) -> bool | None:
-        """Return true if the light is on."""
-        return self._attr_is_on

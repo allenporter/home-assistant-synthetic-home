@@ -1,6 +1,6 @@
 """Test Synthetic Home cover."""
 
-import datetime
+import datetime as dt
 
 import pytest
 from syrupy import SnapshotAssertion
@@ -61,7 +61,7 @@ async def test_smart_blinds(
     assert state.state == "opening"
 
     for _ in range(7):
-        future = dt_util.utcnow() + datetime.timedelta(seconds=1)
+        future = dt_util.utcnow() + dt.timedelta(seconds=1)
         async_fire_time_changed(hass, future)
         await hass.async_block_till_done()
 
@@ -88,7 +88,7 @@ async def test_smart_blinds(
     assert state.state == "closing"
 
     for _ in range(5):
-        future = dt_util.utcnow() + datetime.timedelta(seconds=1)
+        future = dt_util.utcnow() + dt.timedelta(seconds=1)
         async_fire_time_changed(hass, future)
         await hass.async_block_till_done()
 
@@ -136,7 +136,7 @@ async def test_garage_door(
     assert state.state == "opening"
 
     for _ in range(11):
-        future = dt_util.utcnow() + datetime.timedelta(seconds=1)
+        future = dt_util.utcnow() + dt.timedelta(seconds=1)
         async_fire_time_changed(hass, future)
         await hass.async_block_till_done()
 
@@ -163,7 +163,7 @@ async def test_garage_door(
     assert state.state == "closing"
 
     for _ in range(11):
-        future = dt_util.utcnow() + datetime.timedelta(seconds=1)
+        future = dt_util.utcnow() + dt.timedelta(seconds=1)
         async_fire_time_changed(hass, future)
         await hass.async_block_till_done()
 

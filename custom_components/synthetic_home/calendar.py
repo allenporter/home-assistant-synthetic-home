@@ -1,6 +1,6 @@
 """Calendar platform for Synthetic Home."""
 
-import datetime
+import datetime as dt
 import logging
 from typing import Any
 
@@ -44,11 +44,11 @@ async def async_setup_entry(
     )
 
 
-def parse_date_or_datetime(value: str) -> datetime.date | datetime.datetime:
+def parse_date_or_datetime(value: str) -> dt.date | dt.datetime:
     """Parse a date or datetime value from an isoformat string."""
     if len(value) > 10 or "T" in value:
-        return datetime.datetime.fromisoformat(value)
-    return datetime.date.fromisoformat(value)
+        return dt.datetime.fromisoformat(value)
+    return dt.date.fromisoformat(value)
 
 
 DATETIME_FIELDS = {
@@ -67,7 +67,7 @@ def create_event(attributes: dict[str, Any]) -> CalendarEvent:
             fields[attribute] = value
     for from_field, to_field in DATETIME_FIELDS.items():
         if value := attributes.get(from_field):
-            if isinstance(value, datetime.datetime) or isinstance(value, datetime.date):
+            if isinstance(value, dt.datetime) or isinstance(value, dt.date):
                 fields[to_field] = value
             else:
                 fields[to_field] = parse_date_or_datetime(value)
@@ -108,8 +108,8 @@ class SyntheticCalendarEntity(SyntheticEntity, CalendarEntity):
     async def async_get_events(
         self,
         hass: HomeAssistant,
-        start_date: datetime.datetime,
-        end_date: datetime.datetime,
+        start_date: dt.datetime,
+        end_date: dt.datetime,
     ) -> list[CalendarEvent]:
         """Return calendar events within a datetime range."""
         result = []
