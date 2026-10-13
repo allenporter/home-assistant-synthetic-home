@@ -136,7 +136,7 @@ async def async_setup_entry(
 class SyntheticHomeWeather(SyntheticEntity, WeatherEntity):
     """synthetic_home Weather class."""
 
-    _attr_supported_features = 0
+    _attr_supported_features = WeatherEntityFeature(0)
 
     def __init__(
         self,
@@ -161,6 +161,7 @@ class SyntheticHomeWeather(SyntheticEntity, WeatherEntity):
         self._attr_native_wind_speed = native_wind_speed
         self._attr_native_wind_speed_unit = native_wind_speed_unit
 
+        self._attr_supported_features = WeatherEntityFeature(0)
         if daily_forecast:
             self._daily_forecast = daily_forecast
             self._attr_supported_features |= WeatherEntityFeature.FORECAST_DAILY
