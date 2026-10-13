@@ -1,8 +1,12 @@
 # The contents of this file is based on https://github.com/home-assistant/core/blob/dev/pyproject.toml
 target-version = "py310"
+extend-exclude = ["*.ipynb", "*.md"]
 
 [lint]
-extend-select = ["PLC0415"]
+extend-select = [
+    "PLC0415",
+    "ICN001",
+]
 select = [
     "B007",    # Loop control variable {name} not used within loop body
     "B014",    # Exception handler with duplicate exception
@@ -48,3 +52,13 @@ keep-runtime-typing = true
 
 [lint.mccabe]
 max-complexity = 25
+
+[lint.flake8-import-conventions.extend-aliases]
+"homeassistant.helpers.config_validation" = "cv"
+"homeassistant.helpers.device_registry" = "dr"
+"homeassistant.helpers.entity_registry" = "er"
+"homeassistant.helpers.area_registry" = "ar"
+"homeassistant.helpers.issue_registry" = "ir"
+"homeassistant.util.dt" = "dt_util"
+"homeassistant.util.color" = "color_util"
+"homeassistant.util.json" = "json_util"
