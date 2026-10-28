@@ -54,7 +54,7 @@ class SyntheticCover(SyntheticEntity, CoverEntity):
     _attr_is_closed = True
     _attr_is_opening = False
     # The position is used to infer the other attributes (0 is closed, 100 is open)
-    _attr_current_cover_position: int = 0
+    _attr_current_cover_position: int | None = 0
 
     _target_cover_position: int | None = None
     _timer_unsub: CALLBACK_TYPE | None = None
@@ -114,7 +114,10 @@ class SyntheticCover(SyntheticEntity, CoverEntity):
     async def async_set_cover_position(self, **kwargs: Any) -> None:
         """Move the cover to a specific position."""
         position: int = kwargs[ATTR_POSITION]
-        if self._attr_current_cover_position == position:
+        if (
+            self._attr_current_cover_position is None
+            or self._attr_current_cover_position == position
+        ):
             # Nothing to do
             return
         self._target_cover_position = position
@@ -154,6 +157,7 @@ class SyntheticCover(SyntheticEntity, CoverEntity):
             self._attr_current_cover_position = self._target_cover_position
         if (
             self._target_cover_position is not None
+            and self._attr_current_cover_position is not None
             and self._attr_current_cover_position > self._target_cover_position
         ):
             _LOGGER.debug("Cover moving down")
@@ -163,6 +167,7 @@ class SyntheticCover(SyntheticEntity, CoverEntity):
             )
         elif (
             self._target_cover_position is not None
+            and self._attr_current_cover_position is not None
             and self._attr_current_cover_position < self._target_cover_position
         ):
             _LOGGER.debug("Cover moving up")
